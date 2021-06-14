@@ -19,9 +19,9 @@
 # in the templates via {{ site.myvariable }}.
 
 title: Triche Laboratory
-email: Tim.Triche@vai.org
+email: trichelab@gmail.com
 description: >- # this means to ignore newlines until "baseurl:"
-  The Triche Laboratory develops statistical and mathematical methods to dissect pediatric and adult cancers, with a focus on cancers of the blood in children.
+  The Triche Laboratory develops mathematical and biological methods to dissect disorders of blood and immune development, with a focus on pediatric leukemia.
 baseurl: "/" # the subpath of your site, e.g. /blog
 url: "https://trichelab.github.io" # the base hostname & protocol for your site
 twitter_username: trichelab 

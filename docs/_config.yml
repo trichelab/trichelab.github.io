@@ -23,8 +23,8 @@ email: Tim.Triche@vai.org
 description: >- # this means to ignore newlines until "baseurl:"
   The Triche Laboratory develops statistical and mathematical methods to dissect pediatric and adult cancers, with a focus on cancers of the blood in children.
 baseurl: "/" # the subpath of your site, e.g. /blog
-url: "" # the base hostname & protocol for your site, e.g. http://example.com
-twitter_username: jekyllrb
+url: "https://trichelab.github.io" # the base hostname & protocol for your site
+twitter_username: trichelab 
 github_username:  ttriche
 future: true
 # Build settings

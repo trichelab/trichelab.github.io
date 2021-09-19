@@ -175,10 +175,6 @@ categories: jekyll update
           if you don't already have one
         </li>
         <li>
-          join the <a href="https://github.com/trichelab/">trichelab</a>
-          organization on GitHub
-        </li>
-        <li>
           Fork the repository 
           <a href="https://github.com/trichelab/trichelab.github.io">trichelab.github.io</a> 
           (these pages) to your account, edit it (I don't care what you edit,

@@ -138,7 +138,7 @@ categories: jekyll update
     </ul>
     The sooner you package your code, the easier your life will become:
     <ul>
-      <li>If you may ever need script again, put it in GitHub.</li>
+      <li>If you may ever need a script again, put it in GitHub.</li>
       <li>If you use a piece of code twice, make it a function</li>
       <li>If you use a function thrice, make it into a package or library</li>
       <li>If other people use your functions, aim at CRAN, pypi, or BioC.</li>
@@ -171,18 +171,17 @@ categories: jekyll update
     First things first, if you're doing dry work, you'll need a GitHub ID.
       <ol>
         <li>
-          set up a <a href="https://github.com/">GitHub</a> account, 
+          Set up a <a href="https://github.com/">GitHub</a> account, 
           if you don't already have one
         </li>
         <li>
-          join the <a href="https://github.com/trichelab/">trichelab</a>
-          organization on GitHub
-        </li>
-        <li>
-          Fork the repository trichelab.github.io (these pages) to your account,
-          edit it (I don't care what you edit, just do something useful), 
-          `git add`, `git commit`, `git push`, and open a pull request against 
-          the parent (trichelab) repository to merge the changes (or not). 
+          Fork the repository 
+          <a href="https://github.com/trichelab/trichelab.github.io">trichelab.github.io</a> 
+          (these pages) to your account, edit it (I don't care what you edit,
+          just do something useful), `git add`, `git commit`, `git push`, and 
+          open a pull request against the parent 
+          <a href="https://github.com/trichelab/">trichelab</a> repository to 
+          merge the changes (or not). 
         </li>
         <li>
           Find someone to code review the merge.  Congratulations, you're a 10x 
@@ -236,7 +235,7 @@ categories: jekyll update
     </em>
     <br />
 
-    <h1> universal truths about hardware </h1>
+    <h1> Universal truths about hardware </h1>
     <p>
     Whatever you use, put a lot of RAM in it, and execute your long-running 
     jobs on HPC or AWS so that you don't lock up your own machine and miss 
@@ -246,5 +245,5 @@ categories: jekyll update
     </p>
 
     <p> 
-    Students, staff, trainees: add what you like here. <em> and open a PR </em>
+    Students, staff, trainees: add what you like here <em> and open a PR</em>.
     </p> 

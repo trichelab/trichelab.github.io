@@ -1,6 +1,6 @@
 I"-<html>
   <head>
-    <title> 2021 onboarding: less bad than 2020 </title>
+    <title> 2023 onboarding: hopefully better than 2022 </title>
   </head>
   <body>
 
@@ -14,13 +14,10 @@
       require regular communication and feedback.
       <ul>
         <li>
-          <b>You must check in (via Slack or otherwise) M/W/F at 9AM</b>, unless
-          we have previously made other arrangements. Monday check-ins are
-          to discuss and set individual weekly goals; Wednesdays are meant as
-          a milestone where we communicate progress towards Monday's goals; 
-          Friday check-ins serve as a venue for everyone to briefly summarize
-          the week's progress and to address matters arising.
-        </li>
+          <b>We conduct general discussion on Slack.</b> Create a new account 
+          <a href="https://slack.com/">here</a> and feel free to utilize the
+          desktop and mobile apps (recommended). A current lab member will invite
+          you to the <i>trichelab</i> workspace.
         <li>
           <b>I must schedule a 1:1 with you (in person, Zoom, call, whatever) 
           every 2 weeks.</b> These can be rescheduled but must not be skipped.
@@ -30,8 +27,8 @@
           <a href="https://clincancerres.aacrjournals.org/content/5/9/2281">Simone's Maxims</a>, please read them now.
         </li>
         <li>
-          <b>Everyone must attend lab meetings on Fridays at 12pm.</b> If you
-          have a conflict, please let Tim, Mary, and Lauren know so we can
+          <b>Everyone must attend lab meetings on Fridays at 11am.</b> If you
+          have a conflict, please let Tim, Eve, and Lauren know so we can
           try to accommodate. Slack is for day-to-day lab business; lab meeting
           is structured to keep us all focused on short- and medium-term goals.
           Lab members who are not presenting in a given week are responsible for
@@ -107,10 +104,10 @@
     <p>
     The 3-volume set of Molecular Cloning is in bay 16, and the videos for 
     various (strange and/or wonderful) protocols are on Google Drive, which 
-    is something to which you ought to have access. If not, email Mary. If you
-    have specific protocol questions, email Mary, or whoever optimized the
+    is something to which you ought to have access. If not, email Eve. If you
+    have specific protocol questions, email Eve, or whoever optimized the
     protocol. For context ("why are you doing this"), Tim may or may not be
-    a useful source. For practical wet bench questions, ask Mary. 
+    a useful source. For practical wet bench questions, ask Eve. 
     </p>
 
     <h3> Neither/Both </h3>
@@ -203,13 +200,13 @@
     <a href="https://fertiglab.com/">Elana's lab</a>
     </p>
 
-    <p>
-    What all else can we drag in?  Surely there's rather a lot.
-    </p>
+    
+    <h1> What all else can we drag in?  Surely there's rather a lot. </h1>
     
     <p>
     <em> What kind of computer/OS should I use for dry lab stuff? </em>
     That all depends -- if you're going to build R packages, just use Linux.
+    <br />
     <br />
     The Linux Subsystem for Windows version 2 (LS2) can be enabled on Windows.
     <br />
@@ -227,6 +224,7 @@
     <em>
       <a href="https://stat.ethz.ch/pipermail/bioc-devel/2020-January/016010.html">--Herve Pages</a>
     </em>
+    <br />
     <br />
 
     <h1> universal truths about hardware </h1>

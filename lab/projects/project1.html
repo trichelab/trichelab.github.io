@@ -1,0 +1,1435 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <title>Welcome to the Lab</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/css/bootstrap.min.css" integrity="sha384-HSMxcRTRxnN+Bdg0JdbxYKrThecOKuH5zCYotlSAcp1+c8xmyTe9GYg1l9a69psu" crossorigin="anonymous">
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://cdn.jsdelivr.net/npm/html5shiv@3.7.3/dist/html5shiv.min.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/respond.js@1.4.2/dest/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+	    <!-- Static navbar -->
+    <nav class="navbar navbar-default navbar-static-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Triche Lab</a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#">People</a></li>
+            <li><a href="#">Projects</a></li>
+			<li><a href="#">Publications</a></li>
+            <li class="dropdown">
+              <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">In the Lab<span class="caret"></span></a>
+              <ul class="dropdown-menu">
+                <li><a href="#">Welcome to the Lab</a></li>
+                <li><a href="#">Onboarding</a></li>
+                <li role="separator" class="divider"></li>
+                <li class="dropdown-header">Practical Sessions</li>
+                <li class="active"><a href="#">Part 1</a></li>
+                <li><a href="#">Part 2: scRNA</a></li>
+				<li><a href="#">Project 2: Tim's stab at it</a></li>
+              </ul>
+            </li>
+          </ul>
+        </div><!--/.nav-collapse -->
+      </div>
+    </nav>
+  
+
+
+    <div class="container">
+
+		<div class="starter-template">
+			<main class="page-content" aria-label="Content">
+      <div class="wrapper">
+        <article class="post">
+
+  <header class="post-header">
+    <h1 class="post-title">Practical sessions part 1</h1>
+  </header>
+
+  <div class="post-content">
+    <h1 id="installation">Installation</h1>
+
+		<p>Install the ExpDesign2021 package from github.</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#install.packages("remotes")</span><span class="w">
+		</span><span class="c1">#install.packages("BiocManager")</span><span class="w">
+		</span><span class="c1">#BiocManager::install("VanAndelInstitute/ExpDesign2021", build_vignettes=TRUE)</span><span class="w">
+		</span></code></pre></div></div>
+
+		<h1 id="introduction">Introduction</h1>
+
+		<p>The recommended starting point for modeling things in the tidyverse is through
+		the <a href="https://tidymodels.org/start/"><em>tidymodels</em></a> package, and the tidymodels
+		folks suggest <a href="https://moderndive.com/"><em>A ModernDive into R and the Tidyverse</em></a> for beginners. So let’s use <a href="https://moderndive.com/5-regression.html">Chapter 5: Basic Regression</a> as a roadmap. We will also try and make this a bit easier.</p>
+
+		<h1 id="the-assignments-spreadsheet">The assignments spreadsheet</h1>
+
+		<p>To avoid some annoyance, I wrapped the usual read_sheet and gs4_deauth 
+		rigamarole in a function called <code class="language-plaintext highlighter-rouge">fetchAssignments</code> or, explicitly, 
+		ExpDesign2021::fetchAssignments. (If you want to be super clear about where 
+		a function should come from, package::function(arguments) is the way to go.)
+		Let’s start by loading data from the first few weeks’ assignments.</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># this package</span><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">ExpDesign2021</span><span class="p">)</span><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">knitr</span><span class="p">)</span><span class="w">
+
+		</span><span class="c1"># grab some data to verify it works </span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">fetchAssignments</span><span class="p">()</span><span class="w">
+		</span><span class="c1">#&gt; Calling gs4_deauth()...</span><span class="w">
+		</span><span class="c1">#&gt; Fetching data from https://docs.google.com/spreadsheets/d/1bJw_ad0PLQmLe4RvmRzsVnrOF-9Z9Xth9GTSdwO8B4M ...</span><span class="w">
+		</span><span class="c1">#&gt; ✔ Reading from "2021_ExpDesign".</span><span class="w">
+		</span><span class="c1">#&gt; ✔ Range 'Form Responses 1'.</span><span class="w">
+		</span><span class="c1">#&gt; Done.</span><span class="w">
+		</span><span class="c1"># note that this is equivalent to:</span><span class="w">
+		</span><span class="c1"># fetchAssignments() -&gt; assignments </span><span class="w">
+
+		</span><span class="c1"># verify we got it: </span><span class="w">
+		</span><span class="n">kable</span><span class="p">(</span><span class="n">head</span><span class="p">(</span><span class="n">assignments</span><span class="p">))</span><span class="w"> </span><span class="c1"># the first few rows</span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">Timestamp</th>
+			  <th style="text-align: left">What is the self-selected ID you decided upon?</th>
+			  <th style="text-align: left">Which assignment are you working on?</th>
+			  <th style="text-align: left">About what time did you start?</th>
+			  <th style="text-align: left">About what time did you finish?</th>
+			  <th style="text-align: left">Any comments on the assignment?</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">2021-08-30 10:34:53</td>
+			  <td style="text-align: left">FooBarBazQux</td>
+			  <td style="text-align: left">Reading: Experimental Design for Biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">1899-12-30 09:00:00</td>
+			  <td style="text-align: left">1899-12-30 10:00:00</td>
+			  <td style="text-align: left">I am not actually a student</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">2021-09-01 18:39:09</td>
+			  <td style="text-align: left">T-Rex</td>
+			  <td style="text-align: left">Reading: Intro to Statistical Learning 2nd edition (chapters 1 and 2)</td>
+			  <td style="text-align: left">1899-12-30 17:28:00</td>
+			  <td style="text-align: left">1899-12-30 06:36:59</td>
+			  <td style="text-align: left">I will likely need to go back and re-read some of these sections as they can be a little hard to digest at times.</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">2021-09-04 13:57:26</td>
+			  <td style="text-align: left">b5548ea</td>
+			  <td style="text-align: left">Reading: Intro to Statistical Learning 2nd edition (chapters 1 and 2)</td>
+			  <td style="text-align: left">1899-12-30 12:00:00</td>
+			  <td style="text-align: left">1899-12-30 14:50:00</td>
+			  <td style="text-align: left">NA</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">2021-09-04 13:58:26</td>
+			  <td style="text-align: left">b5548ea</td>
+			  <td style="text-align: left">Lab: Rstudio Carpentry (introduction)</td>
+			  <td style="text-align: left">1899-12-30 15:00:00</td>
+			  <td style="text-align: left">1899-12-30 15:03:00</td>
+			  <td style="text-align: left">NA</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">2021-09-04 13:59:05</td>
+			  <td style="text-align: left">b5548ea</td>
+			  <td style="text-align: left">Lab: Rstudio Analyzing Patient Data (practicum)</td>
+			  <td style="text-align: left">1899-12-30 15:04:00</td>
+			  <td style="text-align: left">1899-12-30 15:40:00</td>
+			  <td style="text-align: left">NA</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">2021-09-04 14:15:46</td>
+			  <td style="text-align: left">b5548ea</td>
+			  <td style="text-align: left">Lab: ISLRv2 Chapter 2 lab assignment</td>
+			  <td style="text-align: left">1899-12-30 16:00:00</td>
+			  <td style="text-align: left">1899-12-30 16:15:00</td>
+			  <td style="text-align: left">NA</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># you can also echo the result of assigning a variable:</span><span class="w">
+		</span><span class="c1"># (fetchAssignments() -&gt; assignments) # try it if you like</span><span class="w">
+
+		</span><span class="c1"># rename the columns for brevity in the following code:</span><span class="w">
+		</span><span class="n">columnNames</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">colnames</span><span class="p">(</span><span class="n">assignments</span><span class="p">)</span><span class="w">           </span><span class="c1"># we will re-use this later; </span><span class="w">
+		</span><span class="nf">names</span><span class="p">(</span><span class="n">columnNames</span><span class="p">)</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ID"</span><span class="p">,</span><span class="w">     </span><span class="c1"># these will be the new names</span><span class="w">
+								</span><span class="s2">"assignment"</span><span class="p">,</span><span class="w"> </span><span class="s2">"start"</span><span class="p">,</span><span class="w"> 
+								</span><span class="s2">"end"</span><span class="p">,</span><span class="w"> </span><span class="s2">"comments"</span><span class="p">)</span><span class="w">
+
+		</span><span class="c1"># what's it look like now? Mostly so we can see what we're doing.</span><span class="w">
+		</span><span class="n">tibble</span><span class="p">(</span><span class="n">oldName</span><span class="o">=</span><span class="n">columnNames</span><span class="p">,</span><span class="w"> </span><span class="n">newName</span><span class="o">=</span><span class="nf">names</span><span class="p">(</span><span class="n">columnNames</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">kable</span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">oldName</th>
+			  <th style="text-align: left">newName</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">Timestamp</td>
+			  <td style="text-align: left">timestamp</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">What is the self-selected ID you decided upon?</td>
+			  <td style="text-align: left">ID</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">Which assignment are you working on?</td>
+			  <td style="text-align: left">assignment</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">About what time did you start?</td>
+			  <td style="text-align: left">start</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">About what time did you finish?</td>
+			  <td style="text-align: left">end</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">Any comments on the assignment?</td>
+			  <td style="text-align: left">comments</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># now make this tidier:</span><span class="w">
+		</span><span class="n">fetchAssignments</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                         </span><span class="c1"># get data, then </span><span class="w">
+		  </span><span class="n">rename</span><span class="p">(</span><span class="n">columnNames</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                      </span><span class="c1"># rename columns, then </span><span class="w">
+		  </span><span class="n">select</span><span class="p">(</span><span class="nf">c</span><span class="p">(</span><span class="s2">"timestamp"</span><span class="p">,</span><span class="w"> </span><span class="s2">"ID"</span><span class="p">,</span><span class="w"> </span><span class="s2">"comments"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># select columns, then </span><span class="w">
+		  </span><span class="n">head</span><span class="p">(</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                                  </span><span class="c1"># get the first two lines, then </span><span class="w">
+		  </span><span class="n">kable</span><span class="w">                                        </span><span class="c1"># make a table out of them. </span><span class="w">
+		</span><span class="c1">#&gt; Calling gs4_deauth()...</span><span class="w">
+		</span><span class="c1">#&gt; Fetching data from https://docs.google.com/spreadsheets/d/1bJw_ad0PLQmLe4RvmRzsVnrOF-9Z9Xth9GTSdwO8B4M ...</span><span class="w">
+		</span><span class="c1">#&gt; ✔ Reading from "2021_ExpDesign".</span><span class="w">
+		</span><span class="c1">#&gt; ✔ Range 'Form Responses 1'.</span><span class="w">
+		</span><span class="c1">#&gt; Done.</span><span class="w">
+		</span><span class="c1">#&gt; Note: Using an external vector in selections is ambiguous.</span><span class="w">
+		</span><span class="c1">#&gt; ℹ Use `all_of(columnNames)` instead of `columnNames` to silence this message.</span><span class="w">
+		</span><span class="c1">#&gt; ℹ See &lt;https://tidyselect.r-lib.org/reference/faq-external-vector.html&gt;.</span><span class="w">
+		</span><span class="c1">#&gt; This message is displayed once per session.</span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">timestamp</th>
+			  <th style="text-align: left">ID</th>
+			  <th style="text-align: left">comments</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">2021-08-30 10:34:53</td>
+			  <td style="text-align: left">FooBarBazQux</td>
+			  <td style="text-align: left">I am not actually a student</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">2021-09-01 18:39:09</td>
+			  <td style="text-align: left">T-Rex</td>
+			  <td style="text-align: left">I will likely need to go back and re-read some of these sections as they can be a little hard to digest at times.</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<p>FooBarBazQux is the userID I (tim) chose. I’m not a student, so out it goes.
+		Let’s also add a column for time taken, and filter based on that.</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">library</span><span class="p">(</span><span class="n">lubridate</span><span class="p">)</span><span class="w">                             </span><span class="c1"># for date handling</span><span class="w">
+
+		</span><span class="n">fetchAssignments</span><span class="p">()</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                         </span><span class="c1"># get data, then </span><span class="w">
+		  </span><span class="n">rename</span><span class="p">(</span><span class="n">columnNames</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                      </span><span class="c1"># rename columns, then </span><span class="w">
+		  </span><span class="n">filter</span><span class="p">(</span><span class="n">ID</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="s2">"FooBarBazQux"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">             </span><span class="c1"># exclude my entry, then  </span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">minutes</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">end</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">start</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">            </span><span class="c1"># add a column `minutes`, then</span><span class="w">
+		  </span><span class="n">filter</span><span class="p">(</span><span class="n">minutes</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">                       </span><span class="c1"># drop negative times, then</span><span class="w">
+			</span><span class="n">assignments</span><span class="w">                                </span><span class="c1"># put the result in `assignments`</span><span class="w">
+		</span><span class="c1">#&gt; Calling gs4_deauth()...</span><span class="w">
+		</span><span class="c1">#&gt; Fetching data from https://docs.google.com/spreadsheets/d/1bJw_ad0PLQmLe4RvmRzsVnrOF-9Z9Xth9GTSdwO8B4M ...</span><span class="w">
+		</span><span class="c1">#&gt; ✔ Reading from "2021_ExpDesign".</span><span class="w">
+		</span><span class="c1">#&gt; ✔ Range 'Form Responses 1'.</span><span class="w">
+		</span><span class="c1">#&gt; Done.</span><span class="w">
+
+		</span><span class="c1"># How many entries remain? </span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">dim</span><span class="w"> 
+		</span><span class="c1">#&gt; [1] 95  7</span><span class="w">
+		</span><span class="c1"># [1] 95  7</span><span class="w">
+		</span></code></pre></div></div>
+
+		<h1 id="exploration">Exploration</h1>
+
+		<p>Let’s do a bit of exploratory analysis on the tidied assignment data. 
+		Unless you are trying to hide data, a beeswarm is usually a good default.
+		(Tip: statisticians and statistical reviewers <em>will</em> pounce on boxplots.)</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">ggplot2</span><span class="p">)</span><span class="w">  </span><span class="c1"># ggplot</span><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">ggforce</span><span class="p">)</span><span class="w">  </span><span class="c1"># geom_sina</span><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">ggthemes</span><span class="p">)</span><span class="w"> </span><span class="c1"># theme_tufte</span><span class="w">
+
+		</span><span class="c1"># minimalist sinaplot (beeswarm):</span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                                        </span><span class="c1"># feed data to...</span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minutes</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">       </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_sina</span><span class="p">(</span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                   </span><span class="c1"># rendered as a sinaplot</span><span class="w">
+			</span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">guide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">guide_axis</span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># with IDs at 60' angle</span><span class="w">
+			</span><span class="n">theme_tufte</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w">                        </span><span class="c1"># tufte theme, 12pt font</span><span class="w">
+						</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sans serif"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">          </span><span class="c1"># with sans serif text</span><span class="w">
+			</span><span class="n">theme</span><span class="p">(</span><span class="n">axis.title.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">())</span><span class="w"> </span><span class="o">+</span><span class="w">            </span><span class="c1"># blank the axis title</span><span class="w">
+			</span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Time spent on assignments by ID"</span><span class="p">)</span><span class="w">         </span><span class="c1"># add a plot title  </span><span class="w">
+		</span><span class="c1">#&gt; Don't know how to automatically pick scale for object of type difftime. Defaulting to continuous.</span><span class="w">
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/plots-1.png" alt="plot of chunk plots" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># same but in hours:</span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">               
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">as.duration</span><span class="p">(</span><span class="n">minutes</span><span class="p">),</span><span class="w"> </span><span class="s2">"hours"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># get hours </span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">         </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_sina</span><span class="p">(</span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                   </span><span class="c1"># rendered as a sinaplot</span><span class="w">
+			</span><span class="n">scale_x_discrete</span><span class="p">(</span><span class="n">guide</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">guide_axis</span><span class="p">(</span><span class="n">angle</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">60</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="c1"># with IDs at 60' angle</span><span class="w">
+			</span><span class="n">theme_tufte</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w">                        </span><span class="c1"># tufte theme, 12pt font</span><span class="w">
+						</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sans serif"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">          </span><span class="c1"># with sans serif text</span><span class="w">
+			</span><span class="n">theme</span><span class="p">(</span><span class="n">axis.title.x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">element_blank</span><span class="p">())</span><span class="w"> </span><span class="o">+</span><span class="w">            </span><span class="c1"># blank the axis title</span><span class="w">
+			</span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Hours spent on assignments by ID"</span><span class="p">)</span><span class="w">        </span><span class="c1"># add a plot title  </span><span class="w">
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/plots-2.png" alt="plot of chunk plots" /></p>
+
+		<p>Let’s do a little bit of modeling on the data. First, let’s group assignments.
+		(It turns out that both the comments and the assignment names can use some work)
+		Let’s see if we can extract some rhyme or reason from the words making up these.
+		(For more on this topic, you can visit the <a href="https://www.tidytextmining.com/tidytext.html">tidy text mining book site</a>.)</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># a quick helper function: </span><span class="w">
+		</span><span class="n">assignmentType</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="k">function</span><span class="p">(</span><span class="n">x</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w">
+		  </span><span class="c1"># grepl tests for a pattern and returns TRUE or FALSE  </span><span class="w">
+		  </span><span class="c1"># ifelse operates as ifelse(condition, ifTRUE, ifFALSE)</span><span class="w">
+		  </span><span class="c1"># here we nest a second ifelse into the first to mop up</span><span class="w">
+		  </span><span class="n">ifelse</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"(git|management|studio|lab)"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> 
+				 </span><span class="s2">"lab"</span><span class="p">,</span><span class="w"> </span><span class="n">ifelse</span><span class="p">(</span><span class="n">grepl</span><span class="p">(</span><span class="s2">"(islr|statistical|modeling)"</span><span class="p">,</span><span class="w"> </span><span class="n">x</span><span class="p">),</span><span class="w"> 
+							   </span><span class="s2">"ISLRv2"</span><span class="p">,</span><span class="w"> </span><span class="s2">"EDfB"</span><span class="p">))</span><span class="w">
+		</span><span class="p">}</span><span class="w">
+
+		</span><span class="c1"># now tokenize by type:</span><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">tidytext</span><span class="p">)</span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                                          </span><span class="c1"># feed data to... </span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">assid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">assignment</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                </span><span class="c1"># create a new column</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">comid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">comments</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                  </span><span class="c1"># create a new column</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignmentType</span><span class="p">(</span><span class="n">assid</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">              </span><span class="c1"># group assignments </span><span class="w">
+		  </span><span class="n">unnest_tokens</span><span class="p">(</span><span class="n">input</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">comments</span><span class="p">,</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ctext</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">    </span><span class="c1"># put words in `ctext`</span><span class="w">
+		  </span><span class="n">select</span><span class="p">(</span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="n">assid</span><span class="p">,</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">comid</span><span class="p">,</span><span class="w"> </span><span class="n">ctext</span><span class="p">,</span><span class="w"> </span><span class="n">minutes</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">     </span><span class="c1"># select a few columns </span><span class="w">
+			</span><span class="n">assignment_comments</span><span class="w">                                  </span><span class="c1"># assign the results</span><span class="w">
+
+		</span><span class="c1"># what has this done for us? Let's look:</span><span class="w">
+		</span><span class="n">assignment_comments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                   </span><span class="c1"># feed the tokenized data to..</span><span class="w">
+		  </span><span class="n">filter</span><span class="p">(</span><span class="o">!</span><span class="nf">is.na</span><span class="p">(</span><span class="n">ctext</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">               </span><span class="c1"># only look at non-NA comments</span><span class="w">
+		  </span><span class="n">select</span><span class="p">(</span><span class="n">assid</span><span class="p">,</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">ctext</span><span class="p">,</span><span class="w"> </span><span class="n">comid</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">  </span><span class="c1"># only look at a few columns </span><span class="w">
+		  </span><span class="n">head</span><span class="p">(</span><span class="m">10</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                            </span><span class="c1"># grab the first few lines and</span><span class="w">
+		  </span><span class="n">kable</span><span class="w">                                   </span><span class="c1"># make a table out of them </span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">assid</th>
+			  <th style="text-align: left">atype</th>
+			  <th style="text-align: left">ctext</th>
+			  <th style="text-align: left">comid</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">book</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">is</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">easy</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">to</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">read</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">with</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">good</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">experimental</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">examples</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">reading: experimental design for biologists (chapters 16, 17, 18)</td>
+			  <td style="text-align: left">EDfB</td>
+			  <td style="text-align: left">and</td>
+			  <td style="text-align: left">book is easy to read with good experimental examples and diagrams</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># what words seem to be particularly common?</span><span class="w">
+		</span><span class="n">assignment_comments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">               </span><span class="c1"># feed the tokenized data to...</span><span class="w">
+		  </span><span class="n">count</span><span class="p">(</span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">ctext</span><span class="p">,</span><span class="w"> </span><span class="n">sort</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">TRUE</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="c1"># count comment words by atype, assign to</span><span class="w">
+			</span><span class="n">atype_ctext_counts</span><span class="w">
+
+		</span><span class="n">atype_ctext_counts</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">head</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">kable</span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">atype</th>
+			  <th style="text-align: left">ctext</th>
+			  <th style="text-align: right">n</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">lab</td>
+			  <td style="text-align: left">NA</td>
+			  <td style="text-align: right">32</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">lab</td>
+			  <td style="text-align: left">the</td>
+			  <td style="text-align: right">31</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">lab</td>
+			  <td style="text-align: left">to</td>
+			  <td style="text-align: right">31</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">lab</td>
+			  <td style="text-align: left">i</td>
+			  <td style="text-align: right">29</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">lab</td>
+			  <td style="text-align: left">this</td>
+			  <td style="text-align: right">15</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ISLRv2</td>
+			  <td style="text-align: left">NA</td>
+			  <td style="text-align: right">14</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<h1 id="some-further-questions-not-necessary-to-answer-with-code-just-yet">Some further questions (not necessary to answer with code just yet)</h1>
+
+		<p>This is a first pass at restructuring a couple of free-text fields; you could 
+		read <a href="https://www.tidytextmining.com/tfidf.html">the tidytext chapter on term frequency - inverse document frequency</a> for some additional ideas if you like.</p>
+
+		<ul>
+		  <li>
+			<p>One thought: if you look at the comments quantitatively, and don’t assume
+		that NAs are wholly uninformative, is there any pattern to the results?</p>
+		  </li>
+		  <li>
+			<p>Another thought: can we do better in terms of extracting assignment types?</p>
+		  </li>
+		</ul>
+
+		<p>In any event, digesting the text of these fields made it a bit easier to group.
+		Now let’s plot things again.</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># default sinaplot</span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                                        </span><span class="c1"># feed data to...</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">assid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">assignment</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">              </span><span class="c1"># create a new column</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignmentType</span><span class="p">(</span><span class="n">assid</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">            </span><span class="c1"># group assignments </span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minutes</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">    </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_sina</span><span class="p">(</span><span class="n">maxwidth</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">     </span><span class="c1"># rendered as a sinaplot</span><span class="w">
+			</span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Assignment type"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                          </span><span class="c1"># grouped by type</span><span class="w">
+			</span><span class="n">theme_tufte</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w">                        </span><span class="c1"># tufte theme, 12pt font</span><span class="w">
+						</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sans serif"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">          </span><span class="c1"># with sans serif text</span><span class="w">
+			</span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Time spent on assignments by type"</span><span class="p">)</span><span class="w">         </span><span class="c1"># add a plot title  </span><span class="w">
+		</span><span class="c1">#&gt; Don't know how to automatically pick scale for object of type difftime. Defaulting to continuous.</span><span class="w">
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/sinaplots-1.png" alt="plot of chunk sinaplots" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># a new sinaplot</span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                                        </span><span class="c1"># feed data to...</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">assid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">assignment</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">              </span><span class="c1"># create a new column</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignmentType</span><span class="p">(</span><span class="n">assid</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">            </span><span class="c1"># group assignments </span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">minutes</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">    </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_sina</span><span class="p">(</span><span class="n">maxwidth</span><span class="o">=</span><span class="m">0.3</span><span class="p">,</span><span class="w"> </span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">     </span><span class="c1"># rendered as a sinaplot</span><span class="w">
+			</span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Assignment type"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                          </span><span class="c1"># grouped by type</span><span class="w">
+			</span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">                                     </span><span class="c1"># but left-to-right </span><span class="w">
+			</span><span class="n">theme_tufte</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w">                        </span><span class="c1"># tufte theme, 12pt font</span><span class="w">
+						</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sans serif"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">          </span><span class="c1"># with sans serif text</span><span class="w">
+			</span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Time spent on assignments by type"</span><span class="p">)</span><span class="w">         </span><span class="c1"># add a plot title  </span><span class="w">
+		</span><span class="c1">#&gt; Don't know how to automatically pick scale for object of type difftime. Defaulting to continuous.</span><span class="w">
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/sinaplots-2.png" alt="plot of chunk sinaplots" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># same but in hours</span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                                        </span><span class="c1"># feed data to...</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">assid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">assignment</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">              </span><span class="c1"># create a new column</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignmentType</span><span class="p">(</span><span class="n">assid</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">            </span><span class="c1"># group assignments </span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">as.duration</span><span class="p">(</span><span class="n">minutes</span><span class="p">),</span><span class="w"> </span><span class="s2">"hours"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># get hours </span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">      </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_sina</span><span class="p">(</span><span class="n">maxwidth</span><span class="o">=</span><span class="m">0.1</span><span class="p">,</span><span class="w"> </span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">     </span><span class="c1"># rendered as a sinaplot</span><span class="w">
+			</span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Assignment type"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                          </span><span class="c1"># grouped by type</span><span class="w">
+			</span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">                                     </span><span class="c1"># but left-to-right </span><span class="w">
+			</span><span class="n">theme_tufte</span><span class="p">(</span><span class="n">base_size</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="m">12</span><span class="p">,</span><span class="w">                        </span><span class="c1"># tufte theme, 12pt font</span><span class="w">
+						</span><span class="n">base_family</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"sans serif"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">          </span><span class="c1"># with sans serif text</span><span class="w">
+			</span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"Hours spent on assignments by type"</span><span class="p">)</span><span class="w">         </span><span class="c1"># add a plot title  </span><span class="w">
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/sinaplots-3.png" alt="plot of chunk sinaplots" /></p>
+
+		<h1 id="faceting-and-whatnot">Faceting and whatnot</h1>
+
+		<p>ggplot2 is useful in that it will happily split up plots into facets (sub-plots)
+		among its many other handy features.  Here’s one example:</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># facet it </span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                                        </span><span class="c1"># feed data to...</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">assid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">assignment</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">              </span><span class="c1"># create a new column</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignmentType</span><span class="p">(</span><span class="n">assid</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">            </span><span class="c1"># group assignments </span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">as.duration</span><span class="p">(</span><span class="n">minutes</span><span class="p">),</span><span class="w"> </span><span class="s2">"hours"</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># get hours </span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">      </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_boxplot</span><span class="p">(</span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                </span><span class="c1"># with an added boxplot</span><span class="w">
+			</span><span class="n">geom_point</span><span class="p">(</span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                  </span><span class="c1"># and all the data points</span><span class="w">
+			</span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Assignment type"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                          </span><span class="c1"># grouped by type</span><span class="w">
+			</span><span class="n">facet_wrap</span><span class="p">(</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">ID</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                                </span><span class="c1"># split by ID</span><span class="w">
+			</span><span class="n">coord_flip</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">                                     </span><span class="c1"># but left-to-right </span><span class="w">
+			</span><span class="n">theme_minimal</span><span class="p">()</span><span class="w">                                    </span><span class="c1"># and less minimal</span><span class="w">
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/faceting-1.png" alt="plot of chunk faceting" /></p>
+
+		<p>If you fitted a linear regression to some of the data at some point, 
+		you probably recognize this formula notation.  In R, it is ubiquitous:</p>
+
+		<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>y ~ x1 + x2 + x1:x2 + ... 
+		</code></pre></div></div>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># setup</span><span class="w">
+		</span><span class="n">assignments</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                              </span><span class="c1"># feed data to...</span><span class="w">
+		  </span><span class="n">filter</span><span class="p">(</span><span class="n">minutes</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="m">0</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                    </span><span class="c1"># only keep rows with minutes &gt; 0</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">assid</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tolower</span><span class="p">(</span><span class="n">assignment</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">    </span><span class="c1"># create a new column `assid`</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">assignmentType</span><span class="p">(</span><span class="n">assid</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">  </span><span class="c1"># create `atype` w/assignmentType</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">as.numeric</span><span class="p">(</span><span class="n">as.duration</span><span class="p">(</span><span class="n">minutes</span><span class="p">),</span><span class="w"> </span><span class="s2">"hours"</span><span class="p">))</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="c1"># add hours </span><span class="w">
+			</span><span class="n">hours_by_type</span><span class="w">                            </span><span class="c1"># put the result here</span><span class="w">
+		 
+
+		</span><span class="c1"># quick look</span><span class="w">
+		</span><span class="n">glimpse</span><span class="p">(</span><span class="n">hours_by_type</span><span class="p">)</span><span class="w">
+		</span><span class="c1">#&gt; Rows: 95</span><span class="w">
+		</span><span class="c1">#&gt; Columns: 10</span><span class="w">
+		</span><span class="c1">#&gt; $ timestamp  &lt;dttm&gt; 2021-09-04 13:57:26, 2021-09-04 13:58:26, 2021-09-04 13:59…</span><span class="w">
+		</span><span class="c1">#&gt; $ ID         &lt;chr&gt; "b5548ea", "b5548ea", "b5548ea", "b5548ea", "b5548ea", "Blo…</span><span class="w">
+		</span><span class="c1">#&gt; $ assignment &lt;chr&gt; "Reading: Intro to Statistical Learning 2nd edition (chapte…</span><span class="w">
+		</span><span class="c1">#&gt; $ start      &lt;dttm&gt; 1899-12-30 12:00:00, 1899-12-30 15:00:00, 1899-12-30 15:04…</span><span class="w">
+		</span><span class="c1">#&gt; $ end        &lt;dttm&gt; 1899-12-30 14:50:00, 1899-12-30 15:03:00, 1899-12-30 15:40…</span><span class="w">
+		</span><span class="c1">#&gt; $ comments   &lt;chr&gt; NA, NA, NA, NA, NA, "Book is easy to read with good experim…</span><span class="w">
+		</span><span class="c1">#&gt; $ minutes    &lt;drtn&gt; 170 mins, 3 mins, 36 mins, 15 mins, 27 mins, 60 mins, 23 m…</span><span class="w">
+		</span><span class="c1">#&gt; $ assid      &lt;chr&gt; "reading: intro to statistical learning 2nd edition (chapte…</span><span class="w">
+		</span><span class="c1">#&gt; $ atype      &lt;chr&gt; "ISLRv2", "lab", "lab", "lab", "EDfB", "EDfB", "EDfB", "EDf…</span><span class="w">
+		</span><span class="c1">#&gt; $ hours      &lt;dbl&gt; 2.833333333, 0.050000000, 0.600000000, 0.250000000, 0.45000…</span><span class="w">
+
+		</span><span class="c1"># should we transform these?</span><span class="w">
+		</span><span class="n">hours_by_type</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">    </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_sina</span><span class="p">(</span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                   </span><span class="c1"># and a beeswarm style</span><span class="w">
+			</span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Assignment type"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                          </span><span class="c1"># grouped by type</span><span class="w">
+			</span><span class="n">theme_minimal</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">                                  </span><span class="c1"># save plotspace</span><span class="w">
+			</span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"raw times"</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">                            </span><span class="c1"># add a title</span><span class="w">
+			  </span><span class="n">plot_raw</span><span class="w">                                         </span><span class="c1"># put result in plot_raw </span><span class="w">
+
+		</span><span class="n">hours_by_type</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">
+		  </span><span class="n">mutate</span><span class="p">(</span><span class="n">loghours</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">hours</span><span class="p">))</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">                    </span><span class="c1"># add a logged column</span><span class="w">
+		  </span><span class="n">ggplot</span><span class="p">(</span><span class="n">aes</span><span class="p">(</span><span class="n">x</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">loghours</span><span class="p">,</span><span class="w"> </span><span class="n">color</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ID</span><span class="p">))</span><span class="w"> </span><span class="o">+</span><span class="w">   </span><span class="c1"># a plot with aesthetics</span><span class="w">
+			</span><span class="n">geom_sina</span><span class="p">(</span><span class="n">show.legend</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kc">FALSE</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                   </span><span class="c1"># and a beeswarm style</span><span class="w">
+			</span><span class="n">xlab</span><span class="p">(</span><span class="s2">"Assignment type"</span><span class="p">)</span><span class="w"> </span><span class="o">+</span><span class="w">                          </span><span class="c1"># grouped by type</span><span class="w">
+			</span><span class="n">theme_minimal</span><span class="p">()</span><span class="w"> </span><span class="o">+</span><span class="w">                                  </span><span class="c1"># save plotspace</span><span class="w">
+			</span><span class="n">ggtitle</span><span class="p">(</span><span class="s2">"log10 scaled"</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">                         </span><span class="c1"># add a title </span><span class="w">
+			  </span><span class="n">plot_log10</span><span class="w">                                       </span><span class="c1"># put into plot_log10 </span><span class="w">
+
+		</span><span class="n">library</span><span class="p">(</span><span class="n">patchwork</span><span class="p">)</span><span class="w">                                     </span><span class="c1"># for easier arrangement</span><span class="w">
+		</span><span class="n">plot_raw</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">plot_log10</span><span class="w">                                  </span><span class="c1"># this is via patchwork</span><span class="w">
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/regress-1.png" alt="plot of chunk regress" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># personally I'm OK with not transforming these </span><span class="w">
+		</span></code></pre></div></div>
+
+		<p>The recommended starting point for modeling things in the tidyverse is through
+		the <a href="https://tidymodels.org/start/"><em>tidymodels</em></a> package, and the tidymodels
+		folks suggest <a href="https://moderndive.com/"><em>A ModernDive into R and the Tidyverse</em></a> for beginners. So let’s use <a href="https://moderndive.com/5-regression.html">Chapter 5: Basic Regression</a> as a roadmap.</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">moderndive</span><span class="p">)</span><span class="w"> </span><span class="c1"># for get_regression_table</span><span class="w">
+
+		</span><span class="c1"># traditional linear model fit: y ~ x1 + x2 + ... </span><span class="w">
+		</span><span class="n">fit0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">atype</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours_by_type</span><span class="p">)</span><span class="w"> </span><span class="c1"># regress on atype only</span><span class="w">
+		</span><span class="n">get_regression_table</span><span class="p">(</span><span class="n">fit0</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">kable</span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">term</th>
+			  <th style="text-align: right">estimate</th>
+			  <th style="text-align: right">std_error</th>
+			  <th style="text-align: right">statistic</th>
+			  <th style="text-align: right">p_value</th>
+			  <th style="text-align: right">lower_ci</th>
+			  <th style="text-align: right">upper_ci</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">intercept</td>
+			  <td style="text-align: right">1.359</td>
+			  <td style="text-align: right">0.410</td>
+			  <td style="text-align: right">3.313</td>
+			  <td style="text-align: right">0.001</td>
+			  <td style="text-align: right">0.544</td>
+			  <td style="text-align: right">2.174</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2</td>
+			  <td style="text-align: right">1.076</td>
+			  <td style="text-align: right">0.548</td>
+			  <td style="text-align: right">1.965</td>
+			  <td style="text-align: right">0.052</td>
+			  <td style="text-align: right">-0.012</td>
+			  <td style="text-align: right">2.164</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab</td>
+			  <td style="text-align: right">0.342</td>
+			  <td style="text-align: right">0.474</td>
+			  <td style="text-align: right">0.723</td>
+			  <td style="text-align: right">0.472</td>
+			  <td style="text-align: right">-0.599</td>
+			  <td style="text-align: right">1.283</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="n">fit1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">atype</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours_by_type</span><span class="p">)</span><span class="w"> </span><span class="c1"># regress on atype + ID</span><span class="w">
+		</span><span class="n">get_regression_table</span><span class="p">(</span><span class="n">fit1</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">kable</span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">term</th>
+			  <th style="text-align: right">estimate</th>
+			  <th style="text-align: right">std_error</th>
+			  <th style="text-align: right">statistic</th>
+			  <th style="text-align: right">p_value</th>
+			  <th style="text-align: right">lower_ci</th>
+			  <th style="text-align: right">upper_ci</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">intercept</td>
+			  <td style="text-align: right">2.392</td>
+			  <td style="text-align: right">0.789</td>
+			  <td style="text-align: right">3.030</td>
+			  <td style="text-align: right">0.003</td>
+			  <td style="text-align: right">0.821</td>
+			  <td style="text-align: right">3.963</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2</td>
+			  <td style="text-align: right">1.328</td>
+			  <td style="text-align: right">0.545</td>
+			  <td style="text-align: right">2.439</td>
+			  <td style="text-align: right">0.017</td>
+			  <td style="text-align: right">0.245</td>
+			  <td style="text-align: right">2.412</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab</td>
+			  <td style="text-align: right">0.580</td>
+			  <td style="text-align: right">0.473</td>
+			  <td style="text-align: right">1.226</td>
+			  <td style="text-align: right">0.224</td>
+			  <td style="text-align: right">-0.362</td>
+			  <td style="text-align: right">1.522</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Bubbles</td>
+			  <td style="text-align: right">-0.658</td>
+			  <td style="text-align: right">0.981</td>
+			  <td style="text-align: right">-0.671</td>
+			  <td style="text-align: right">0.504</td>
+			  <td style="text-align: right">-2.609</td>
+			  <td style="text-align: right">1.293</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Capybara</td>
+			  <td style="text-align: right">-1.275</td>
+			  <td style="text-align: right">0.850</td>
+			  <td style="text-align: right">-1.499</td>
+			  <td style="text-align: right">0.138</td>
+			  <td style="text-align: right">-2.966</td>
+			  <td style="text-align: right">0.417</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Panicking Pangolin</td>
+			  <td style="text-align: right">-0.917</td>
+			  <td style="text-align: right">0.943</td>
+			  <td style="text-align: right">-0.973</td>
+			  <td style="text-align: right">0.333</td>
+			  <td style="text-align: right">-2.793</td>
+			  <td style="text-align: right">0.958</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Porg</td>
+			  <td style="text-align: right">-1.653</td>
+			  <td style="text-align: right">0.877</td>
+			  <td style="text-align: right">-1.886</td>
+			  <td style="text-align: right">0.063</td>
+			  <td style="text-align: right">-3.398</td>
+			  <td style="text-align: right">0.091</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Puppy</td>
+			  <td style="text-align: right">-0.869</td>
+			  <td style="text-align: right">1.096</td>
+			  <td style="text-align: right">-0.793</td>
+			  <td style="text-align: right">0.430</td>
+			  <td style="text-align: right">-3.049</td>
+			  <td style="text-align: right">1.312</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Rafiki</td>
+			  <td style="text-align: right">-1.547</td>
+			  <td style="text-align: right">0.875</td>
+			  <td style="text-align: right">-1.768</td>
+			  <td style="text-align: right">0.081</td>
+			  <td style="text-align: right">-3.289</td>
+			  <td style="text-align: right">0.194</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: T-rex</td>
+			  <td style="text-align: right">-2.299</td>
+			  <td style="text-align: right">0.915</td>
+			  <td style="text-align: right">-2.512</td>
+			  <td style="text-align: right">0.014</td>
+			  <td style="text-align: right">-4.121</td>
+			  <td style="text-align: right">-0.478</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Tall drink of water</td>
+			  <td style="text-align: right">-0.541</td>
+			  <td style="text-align: right">0.922</td>
+			  <td style="text-align: right">-0.587</td>
+			  <td style="text-align: right">0.559</td>
+			  <td style="text-align: right">-2.376</td>
+			  <td style="text-align: right">1.293</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: b5548ea</td>
+			  <td style="text-align: right">-1.986</td>
+			  <td style="text-align: right">0.864</td>
+			  <td style="text-align: right">-2.297</td>
+			  <td style="text-align: right">0.024</td>
+			  <td style="text-align: right">-3.705</td>
+			  <td style="text-align: right">-0.266</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: cruise control</td>
+			  <td style="text-align: right">0.310</td>
+			  <td style="text-align: right">1.032</td>
+			  <td style="text-align: right">0.301</td>
+			  <td style="text-align: right">0.764</td>
+			  <td style="text-align: right">-1.744</td>
+			  <td style="text-align: right">2.364</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: scientist101</td>
+			  <td style="text-align: right">-1.572</td>
+			  <td style="text-align: right">0.916</td>
+			  <td style="text-align: right">-1.717</td>
+			  <td style="text-align: right">0.090</td>
+			  <td style="text-align: right">-3.394</td>
+			  <td style="text-align: right">0.250</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">anova</span><span class="p">(</span><span class="n">fit0</span><span class="p">,</span><span class="w"> </span><span class="n">fit1</span><span class="p">)</span><span class="w"> </span><span class="c1"># does it fit any better?</span><span class="w">
+		</span><span class="c1">#&gt; Analysis of Variance Table</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; Model 1: hours ~ atype</span><span class="w">
+		</span><span class="c1">#&gt; Model 2: hours ~ atype + ID</span><span class="w">
+		</span><span class="c1">#&gt;   Res.Df      RSS Df Sum of Sq       F  Pr(&gt;F)</span><span class="w">
+		</span><span class="c1">#&gt; 1     92 278.7104                             </span><span class="w">
+		</span><span class="c1">#&gt; 2     81 232.4808 11  46.22965 1.46429 0.16139</span><span class="w">
+
+		</span><span class="n">fit2</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lm</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">atype</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">ID</span><span class="p">,</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours_by_type</span><span class="p">)</span><span class="w"> </span><span class="c1"># regress on interaction</span><span class="w">
+		</span><span class="n">get_regression_table</span><span class="p">(</span><span class="n">fit2</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">kable</span><span class="w">
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: left">term</th>
+			  <th style="text-align: right">estimate</th>
+			  <th style="text-align: right">std_error</th>
+			  <th style="text-align: right">statistic</th>
+			  <th style="text-align: right">p_value</th>
+			  <th style="text-align: right">lower_ci</th>
+			  <th style="text-align: right">upper_ci</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: left">intercept</td>
+			  <td style="text-align: right">1.000</td>
+			  <td style="text-align: right">1.807</td>
+			  <td style="text-align: right">0.553</td>
+			  <td style="text-align: right">0.582</td>
+			  <td style="text-align: right">-2.615</td>
+			  <td style="text-align: right">4.615</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2</td>
+			  <td style="text-align: right">3.000</td>
+			  <td style="text-align: right">2.556</td>
+			  <td style="text-align: right">1.174</td>
+			  <td style="text-align: right">0.245</td>
+			  <td style="text-align: right">-2.113</td>
+			  <td style="text-align: right">8.113</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab</td>
+			  <td style="text-align: right">2.250</td>
+			  <td style="text-align: right">2.021</td>
+			  <td style="text-align: right">1.113</td>
+			  <td style="text-align: right">0.270</td>
+			  <td style="text-align: right">-1.792</td>
+			  <td style="text-align: right">6.292</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Bubbles</td>
+			  <td style="text-align: right">0.300</td>
+			  <td style="text-align: right">2.556</td>
+			  <td style="text-align: right">0.117</td>
+			  <td style="text-align: right">0.907</td>
+			  <td style="text-align: right">-4.813</td>
+			  <td style="text-align: right">5.413</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Capybara</td>
+			  <td style="text-align: right">0.367</td>
+			  <td style="text-align: right">2.214</td>
+			  <td style="text-align: right">0.166</td>
+			  <td style="text-align: right">0.869</td>
+			  <td style="text-align: right">-4.061</td>
+			  <td style="text-align: right">4.794</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Panicking Pangolin</td>
+			  <td style="text-align: right">-0.150</td>
+			  <td style="text-align: right">2.556</td>
+			  <td style="text-align: right">-0.059</td>
+			  <td style="text-align: right">0.953</td>
+			  <td style="text-align: right">-5.263</td>
+			  <td style="text-align: right">4.963</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Porg</td>
+			  <td style="text-align: right">-0.733</td>
+			  <td style="text-align: right">2.556</td>
+			  <td style="text-align: right">-0.287</td>
+			  <td style="text-align: right">0.775</td>
+			  <td style="text-align: right">-5.846</td>
+			  <td style="text-align: right">4.379</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Puppy</td>
+			  <td style="text-align: right">2.000</td>
+			  <td style="text-align: right">2.556</td>
+			  <td style="text-align: right">0.782</td>
+			  <td style="text-align: right">0.437</td>
+			  <td style="text-align: right">-3.113</td>
+			  <td style="text-align: right">7.113</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Rafiki</td>
+			  <td style="text-align: right">0.225</td>
+			  <td style="text-align: right">2.214</td>
+			  <td style="text-align: right">0.102</td>
+			  <td style="text-align: right">0.919</td>
+			  <td style="text-align: right">-4.203</td>
+			  <td style="text-align: right">4.653</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: T-rex</td>
+			  <td style="text-align: right">-0.617</td>
+			  <td style="text-align: right">2.556</td>
+			  <td style="text-align: right">-0.241</td>
+			  <td style="text-align: right">0.810</td>
+			  <td style="text-align: right">-5.729</td>
+			  <td style="text-align: right">4.496</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: Tall drink of water</td>
+			  <td style="text-align: right">0.411</td>
+			  <td style="text-align: right">2.087</td>
+			  <td style="text-align: right">0.197</td>
+			  <td style="text-align: right">0.845</td>
+			  <td style="text-align: right">-3.763</td>
+			  <td style="text-align: right">4.586</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: b5548ea</td>
+			  <td style="text-align: right">-0.025</td>
+			  <td style="text-align: right">2.214</td>
+			  <td style="text-align: right">-0.011</td>
+			  <td style="text-align: right">0.991</td>
+			  <td style="text-align: right">-4.453</td>
+			  <td style="text-align: right">4.403</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: cruise control</td>
+			  <td style="text-align: right">1.500</td>
+			  <td style="text-align: right">2.214</td>
+			  <td style="text-align: right">0.678</td>
+			  <td style="text-align: right">0.501</td>
+			  <td style="text-align: right">-2.928</td>
+			  <td style="text-align: right">5.928</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">ID: scientist101</td>
+			  <td style="text-align: right">0.300</td>
+			  <td style="text-align: right">2.556</td>
+			  <td style="text-align: right">0.117</td>
+			  <td style="text-align: right">0.907</td>
+			  <td style="text-align: right">-4.813</td>
+			  <td style="text-align: right">5.413</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDBubbles</td>
+			  <td style="text-align: right">-0.550</td>
+			  <td style="text-align: right">3.381</td>
+			  <td style="text-align: right">-0.163</td>
+			  <td style="text-align: right">0.871</td>
+			  <td style="text-align: right">-7.313</td>
+			  <td style="text-align: right">6.213</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDBubbles</td>
+			  <td style="text-align: right">-1.550</td>
+			  <td style="text-align: right">2.905</td>
+			  <td style="text-align: right">-0.534</td>
+			  <td style="text-align: right">0.596</td>
+			  <td style="text-align: right">-7.361</td>
+			  <td style="text-align: right">4.261</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDCapybara</td>
+			  <td style="text-align: right">-2.925</td>
+			  <td style="text-align: right">2.997</td>
+			  <td style="text-align: right">-0.976</td>
+			  <td style="text-align: right">0.333</td>
+			  <td style="text-align: right">-8.920</td>
+			  <td style="text-align: right">3.070</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDCapybara</td>
+			  <td style="text-align: right">-1.333</td>
+			  <td style="text-align: right">2.502</td>
+			  <td style="text-align: right">-0.533</td>
+			  <td style="text-align: right">0.596</td>
+			  <td style="text-align: right">-6.338</td>
+			  <td style="text-align: right">3.672</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDPanicking Pangolin</td>
+			  <td style="text-align: right">1.400</td>
+			  <td style="text-align: right">3.615</td>
+			  <td style="text-align: right">0.387</td>
+			  <td style="text-align: right">0.700</td>
+			  <td style="text-align: right">-5.830</td>
+			  <td style="text-align: right">8.630</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDPanicking Pangolin</td>
+			  <td style="text-align: right">-1.410</td>
+			  <td style="text-align: right">2.829</td>
+			  <td style="text-align: right">-0.498</td>
+			  <td style="text-align: right">0.620</td>
+			  <td style="text-align: right">-7.069</td>
+			  <td style="text-align: right">4.249</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDPorg</td>
+			  <td style="text-align: right">-2.461</td>
+			  <td style="text-align: right">3.300</td>
+			  <td style="text-align: right">-0.746</td>
+			  <td style="text-align: right">0.459</td>
+			  <td style="text-align: right">-9.062</td>
+			  <td style="text-align: right">4.139</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDPorg</td>
+			  <td style="text-align: right">-0.489</td>
+			  <td style="text-align: right">2.810</td>
+			  <td style="text-align: right">-0.174</td>
+			  <td style="text-align: right">0.862</td>
+			  <td style="text-align: right">-6.109</td>
+			  <td style="text-align: right">5.131</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDPuppy</td>
+			  <td style="text-align: right">NA</td>
+			  <td style="text-align: right">NA</td>
+			  <td style="text-align: right">NA</td>
+			  <td style="text-align: right">NA</td>
+			  <td style="text-align: right">NA</td>
+			  <td style="text-align: right">NA</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDPuppy</td>
+			  <td style="text-align: right">-3.639</td>
+			  <td style="text-align: right">2.905</td>
+			  <td style="text-align: right">-1.253</td>
+			  <td style="text-align: right">0.215</td>
+			  <td style="text-align: right">-9.450</td>
+			  <td style="text-align: right">2.172</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDRafiki</td>
+			  <td style="text-align: right">-0.917</td>
+			  <td style="text-align: right">3.130</td>
+			  <td style="text-align: right">-0.293</td>
+			  <td style="text-align: right">0.771</td>
+			  <td style="text-align: right">-7.178</td>
+			  <td style="text-align: right">5.345</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDRafiki</td>
+			  <td style="text-align: right">-2.556</td>
+			  <td style="text-align: right">2.502</td>
+			  <td style="text-align: right">-1.021</td>
+			  <td style="text-align: right">0.311</td>
+			  <td style="text-align: right">-7.561</td>
+			  <td style="text-align: right">2.450</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDT-rex</td>
+			  <td style="text-align: right">-2.050</td>
+			  <td style="text-align: right">3.615</td>
+			  <td style="text-align: right">-0.567</td>
+			  <td style="text-align: right">0.573</td>
+			  <td style="text-align: right">-9.280</td>
+			  <td style="text-align: right">5.180</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDT-rex</td>
+			  <td style="text-align: right">-1.994</td>
+			  <td style="text-align: right">2.810</td>
+			  <td style="text-align: right">-0.710</td>
+			  <td style="text-align: right">0.481</td>
+			  <td style="text-align: right">-7.615</td>
+			  <td style="text-align: right">3.626</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDTall drink of water</td>
+			  <td style="text-align: right">-0.636</td>
+			  <td style="text-align: right">3.042</td>
+			  <td style="text-align: right">-0.209</td>
+			  <td style="text-align: right">0.835</td>
+			  <td style="text-align: right">-6.721</td>
+			  <td style="text-align: right">5.449</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDTall drink of water</td>
+			  <td style="text-align: right">-1.189</td>
+			  <td style="text-align: right">2.502</td>
+			  <td style="text-align: right">-0.475</td>
+			  <td style="text-align: right">0.636</td>
+			  <td style="text-align: right">-6.194</td>
+			  <td style="text-align: right">3.816</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDb5548ea</td>
+			  <td style="text-align: right">-1.954</td>
+			  <td style="text-align: right">2.997</td>
+			  <td style="text-align: right">-0.652</td>
+			  <td style="text-align: right">0.517</td>
+			  <td style="text-align: right">-7.949</td>
+			  <td style="text-align: right">4.041</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDb5548ea</td>
+			  <td style="text-align: right">-2.695</td>
+			  <td style="text-align: right">2.524</td>
+			  <td style="text-align: right">-1.068</td>
+			  <td style="text-align: right">0.290</td>
+			  <td style="text-align: right">-7.743</td>
+			  <td style="text-align: right">2.353</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDcruise control</td>
+			  <td style="text-align: right">-1.500</td>
+			  <td style="text-align: right">3.381</td>
+			  <td style="text-align: right">-0.444</td>
+			  <td style="text-align: right">0.659</td>
+			  <td style="text-align: right">-8.263</td>
+			  <td style="text-align: right">5.263</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDcruise control</td>
+			  <td style="text-align: right">-1.250</td>
+			  <td style="text-align: right">2.711</td>
+			  <td style="text-align: right">-0.461</td>
+			  <td style="text-align: right">0.646</td>
+			  <td style="text-align: right">-6.673</td>
+			  <td style="text-align: right">4.173</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: ISLRv2:IDscientist101</td>
+			  <td style="text-align: right">-2.550</td>
+			  <td style="text-align: right">3.381</td>
+			  <td style="text-align: right">-0.754</td>
+			  <td style="text-align: right">0.454</td>
+			  <td style="text-align: right">-9.313</td>
+			  <td style="text-align: right">4.213</td>
+			</tr>
+			<tr>
+			  <td style="text-align: left">atype: lab:IDscientist101</td>
+			  <td style="text-align: right">-2.087</td>
+			  <td style="text-align: right">2.829</td>
+			  <td style="text-align: right">-0.738</td>
+			  <td style="text-align: right">0.464</td>
+			  <td style="text-align: right">-7.745</td>
+			  <td style="text-align: right">3.572</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">anova</span><span class="p">(</span><span class="n">fit0</span><span class="p">,</span><span class="w"> </span><span class="n">fit2</span><span class="p">)</span><span class="w"> </span><span class="c1"># does this fit any better?</span><span class="w">
+		</span><span class="c1">#&gt; Analysis of Variance Table</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; Model 1: hours ~ atype</span><span class="w">
+		</span><span class="c1">#&gt; Model 2: hours ~ atype * ID</span><span class="w">
+		</span><span class="c1">#&gt;   Res.Df      RSS Df Sum of Sq       F  Pr(&gt;F)</span><span class="w">
+		</span><span class="c1">#&gt; 1     92 278.7104                             </span><span class="w">
+		</span><span class="c1">#&gt; 2     60 195.9913 32  82.71913 0.79135 0.76133</span><span class="w">
+
+		</span><span class="c1"># compare:</span><span class="w">
+		</span><span class="n">anova</span><span class="p">(</span><span class="n">fit1</span><span class="p">,</span><span class="w"> </span><span class="n">fit2</span><span class="p">)</span><span class="w"> </span><span class="c1"># do either of these matter?</span><span class="w">
+		</span><span class="c1">#&gt; Analysis of Variance Table</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; Model 1: hours ~ atype + ID</span><span class="w">
+		</span><span class="c1">#&gt; Model 2: hours ~ atype * ID</span><span class="w">
+		</span><span class="c1">#&gt;   Res.Df      RSS Df Sum of Sq       F  Pr(&gt;F)</span><span class="w">
+		</span><span class="c1">#&gt; 1     81 232.4808                             </span><span class="w">
+		</span><span class="c1">#&gt; 2     60 195.9913 21  36.48949 0.53194 0.94491</span><span class="w">
+		</span></code></pre></div></div>
+
+		<p>At this point, for a <em>fixed effects</em> regression, all that seems to matter is 
+		the type of assignment (in terms of predicting the time taken to complete it).
+		What if we wanted to try and carve up the random effects (variance components)?</p>
+
+		<h1 id="mixed-models-optional">Mixed models (optional)</h1>
+
+		<p>Mixed models attempt to partition variance into <code class="language-plaintext highlighter-rouge">fixed</code> and <code class="language-plaintext highlighter-rouge">random</code> 
+		components, such as a condition (fixed, mean difference) versus a measurement
+		group (random differences).  This is handy when running replicates, 
+		particularly if some are technical and some are biological, but there’s also 
+		the possibility of partially pooling some terms.  For now, let’s just intro 
+		some handlers for these types of models.  (These aren’t really handled in 
+		either EDfMB <em>or</em> ISLRv2, but they’re incredibly useful in actual practice.)</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">tidymodels</span><span class="p">)</span><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">broom.mixed</span><span class="p">)</span><span class="w"> 
+		</span><span class="n">library</span><span class="p">(</span><span class="n">lme4</span><span class="p">)</span><span class="w">
+
+		</span><span class="c1"># lmer == "linear mixed effects regression"</span><span class="w">
+		</span><span class="c1"># kind of an old-school example since parsnip doesn't like mixed models yet</span><span class="w">
+		</span><span class="n">lmm0</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lmer</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">atype</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="m">1</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ID</span><span class="p">),</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours_by_type</span><span class="p">)</span><span class="w"> </span><span class="c1"># note syntax</span><span class="w">
+		</span><span class="n">lmm1</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">lmer</span><span class="p">(</span><span class="n">hours</span><span class="w"> </span><span class="o">~</span><span class="w"> </span><span class="n">atype</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">|</span><span class="w"> </span><span class="n">ID</span><span class="p">),</span><span class="w"> </span><span class="n">data</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">hours_by_type</span><span class="p">)</span><span class="w"> </span><span class="c1"># note syntax</span><span class="w">
+
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm0</span><span class="p">)</span><span class="w">
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm1</span><span class="p">)</span><span class="w">
+		</span><span class="n">anova</span><span class="p">(</span><span class="n">lmm0</span><span class="p">,</span><span class="w"> </span><span class="n">lmm1</span><span class="p">)</span><span class="w"> </span><span class="c1"># lmm0 is "good enough", it seems</span><span class="w">
+
+		</span><span class="c1"># this is fairly traditional </span><span class="w">
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm0</span><span class="p">,</span><span class="w"> </span><span class="n">effects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"fixed"</span><span class="p">)</span><span class="w">
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm0</span><span class="p">,</span><span class="w"> </span><span class="n">effects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"fixed"</span><span class="p">,</span><span class="w"> </span><span class="n">conf.int</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm0</span><span class="p">,</span><span class="w"> </span><span class="n">effects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"fixed"</span><span class="p">,</span><span class="w"> </span><span class="n">conf.int</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">,</span><span class="w"> </span><span class="n">conf.method</span><span class="o">=</span><span class="s2">"profile"</span><span class="p">)</span><span class="w">
+
+		</span><span class="c1"># this isn't</span><span class="w">
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm0</span><span class="p">,</span><span class="w"> </span><span class="n">effects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ran_coefs"</span><span class="p">)</span><span class="w">
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm0</span><span class="p">,</span><span class="w"> </span><span class="n">effects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ran_vals"</span><span class="p">,</span><span class="w"> </span><span class="n">conf.int</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+		</span><span class="n">tidy</span><span class="p">(</span><span class="n">lmm0</span><span class="p">,</span><span class="w"> </span><span class="n">effects</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s2">"ran_pars"</span><span class="p">,</span><span class="w"> </span><span class="n">conf.int</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">
+
+		</span></code></pre></div></div>
+
+		<p>So, if you visit <a href="https://cran.r-project.org/web/packages/broom.mixed/vignettes/broom_mixed_intro.html">the broom.mixed vignette</a>, you’ll find some code to make
+		a plot of the estimates for various factors in a <em>different</em> regression.</p>
+
+		<h1 id="fitting-existing-data-to-sample-from">Fitting existing data to sample from</h1>
+
+		<p>We have something that looks somewhat interesting within the lab exercises. 
+		Suppose we treat the observations as what they look like (a mixture) and try 
+		to determine how that fits. Note that we fit a mixture model below, which 
+		isn’t directly related to mixed models. I didn’t come up with the names…</p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="n">library</span><span class="p">(</span><span class="n">mclust</span><span class="p">)</span><span class="w"> </span><span class="c1"># mixture model clustering, incredibly handy package</span><span class="w">
+		</span><span class="c1">#&gt;     __  ___________    __  _____________</span><span class="w">
+		</span><span class="c1">#&gt;    /  |/  / ____/ /   / / / / ___/_  __/</span><span class="w">
+		</span><span class="c1">#&gt;   / /|_/ / /   / /   / / / /\__ \ / /   </span><span class="w">
+		</span><span class="c1">#&gt;  / /  / / /___/ /___/ /_/ /___/ // /    </span><span class="w">
+		</span><span class="c1">#&gt; /_/  /_/\____/_____/\____//____//_/    version 5.4.8</span><span class="w">
+		</span><span class="c1">#&gt; Type 'citation("mclust")' for citing this R package in publications.</span><span class="w">
+
+		</span><span class="c1"># fit 2 components</span><span class="w">
+		</span><span class="n">hours_by_type</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+		  </span><span class="n">filter</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"lab"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># fit a mixture to just the lab assignments </span><span class="w">
+		  </span><span class="n">select</span><span class="p">(</span><span class="s2">"hours"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">        </span><span class="c1"># use the hours column we set up earlier </span><span class="w">
+		  </span><span class="n">Mclust</span><span class="p">(</span><span class="n">G</span><span class="o">=</span><span class="m">1</span><span class="o">:</span><span class="m">2</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">           </span><span class="c1"># fit a mixture with either 1 or 2 components </span><span class="w">
+			</span><span class="n">mfit0</span><span class="w">                    </span><span class="c1"># save the results for plotting</span><span class="w">
+		</span><span class="c1">#&gt; fitting ...</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|</span><span class="w">                                                                      </span><span class="o">|</span><span class="w">   </span><span class="m">0</span><span class="o">%
+		  |                                                                            
+		  |==============                                                        |  20%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|============================</span><span class="w">                                          </span><span class="o">|</span><span class="w">  </span><span class="m">40</span><span class="o">%
+		  |                                                                            
+		  |==========================================                            |  60%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|========================================================</span><span class="w">              </span><span class="o">|</span><span class="w">  </span><span class="m">80</span><span class="o">%
+		  |                                                                            
+		  |======================================================================| 100%</span><span class="w">
+
+		</span><span class="n">plot</span><span class="p">(</span><span class="n">mfit0</span><span class="p">,</span><span class="w"> </span><span class="s2">"classification"</span><span class="p">)</span><span class="w"> 
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/mixture-1.png" alt="plot of chunk mixture" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plot</span><span class="p">(</span><span class="n">mfit0</span><span class="p">,</span><span class="w"> </span><span class="s2">"density"</span><span class="p">)</span><span class="w"> 
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/mixture-2.png" alt="plot of chunk mixture" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># free to fit 1:10 parts</span><span class="w">
+		</span><span class="n">hours_by_type</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> 
+		  </span><span class="n">filter</span><span class="p">(</span><span class="n">atype</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="s2">"lab"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="c1"># fit a mixture to just the lab assignments </span><span class="w">
+		  </span><span class="n">select</span><span class="p">(</span><span class="s2">"hours"</span><span class="p">)</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w">        </span><span class="c1"># use the hours column we set up earlier </span><span class="w">
+		  </span><span class="n">Mclust</span><span class="p">()</span><span class="w"> </span><span class="o">-&gt;</span><span class="w">                </span><span class="c1"># fit a mixture and the number of components in it </span><span class="w">
+			</span><span class="n">mfit1</span><span class="w">                    </span><span class="c1"># save the results for plotting</span><span class="w">
+		</span><span class="c1">#&gt; fitting ...</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|</span><span class="w">                                                                      </span><span class="o">|</span><span class="w">   </span><span class="m">0</span><span class="o">%
+		  |                                                                            
+		  |====                                                                  |   5%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|=======</span><span class="w">                                                               </span><span class="o">|</span><span class="w">  </span><span class="m">11</span><span class="o">%
+		  |                                                                            
+		  |===========                                                           |  16%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|===============</span><span class="w">                                                       </span><span class="o">|</span><span class="w">  </span><span class="m">21</span><span class="o">%
+		  |                                                                            
+		  |==================                                                    |  26%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|======================</span><span class="w">                                                </span><span class="o">|</span><span class="w">  </span><span class="m">32</span><span class="o">%
+		  |                                                                            
+		  |==========================                                            |  37%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|=============================</span><span class="w">                                         </span><span class="o">|</span><span class="w">  </span><span class="m">42</span><span class="o">%
+		  |                                                                            
+		  |=================================                                     |  47%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|=====================================</span><span class="w">                                 </span><span class="o">|</span><span class="w">  </span><span class="m">53</span><span class="o">%
+		  |                                                                            
+		  |=========================================                             |  58%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|============================================</span><span class="w">                          </span><span class="o">|</span><span class="w">  </span><span class="m">63</span><span class="o">%
+		  |                                                                            
+		  |================================================                      |  68%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|====================================================</span><span class="w">                  </span><span class="o">|</span><span class="w">  </span><span class="m">74</span><span class="o">%
+		  |                                                                            
+		  |=======================================================               |  79%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|===========================================================</span><span class="w">           </span><span class="o">|</span><span class="w">  </span><span class="m">84</span><span class="o">%
+		  |                                                                            
+		  |===============================================================       |  89%</span><span class="w">
+		  </span><span class="o">|</span><span class="w">                                                                            
+		  </span><span class="o">|==================================================================</span><span class="w">    </span><span class="o">|</span><span class="w">  </span><span class="m">95</span><span class="o">%
+		  |                                                                            
+		  |======================================================================| 100%</span><span class="w">
+
+		</span><span class="n">plot</span><span class="p">(</span><span class="n">mfit1</span><span class="p">,</span><span class="w"> </span><span class="s2">"classification"</span><span class="p">)</span><span class="w"> 
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/mixture-3.png" alt="plot of chunk mixture" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plot</span><span class="p">(</span><span class="n">mfit1</span><span class="p">,</span><span class="w"> </span><span class="s2">"density"</span><span class="p">)</span><span class="w"> 
+		</span></code></pre></div></div>
+
+		<p><img src="/ED2021/figure/mixture-4.png" alt="plot of chunk mixture" /></p>
+
+		<div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="w">
+		</span><span class="c1"># this seems more reasonable</span><span class="w">
+		</span><span class="n">show</span><span class="p">(</span><span class="n">mfit1</span><span class="o">$</span><span class="n">parameters</span><span class="p">)</span><span class="w"> 
+		</span><span class="c1">#&gt; $pro</span><span class="w">
+		</span><span class="c1">#&gt; [1] 0.439119465 0.372725000 0.188155535</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; $mean</span><span class="w">
+		</span><span class="c1">#&gt;           1           2           3 </span><span class="w">
+		</span><span class="c1">#&gt; 0.379114856 1.348627499 5.486946282 </span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; $variance</span><span class="w">
+		</span><span class="c1">#&gt; $variance$modelName</span><span class="w">
+		</span><span class="c1">#&gt; [1] "V"</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; $variance$d</span><span class="w">
+		</span><span class="c1">#&gt; [1] 1</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; $variance$G</span><span class="w">
+		</span><span class="c1">#&gt; [1] 3</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; $variance$sigmasq</span><span class="w">
+		</span><span class="c1">#&gt; [1] 0.0263857975 0.3346337675 1.5550874376</span><span class="w">
+		</span><span class="c1">#&gt; </span><span class="w">
+		</span><span class="c1">#&gt; $variance$scale</span><span class="w">
+		</span><span class="c1">#&gt; [1] 0.0263857975 0.3346337675 1.5550874376</span><span class="w">
+		</span><span class="c1"># pro == proportions of observations in each group </span><span class="w">
+		</span><span class="c1"># mean == means of each component (group) </span><span class="w">
+		</span><span class="c1"># variance$sigmasq == variance of each component (group) </span><span class="w">
+
+		</span><span class="n">params</span><span class="w"> </span><span class="o">&lt;-</span><span class="w"> </span><span class="n">with</span><span class="p">(</span><span class="n">mfit1</span><span class="o">$</span><span class="n">parameters</span><span class="p">,</span><span class="w">
+					   </span><span class="n">tibble</span><span class="p">(</span><span class="n">proportion</span><span class="o">=</span><span class="n">pro</span><span class="p">,</span><span class="w">
+							  </span><span class="n">mean</span><span class="o">=</span><span class="n">mean</span><span class="p">,</span><span class="w">
+							  </span><span class="n">sd</span><span class="o">=</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">variance</span><span class="o">$</span><span class="n">sigmasq</span><span class="p">)))</span><span class="w">
+		</span><span class="n">params</span><span class="w"> </span><span class="o">%&gt;%</span><span class="w"> </span><span class="n">kable</span><span class="w"> 
+		</span></code></pre></div></div>
+
+		<table>
+		  <thead>
+			<tr>
+			  <th style="text-align: right">proportion</th>
+			  <th style="text-align: right">mean</th>
+			  <th style="text-align: right">sd</th>
+			</tr>
+		  </thead>
+		  <tbody>
+			<tr>
+			  <td style="text-align: right">0.439119465</td>
+			  <td style="text-align: right">0.379114856</td>
+			  <td style="text-align: right">0.162437057</td>
+			</tr>
+			<tr>
+			  <td style="text-align: right">0.372725000</td>
+			  <td style="text-align: right">1.348627499</td>
+			  <td style="text-align: right">0.578475382</td>
+			</tr>
+			<tr>
+			  <td style="text-align: right">0.188155535</td>
+			  <td style="text-align: right">5.486946282</td>
+			  <td style="text-align: right">1.247031450</td>
+			</tr>
+		  </tbody>
+		</table>
+
+		<p>This puts us in a position to simulate additional draws from data generated by
+		similar processes to those observed in the assignment data. (Question: is that 
+		always a good thing? What could interfere with this approach to power/design?)</p>
+
+		  </div>
+
+		</article>
+		</div>
+	
+
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha384-nvAa0+6Qg9clwYCGGPpDQLVpLNn0fRaROjHqs13t4Ggj3Ez50XnGQqc/r8MhnRDZ" crossorigin="anonymous"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@3.4.1/dist/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+  </body>
+</html>

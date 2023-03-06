@@ -34,8 +34,8 @@ categories: jekyll update
              >Simone's Maxims</a>, please read them now.
         </li>
         <li>
-          <b>Everyone must attend lab meetings on Fridays at 12pm.</b> If you
-          have a conflict, please let Tim, Mary, and Lauren know so we can
+          <b>Everyone must attend lab meetings on Fridays at 11 am.</b> If you
+          have a conflict, please let Tim, Eve, and Lauren know so we can
           try to accommodate. Slack is for day-to-day lab business; lab meeting
           is structured to keep us all focused on short- and medium-term goals.
           Lab members who are not presenting in a given week are responsible for
@@ -114,10 +114,10 @@ categories: jekyll update
     <p>
     The 3-volume set of Molecular Cloning is in bay 16, and the videos for 
     various (strange and/or wonderful) protocols are on Google Drive, which 
-    is something to which you ought to have access. If not, email Mary. If you
-    have specific protocol questions, email Mary, or whoever optimized the
+    is something to which you ought to have access. If not, email Eve. If you
+    have specific protocol questions, email Eve, or whoever optimized the
     protocol. For context ("why are you doing this"), Tim may or may not be
-    a useful source. For practical wet bench questions, ask Mary. 
+    a useful source. For practical wet bench questions, ask Eve. 
     </p>
 
     <h3> Neither/Both </h3>

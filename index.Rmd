@@ -1,0 +1,13 @@
+---
+title: "Home of the Triche Lab"
+output: 
+  html_document:
+    code_folding: show
+    theme: 
+      bootswatch: pulse
+---
+
+
+## R Markdown
+
+The Triche Laboratory develops mathematical and biological methods to dissect disorders of blood and immune development, with a focus on pediatric leukemia.

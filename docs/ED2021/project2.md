@@ -6,7 +6,7 @@ output:
   html_document:
     keep_md: true
     theme: 
-      bootswatch: minty
+      bootswatch: pulse
 vignette: >
   %\VignetteIndexEntry{Project2}
   %\VignetteEngine{knitr::rmarkdown}

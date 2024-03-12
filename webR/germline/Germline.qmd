@@ -1,0 +1,144 @@
+---
+title: "Germline variant analysis via resampling"
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ['ggplot2','reshape2','ggbeeswarm','effects']
+  autoload-packages: false
+---
+
+
+## Background: acute leukemia as a model for cancer
+
+Childhood cancers, of which acute leukemia is the most common, present both a
+clinical need and a model for cancer more generally. These tumors often lack 
+recurrent gene mutations, instead driven by structural variants (SVs) which 
+rewire multiple genes. Many SVs are missed by standard karyotyping (chromosomal 
+analysis), and all raise a key question: _where do these SVs come from?_
+
+A seemingly straightforward answer is that mammals have three deeply conserved 
+genes, millions of years old, whose function is to cut-and-paste DNA, and when
+these genes are inappropriately activated, structural variants ensue. The
+precise nature of these cut-and-paste enzymes (_RAG1_, _PGBD5_, and _THAP9_) 
+addresses a key difference between pediatric and adult tumors (namely, the fact
+that most pediatric tumors harbor very few mutations). _RAG1_ is critical for 
+immune cell maturation, as it allows B and T (lymphoid) cells to activate in 
+response to specific non-self proteins. However, in lymphoblastic leukemia and
+lymphoma (which together consitute the most common type of childhood cancer), 
+off-target activity of _RAG1_ is sufficient to induce some of the same gene 
+fusions seen in patients. Meanwhile, in most childhood solid tumors, 
+<a href="https://www.nature.com/articles/ng.3866">the _PGBD5_ transposase
+gene is inappropriately activated</a>, leading to the type of cut-and-paste
+SVs that characterize ultra-low-mutation-burden rhabdoid tumors.
+
+But there is at least one major exception: none of the known transposase genes
+appear to be activated in acute myeloid leukemia (AML), nor are classical tumor 
+suppressor genes like _TP53_ often mutated or deleted in pediatric AML patients.
+Why is AML different from most other childhood tumors? Could inherited genetic
+variants explain the missing mechanism in AML (and especially pediatric AML)? 
+
+
+## Modeling germline burden with Poisson regression
+
+We have collected and harmonized several large WGS/WES studies to investigate
+evidence for disparities in genetic variants between acute leukemia types. 
+Here, we shall focus on germline pathogenic/likely pathogenic (P/LP) variants
+with seemingly relevant consequences for blood and immune development. 
+Counts of these (somewhat rare) germline P/LP variants are integers, so we use
+<a href="https://bookdown.org/roback/bookdown-BeyondMLR/ch-poissonreg.html"
+>Poisson regression</a> for a first pass to model variant counts across groups.
+
+```{webr-r}
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+with(combined, table(Group, Sex))
+
+fit <- glm(G_PLP ~ Lineage+AgeGroup + Sex+Source, data=combined, family=poisson)
+exp(confint(fit))[2:3,] # relative to B-ALL 
+
+fit2 <- glm(G_PLP ~ Group + Source, data=combined, family=poisson)
+exp(confint(fit2))[2:4,] # relative to pediatric B-ALL
+
+if (FALSE) { # much nicer plots; alas, not currently working in webR
+  library(nloptr)
+  library(effects)
+  plot(predictorEffects(fit), ylab="Burden", axes=list(x=list(rotate=35)))
+  plot(predictorEffects(fit2), ylab="Burden", axes=list(x=list(rotate=35)))
+}
+```
+
+It seems that, after correcting for who called the variants, there remains a 
+wide range of estimates for the relative risk of germline burden between groups.
+B-ALL seems to have the lowest burden, but beyond that, it's tough to make any 
+strong conclusions about what's going on. Let's try another way.
+
+
+## Resampling-based inference of germline burden
+
+We note that AML seems to predict a higher germline variant load than ALL. 
+But suppose the Poisson model just isn't a good fit for the data, or different
+authors apply different criteria, or something else is wrong with the way we 
+have modeled the occurrence of germline variants. We can apply an orthogonal 
+brute-force approach, which is to resample over and over without replacement.
+Note: we are tabulating the fraction of subjects with 1 or more G_PLP variants,
+rather than estimating the probability of seeing any G_PLP variants in a group
+of cases, which is subtly different from Poisson regression.  In the end, we 
+arrive at similar conclusions (specifically, More Research Is Needed :tm:). 
+
+```{webr-r}
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+byGroup <- split(combined$G_PLP, combined$Group)
+
+rs <- function(y, n, m) replicate(m, sum(y[sample.int(n=length(y),size=n)]>0)/n)
+
+library(reshape2)
+results <- melt(data.frame(lapply(byGroup, rs, n=250, m=4000)), 
+                variable.name="Group", value.name="Burden")
+
+library(ggplot2)
+library(ggbeeswarm)
+ggplot(results, aes(x=Group, y=Burden, color=Group)) + 
+  scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),
+                     breaks = seq(0, .15, .025)) + ylab("Germline burden") +
+  geom_hline(yintercept=0.05, lty=3) + geom_quasirandom() + 
+  theme_classic() + theme(legend.position="none")
+```
+
+In short, it is unlikely that AML and ALL would show such massive differences
+in clinically annotated germline variant frequency across five different cohorts
+(each comprising multiple clinical trials, across decades of studies) by chance.
+The Poisson regression fits indicate that leukemia lineage (myeloid vs. 
+lymphoid, i.e. B-cell or T-cell ALL) is a somewhat stronger predictor of
+germline variant burden than is age group, and the resampling-based analysis 
+also supports this conclusion. Many questions remain, but based on these 3019
+genomes from a variety of acute leukemia patients, it appears that germline 
+P/LP variants in relevant genes are present at greater than 5% of AML patients,
+and the > 5% burden in AML consistently emerges across age groups and studies. 
+Moreover, pediatric AML is the group of patients where this threshold is most 
+consistently crossed by random samples of patients from existing cohorts. 
+
+We have <a href="https://www.nature.com/articles/s43018-023-00605-z">previously
+proposed</a> that all patients who present with acute leukemia should be offered
+germline genetic testing, as should their family members, in light of the role 
+for related donors in stem cell transplantation. The above findings serve to 
+strengthen this statement: given the cost (median of about $1.1M US) to treat 
+a child with AML, successfully or otherwise, the cost of germline genetic
+testing (about $400 for whole-genome sequencing in 2024) is a drop in the ocean.
+Registries like <a href="https://childrensoncologygroup.org/cog-registry-project-everychild">Project EveryChild</a> ease the challenge of historical comparison,
+so one might ask, what's standing in the way?
+
+
+## Session information 
+
+```{webr-r}
+sessionInfo()
+```

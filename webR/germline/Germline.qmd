@@ -5,7 +5,7 @@ engine: knitr
 filters:
   - webr
 webr:
-  packages: ['ggplot2','reshape2','ggbeeswarm','effects']
+  packages: ['ggplot2','reshape2','ggbeeswarm','effects','sampling']
   autoload-packages: false
 ---
 
@@ -72,8 +72,8 @@ if (FALSE) { # much nicer plots; alas, not currently working in webR
 }
 ```
 
-It seems that, after correcting for who called the variants, there remains a 
-wide range of estimates for the relative risk of germline burden between groups.
+It seems that, after correcting for who called the variants, there are a wide
+range of estimates for the relative risk of germline P/LP variants by group.
 B-ALL seems to have the lowest burden, but beyond that, it's tough to make any 
 strong conclusions about what's going on. Let's try another way.
 
@@ -113,15 +113,47 @@ ggplot(results, aes(x=Group, y=Burden, color=Group)) +
   theme_classic() + theme(legend.position="none")
 ```
 
-In short, it is unlikely that AML and ALL would show such massive differences
+When you ran the code in the Poisson regression chunks above (and you did run 
+the code, right? That's the whole point of this exercise), you may have noticed
+a commented-out piece of code to make effect size plots. The same approach we 
+took to resampling can be applied to all sorts of questions, and in fact the 
+<a href="https://cran.r-project.org/web/packages/sampling/">sampling</a> package
+on CRAN is dedicated to implementing fancy designs for biased sampling.
+
+* **Exercise**: Can you find examples where our predictions are inaccurate?
+Are there specific cases with high variant burdens not explained by any fit?
+
+```{webr-r}
+
+# warmup plots (you will need to have run the previous chunks)
+par(mfrow=c(1,2))    # side by side plots, ugly but useful 
+
+fit$call             # what was included in the model?
+plot(fit, which=2)   # how well is each case explained by it? 
+
+fit2$call            # what was included in the model?
+plot(fit2, which=2)  # how well is each case explained by it? 
+
+par(mfrow=c(1,1))    # back to defaults
+
+```
+
+* **Exercise**: Are there critical sources of variability we haven't modeled?
+If you want to play with biased sampling, the `sampling` package is your friend.
+It is already installed in this webR instance, but you'll need to load it. 
+
+```{webr-r}
+
+library(sampling)
+# (put your code here; feel free to borrow from the resampling chunk & plots)
+
+```
+
+Modeling human biology is complicated (you heard it here first). Nevertheless,
+it is somewhat unlikely that AML and ALL would show such significant differences
 in clinically annotated germline variant frequency across five different cohorts
 (each comprising multiple clinical trials, across decades of studies) by chance.
-The Poisson regression fits indicate that leukemia lineage (myeloid vs. 
-lymphoid, i.e. B-cell or T-cell ALL) is a somewhat stronger predictor of
-germline variant burden than is age group, and the resampling-based analysis 
-also supports this conclusion. Many questions remain, but based on these 3019
-genomes from a variety of acute leukemia patients, it appears that germline 
-P/LP variants in relevant genes are present at greater than 5% of AML patients,
+It seems that relevant germline variants are found in at least 5% of AML cases,
 and the > 5% burden in AML consistently emerges across age groups and studies. 
 Moreover, pediatric AML is the group of patients where this threshold is most 
 consistently crossed by random samples of patients from existing cohorts. 

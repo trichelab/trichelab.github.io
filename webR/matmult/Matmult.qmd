@@ -1,0 +1,93 @@
+---
+title: "Sparse matrix multiplication"
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ['ggplot2','RcppML','uwot','Matrix']
+  autoload-packages: false
+---
+
+
+## Background: democratizing cell science
+
+Why should people have to use a server just to peek at their single-cell RNAseq 
+data? It's not like this is a new idea.  The <a href="https://www.kanaverse.org/kana/">Kanaverse</a> 
+has already demonstrated that thousands of transcripts from thousands of cells 
+can be analyzed on the fly in a browser. We might ask, can we push that further?
+
+
+## The notion of a "foundation model"
+
+The definition of a <a href="https://www.biorxiv.org/content/10.1101/2023.10.16.561085v2.full">foundation model</a> seems to depend upon <a href="https://www.nytimes.com/2024/03/10/science/ai-learning-biology.html">who is defining them</a>.
+
+All mainstream descriptions of foundation models (text, images, or biology)
+include one key feature: **they are trained on an enormous corpus of data**. 
+Most experimenters are not in a position to generate enormous corpora. 
+As a result, various sources are available. Generative AI models 
+<a href="https://arxiv.org/abs/1703.01467">effectively compress this data</a>,
+and it turns out the compressed representation is more tolerant of noise than
+the original (!). Therefore, we might ask whether static foundation models
+could serve as compression algorithms that retain almost all of the signal
+in the original (massive) corpus, while damping the noise, such that a new 
+dataset allows us to learn from both the existing corpus and our experiment. 
+
+Not to put too fine a point on it, but <a href="https://cellxgene.cziscience.com/census-models">the answer is yes</a>, and the simplest 
+possible demonstration is to multiply raw data from a new experiment by the 
+weight matrix of a foundation-scale factor model. 
+
+
+## Reading in a sparse matrix
+
+This is very far from optimized, and is a simple proof of concept. 
+
+```{webr-r}
+
+matfile <- url("https://trichelab.github.io/data/10X/matrix.mtx")
+genefile <- url("https://trichelab.github.io/data/10X/genes.tsv")
+cellfile <- url("https://trichelab.github.io/data/10X/barcodes.tsv")
+
+library(Matrix)
+mat <- readMM(matfile)
+rownames(mat) <- read.table(genefile)[, 1]
+colnames(mat) <- read.table(cellfile)[, 1]
+mat[100:110, 1:3]
+
+```
+
+
+## Multiplying the results by a separate matrix
+
+Assume we have our projection weights (and/or a functional model, e.g. a UMAP
+model that corresponds to the usual spin-art 2D rendition of single-cell RNA). 
+Then the process of embedding the new data into the existing foundation model's
+embedding consists of a matrix multiplication (or similar) followed by several 
+stored function calls. This is well within the capabilities of modern computers
+(and in fact most modern smartphones). 
+
+```{webr-r}
+
+library(Matrix)
+modfile <- url("...")
+w <- readMM(modfile)
+embedded <- project(w, mat)
+
+```
+
+
+## Plotting the embedded data in 2D 
+
+The ubiquitous `uwot` package will save its model if you ask nicely. 
+
+```{webr-r}
+
+library(uwot)
+umfile <- url("...")
+umod <- load_uwot(umfile) # kludge
+toplot <- umap_transform(embedded, umod)
+
+library(ggplot2)
+ggplot(plotted, aes(x=UMAP1, y=UMAP2)) + geom_point() + theme_classic()
+
+```

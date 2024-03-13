@@ -68,7 +68,7 @@ stored function calls. This is well within the capabilities of modern computers
 
 ```{webr-r}
 
-library(Matrix)
+library(RcppML)
 modfile <- url("...")
 w <- readMM(modfile)
 embedded <- project(w, mat)
@@ -86,8 +86,18 @@ library(uwot)
 umfile <- url("...")
 umod <- load_uwot(umfile) # kludge
 toplot <- umap_transform(embedded, umod)
+```
+
+Now we plot the results. 
+
+```{webr-r}
 
 library(ggplot2)
-ggplot(plotted, aes(x=UMAP1, y=UMAP2)) + geom_point() + theme_classic()
+p <- ggplot(toplot, aes(x=UMAP1, y=UMAP2)) + geom_point() + theme_classic()
 
 ```
+
+Again, this could be massively optimized. But the central premise (a web browser
+is now powerful enough to apply foundation models to new data on-the-fly) is 
+reasonably demonstrable. And <a href="https://chanzuckerberg.com/science/programs-resources/single-cell-biology/data-insights/efficient-data-structures-for-single-cell-data-integration/">that is all we really set out to prove...</a>
+

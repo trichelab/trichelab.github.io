@@ -1,7 +1,205 @@
 ---
-title: "Mixtures"
+title: "Modeling phenotypes and survival with mixtures"
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ['mixR','survival','survminer','ggbeeswarm','patchwork','ggplot2']
+  autoload-packages: false
 ---
 
-## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+## Background: genetically unexplained phenotypic variability
+
+It is not uncommon for a genetic condition to show unexplained heterogeneity,
+that is, the same variant produces different effects in comparable individuals. 
+A <a href="https://www.youtube.com/watch?v=V0Hp3HnS8M4">particularly vivid example</a> comes from neurofibromatosis type 1, or NF1. 
+Variants in the _NF1_ gene cause neurofibromatosis, but the way the disease 
+manifests can be shockingly different, even in identical twins. 
+
+Of course, disease states are not the only example of such divergence. Studies
+of <a href="https://www.cell.com/fulltext/S0092-8674(15)01689-X">the _TRIM28_ gene in mouse and human childhood obesity</a> suggest that 'epigenetic' machinery
+can create stochastic branch-points in development, rather than fixed outcomes.
+Instead of looking for 'spread' as the readout for such variability, we might 
+wonder if approaches geared specifically towards 'splits' are more powerful. 
+
+In short, we often ask the question 'one lump or two?' Mixtures can answer this.
+
+
+## An example from infant leukemia
+
+We often want to choose the most useful predictor of some outcome, not just the
+easiest to measure. In childhood leukemia, an example of this comes from
+the Mixed-Lineage Leukemia or MLL protein, encoded by the _KMT2A_ gene on 
+chromosome 11, band q23. Gene fusions involving MLL are quite common in infant
+leukemia, with dozens of partner genes, historically yielding poor outcomes.
+Over the past few decades, improvements in care have changed this to the point
+that most people now ask instead, "what determines if these drugs will work?"
+As we shall see, a patient's genetic lesions aren't always the best answer. 
+
+```{webr-r}
+
+library(mixR)
+#library(bifurcatoR) # not needed for webR demo
+ 
+# for interactive usage; identical to data(dxsmall, package="bifurcatoR")
+dxsmall <- read.csv(url("https://trichelab.github.io/data/dxsmall.csv"), row=1)
+dxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != "CCG-2961")
+MLL <- subset(dxsmall, dxsmall$FusionGroup == "MLL")
+
+# fit a Gaussian mixture model
+library(mixR)
+MLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)
+plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
+     title="EVI1 expression in MLL-rearranged leukemia")
+
+```
+
+Above, we fitted a mixture model to expression of the _EVI1_ isoform of the 
+_MECOM_ gene locus, which has the peculiar property of acting as either an 
+oncogene or a tumor suppressor, depending on which isoform is expressed. We 
+might ask whether there appear to be just two groups (high or low), and we can
+use the uncertainty of the mixture fit to help us answer this question. 
+
+```{webr-r}
+
+# Be sure to run the preceding chunk!
+classification <- MLL_EVI1_fit$comp.prob
+rownames(classification) <- rownames(MLL) 
+heatmap(classification) 
+
+```
+
+It looks like there really are just two major groups. Let's label the patients 
+by which group they fall into. (Note that the high-expression group is smaller.)
+For a quick sanity check, let's also plot the group-wise expression levels. 
+
+```{webr-r}
+
+# Be sure to run the preceding chunks!
+MLL$EVI1high <- (apply(classification, 1, which.max) > 1)
+ggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +
+  geom_beeswarm() + theme_classic() + ylab("log(EVI1 mRNA)")
+
+```
+
+In large clinical trials, the primary endpoint (the thing the trial is meant
+to improve upon) usually involves time to an event. If that event is death, 
+we refer to the analysis as a survival analysis. We might ask whether the 
+gene fusion partner is informative in terms of MLL-rearranged patient survival.
+
+```{webr-r}
+
+# run the earlier chunks first!
+library(survival) 
+library(survminer)
+fusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLL)
+ggsurvplot(fusionFit, conf.int=TRUE, legend="none", xlab="Time in days")
+
+```
+
+Well, that's a big huge mess.  Let's limit the analysis to fusion partners that
+appear more than 5 times in the data, since otherwise we don't have much power.
+
+```{webr-r}
+
+common <- names(which(table(MLL$fusion) > 5))
+MLLcommon <- subset(MLL, fusion %in% common)
+commonFusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLLcommon)
+ggsurvplot(commonFusionFit, conf.int=TRUE, legend="right", xlab="Time in days")
+
+```
+
+Now we're getting somewhere, but as the confidence intervals (pastel highlights)
+suggest, there's a tremendous amount of overlap between some 'common' fusions.
+For example, patients with _SEPT6_ fusions clearly do better than patients with
+_MLLT4_. Are there individual-level differences at play here?
+
+```{webr-r}
+
+# Be sure to run the preceding chunks!
+ggplot(MLLcommon, aes(x=fusion, y=MECOM, color=fusion, alpha=I(0.5))) +
+  geom_beeswarm() + theme_classic() + ylab("log(EVI1 mRNA)") + 
+  theme(axis.text.x = element_text(angle = 45, vjust=0.5))  
+
+```
+
+Hmm. It looks like most _SEPT6_ fusion cases have low _EVI1_ expression, whereas
+most _MLLT4_ cases have high _EVI1_ expression. Perhaps this is worth modeling.
+Let's compare how well our EVI1/_MECOM_ RNA expression predicts survival in 
+MLL-rearranged leukemia cases, and let's see if this might be better than basing
+treatment on the fusion partner. (_EVI1_-high cells tend to be chemoresistant.)
+
+```{webr-r}
+
+# Run the previous chunks first!
+library(survminer)
+rnaFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)
+ggsurvplot(rnaFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
+      tables.theme = theme_cleantable(), palette=c("darkgreen","darkred"))
+
+```
+
+It sure looks like EVI1/_MECOM_ expression level predicts outcomes better. 
+Of course, it might be even more straightforward to build these and other 
+models if it turned out that the treatment outcome was binary, i.e. some 
+patients will be cured and some won't. Then we could focus the majority of 
+our research efforts on finding cures for those patients who don't have any
+good treatment options. We can fit mixtures to time-to-event (survival) 
+outcomes, too, but we will want to use a slightly different model, since 
+the assumption underlying survival analysis is that the risk of having an 
+event goes up exponentially over time as a function of the hazard rate. Here
+we will also entertain the possibility of there being more than two groups. 
+(Most leukemia patients are considered cured after 5 years, after which point
+anyone who hasn't succumbed to their disease is eventually lost to followup.)
+
+```{webr-r}
+
+# fit Weibull mixture models
+library(mixR) 
+
+# two-component Weibull mixture model 
+weibMix <- mixfit(MLL$OS, family="weibull", ncomp=2)
+(p2 <- plot(weibMix, xlab="Overall survival", title="k = 2"))
+
+# three-component
+weibMix3 <- mixfit(MLL$OS, family="weibull", ncomp=3)
+(p3 <- plot(weibMix3, xlab="Overall Survival", title="k = 3"))
+
+# both
+library(patchwork)
+p2 + p3 
+
+# Which does the information criterion suggest is best?
+select(MLL$OS, ncomp=2:3, family="weibull")
+
+```
+
+It appears that MLL-rearranged patients fall into two outcome groups. For lack
+of better words, we will refer to these groups as standard-risk and high-risk.
+How well does EVI1/_MECOM_ expression predict a patient's eventual outcome?
+
+```{webr-r}
+
+outcomeGroup <- weibMix$comp.prob
+rownames(outcomeGroup) <- rownames(MLL) 
+MLL$poorOutcome <- (apply(outcomeGroup, 1, which.max) < 2)
+with(MLL, table(poorOutcome, EVI1high))
+chisq.test(with(MLL, table(poorOutcome, EVI1high)))
+
+```
+
+Not perfect, but certainly better than expected by chance, given the grouping.
+Obviously, there are many other possible predictors of outcome, and we include 
+numerous gene expression levels along with patient age and (where available) 
+blast counts (i.e., how many of the cells in their bone marrow are immature). 
+(For example, the _CD34_ and _MECOM_ genes turn out to be jointly informative.)
+But having an idea of whether the data supports natural grouping sure is handy.
+
+
+
+## An example from identical twins
+
+This is where the UK Twins stuff goes. 
+

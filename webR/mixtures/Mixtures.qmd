@@ -58,19 +58,7 @@ plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
 
 Above, we fitted a mixture model to expression of the _EVI1_ isoform of the 
 _MECOM_ gene locus, which has the peculiar property of acting as either an 
-oncogene or a tumor suppressor, depending on which isoform is expressed. We 
-might ask whether there appear to be just two groups (high or low), and we can
-use the uncertainty of the mixture fit to help us answer this question. 
-
-```{webr-r}
-
-# Be sure to run the preceding chunk!
-classification <- MLL_EVI1_fit$comp.prob
-rownames(classification) <- rownames(MLL) 
-heatmap(classification) 
-
-```
-
+oncogene or a tumor suppressor, depending on which isoform is expressed. 
 It looks like there really are just two major groups. Let's label the patients 
 by which group they fall into. (Note that the high-expression group is smaller.)
 For a quick sanity check, let's also plot the group-wise expression levels. 
@@ -78,6 +66,7 @@ For a quick sanity check, let's also plot the group-wise expression levels.
 ```{webr-r}
 
 # Be sure to run the preceding chunks!
+classification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group
 MLL$EVI1high <- (apply(classification, 1, which.max) > 1)
 
 # plot expression
@@ -187,9 +176,9 @@ How well does EVI1/_MECOM_ expression predict a patient's eventual outcome?
 
 outcomeGroup <- weibMix$comp.prob
 rownames(outcomeGroup) <- rownames(MLL) 
-MLL$poorOutcome <- (apply(outcomeGroup, 1, which.max) < 2)
-with(MLL, table(poorOutcome, EVI1high))
-chisq.test(with(MLL, table(poorOutcome, EVI1high)))
+MLL$highRisk <- (apply(outcomeGroup, 1, which.max) < 2)
+with(MLL, table(highRisk, EVI1high))
+chisq.test(with(MLL, table(highRisk, EVI1high)))
 
 ```
 
@@ -197,12 +186,13 @@ Not perfect, but certainly better than expected by chance, given the grouping.
 Obviously, there are many other possible predictors of outcome, and we include 
 numerous gene expression levels along with patient age and (where available) 
 blast counts (i.e., how many of the cells in their bone marrow are immature). 
-(For example, the _CD34_ and _MECOM_ genes turn out to be jointly informative.)
+(For example, the _CD34_ and _MECOM_ genes turn out to be jointly informative,
+ and modeling the two together turns out to be more powerful than either alone.)
 But having an idea of whether the data supports natural grouping sure is handy.
 
 
 
 ## An example from identical twins
 
-This is where the UK Twins stuff goes. 
+This is where the UK Twins stuff goes. That dataset is kind of huge...
 

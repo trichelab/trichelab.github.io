@@ -10,7 +10,7 @@ webr:
 ---
 
 
-## Background: genetically unexplained phenotypic variability
+## Background: unexplained phenotypic variability
 
 It is not uncommon for a genetic condition to show unexplained heterogeneity,
 that is, the same variant produces different effects in comparable individuals. 

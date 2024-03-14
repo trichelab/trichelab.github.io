@@ -79,6 +79,9 @@ For a quick sanity check, let's also plot the group-wise expression levels.
 
 # Be sure to run the preceding chunks!
 MLL$EVI1high <- (apply(classification, 1, which.max) > 1)
+
+# plot expression
+library(ggbeeswarm)
 ggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +
   geom_beeswarm() + theme_classic() + ylab("log(EVI1 mRNA)")
 

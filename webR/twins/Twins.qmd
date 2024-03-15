@@ -1,5 +1,5 @@
 ---
-title: "Modeling discordance in identical twins
+title: "Modeling discordance in identical twins"
 format: html
 engine: knitr
 filters:
@@ -43,7 +43,44 @@ they were when the measurements were taken.
 
 ```{webr-r}
 
+UKtwins$pairs$AGE <- with(UKtwins$pairs, MEASURED - BORN)
+
 # Be sure to run the previous chunks!
+library(ggplot2)
+library(ggbeeswarm)
+
+ggplot(subset(UKtwins$pairs, !is.na(CLUSTER)), 
+  aes(x=CLUSTER, y=AGE, color=CLUSTER)) +
+  geom_boxplot() + 
+  geom_beeswarm() + 
+  theme_classic() + 
+  theme(legend.position="none")
+
+```
+
+It doesn't look like there is any age dependence in terms of phenotypic drift.
+
+
+```{webr-r}
+
+library(mixR) 
+mixbic <- function(x, ncomp=2) fitmix(x, ncomp=ncomp)$bic
+fitmix <- function(x, ncomp=2) mixfit(as.numeric(x), ncomp=ncomp)
+
+if (FALSE) {
+
+  # too slow to start with, cache the results
+  genebics <- apply(UKtwins$exprs, 1, mixbic)
+
+} 
+
+# flaky: some top- and bottom-scoring genes by mixture model fit:
+plot(fitmix(UKtwins$exprs["AMPH", ]), title="AMPH")
+plot(fitmix(UKtwins$exprs["NNAT", ]), title="NNAT")
+plot(fitmix(UKtwins$exprs["TRIM28", ]), title="TRIM28")
+plot(fitmix(UKtwins$exprs["MMP9", ]), title="MMP9")
+
 
 
 ```
+

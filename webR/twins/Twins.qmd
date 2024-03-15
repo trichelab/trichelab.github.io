@@ -29,8 +29,8 @@ library(mixR)
  
 # for interactive usage; identical to data(UKtwins, package="bifurcatoR")
 UKtwins <- list(
-  pairs = read.csv(url("https://trichelab.github.io/data/mzpairs.csv"), row=1)
-  pheno = read.csv(url("https://trichelab.github.io/data/mzpheno.csv"), row=1)
+  pairs = read.csv(url("https://trichelab.github.io/data/mzpairs.csv"), row=1),
+  pheno = read.csv(url("https://trichelab.github.io/data/mzpheno.csv"), row=1),
   exprs = read.csv(url("https://trichelab.github.io/data/mzexprs.csv"), row=1)
 )
 # top 5000 gene symbols by row-wise SD; deltas between matchable MZ twins. 

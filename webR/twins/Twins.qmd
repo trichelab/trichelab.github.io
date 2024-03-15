@@ -1,0 +1,49 @@
+---
+title: "Modeling discordance in identical twins
+format: html
+engine: knitr
+filters:
+  - webr
+webr:
+  packages: ['mixR','ggbeeswarm','patchwork','ggplot2']
+  autoload-packages: false
+---
+
+
+## Background: identical twins aren't
+
+It is not uncommon for a genetic condition to show unexplained heterogeneity,
+that is, the same variant produces different effects in isogenic individuals. 
+A <a href="https://www.theatlantic.com/video/index/585814/pearson-twins/">striking example</a> comes from neurofibromatosis type 1, a monogenic condition. 
+Adam and Neil Pearson both carry the same variant in the _NF1_ gene, but while
+Neil's symptoms are invisible, Neil's are very nearly the opposite. 
+
+Here we will look at a larger cohort of identical (monozygotic) twins to study
+discordant phenotypes such as weight and muscle mass using mixture models. The
+
+
+```{webr-r}
+
+library(mixR)
+#library(bifurcatoR) # not needed for webR demo
+ 
+# for interactive usage; identical to data(UKtwins, package="bifurcatoR")
+UKtwins <- list(
+  pairs = read.csv(url("https://trichelab.github.io/data/mzpairs.csv"), row=1)
+  pheno = read.csv(url("https://trichelab.github.io/data/mzpheno.csv"), row=1)
+  exprs = read.csv(url("https://trichelab.github.io/data/mzexprs.csv"), row=1)
+)
+# top 5000 gene symbols by row-wise SD; deltas between matchable MZ twins. 
+
+```
+
+The preceding data is from monozygotic (identical) twins of varying age. We 
+can get an idea of how long the twins have had to diverge based on how old 
+they were when the measurements were taken. 
+
+```{webr-r}
+
+# Be sure to run the previous chunks!
+
+
+```

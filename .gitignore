@@ -36,3 +36,6 @@
 
 # R Environment Variables
 .Renviron
+
+# Mac garbage
+.DS_Store

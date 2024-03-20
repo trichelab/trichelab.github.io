@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Modeling phenotypes and survival with mixtures</title>
+<title>Modeling phenotypes with mixtures</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -67,6 +67,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="Mixtures_files/libs/bootstrap/bootstrap.min.js"></script>
 <link href="Mixtures_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="Mixtures_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<link href="Mixtures_files/libs/table1-1.0/table1_defaults.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/editor/editor.main.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
   
@@ -233,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"options":{"warning":"true","label":"unnamed-chunk-1","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":1,"code":"library(mixR)\npaste(\"mixR\", packageVersion(\"mixR\"))\npaste(\"Rcpp\", packageVersion(\"Rcpp\"))"},{"options":{"warning":"true","label":"unnamed-chunk-2","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":2,"code":"# for interactive usage; identical to data(dxsmall, package=\"bifurcatoR\")\ndxsmall <- read.csv(url(\"https://trichelab.github.io/data/dxsmall.csv\"), row=1)\ndxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != \"CCG-2961\")\nMLL <- subset(dxsmall, dxsmall$FusionGroup == \"MLL\")\n\nlibrary(mixR)\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")\n\nclassification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group\nMLL$EVI1high <- (apply(classification, 1, which.max) > 1)"},{"options":{"warning":"true","label":"unnamed-chunk-3","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":3,"code":"# Be sure to run the preceding chunks!\nlibrary(ggbeeswarm)\nggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\")"},{"options":{"warning":"true","label":"unnamed-chunk-4","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":4,"code":"# run the earlier chunks first!\nlibrary(survival) \nlibrary(survminer)\nfusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLL)\nggsurvplot(fusionFit, conf.int=TRUE, legend=\"none\", xlab=\"Time in days\")"},{"options":{"warning":"true","label":"unnamed-chunk-5","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":5,"code":"# Be sure to run the preceding chunks!\ncommon <- names(which(table(MLL$fusion) > 5))\nMLLcommon <- subset(MLL, fusion %in% common)\ncommonFusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLLcommon)\nggsurvplot(commonFusionFit, conf.int=TRUE, legend=\"right\", xlab=\"Time in days\")"},{"options":{"warning":"true","label":"unnamed-chunk-6","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":6,"code":"# Be sure to run the preceding chunks!\nggplot(MLLcommon, aes(x=fusion, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\") + \n  theme(axis.text.x = element_text(angle = 45, vjust=0.5))  "},{"options":{"warning":"true","label":"unnamed-chunk-7","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":7,"code":"# Run the previous chunks first!\nlibrary(survminer)\nrnaFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(rnaFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))"},{"options":{"warning":"true","label":"unnamed-chunk-8","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":8,"code":"# Run previous chunks first!\nlibrary(mixR) \n\n# two-component Weibull mixture model \nweibMix <- mixfit(MLL$OS, family=\"weibull\", ncomp=2)\n(p2 <- plot(weibMix, xlab=\"Overall survival\", title=\"k = 2\"))\n\n# three-component Weibull mixture model\nweibMix3 <- mixfit(MLL$OS, family=\"weibull\", ncomp=3)\n(p3 <- plot(weibMix3, xlab=\"Overall Survival\", title=\"k = 3\"))\n\nlibrary(patchwork)\np2 + p3 \n\n# Which does the information criterion suggest is best?\nselect(MLL$OS, ncomp=2:3, family=\"weibull\")"},{"options":{"warning":"true","label":"unnamed-chunk-9","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":9,"code":"# Run the previous chunks first\noutcomeGroup <- weibMix$comp.prob\nrownames(outcomeGroup) <- rownames(MLL) \nMLL$highRisk <- (apply(outcomeGroup, 1, which.max) < 2)\nwith(MLL, table(highRisk, EVI1high))\nchisq.test(with(MLL, table(highRisk, EVI1high)))"}];
+globalThis.qwebrCellDetails = [{"code":"library(mixR)\npaste(\"mixR\", packageVersion(\"mixR\"))\npaste(\"Rcpp\", packageVersion(\"Rcpp\"))","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-1","dpi":72},"id":1},{"code":"# for interactive usage; identical to data(MLL, package=\"bifurcatoR\")\nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLL.csv\"), row=1)\n\nlibrary(mixR)\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")\n\nclassification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group\nMLL$EVI1high <- (apply(classification, 1, which.max) > 1)","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-2","dpi":72},"id":2},{"code":"# Be sure to run the preceding chunks!\nlibrary(ggbeeswarm)\nggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\")","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-3","dpi":72},"id":3},{"code":"# run the earlier chunks first!\nlibrary(survival) \nlibrary(survminer)\nfusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLL)\nggsurvplot(fusionFit, conf.int=TRUE, legend=\"none\", xlab=\"Time in days\")","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-4","dpi":72},"id":4},{"code":"# Be sure to run the preceding chunks!\ncommon <- names(which(table(MLL$fusion) > 5))\nMLLcommon <- subset(MLL, fusion %in% common)\ncommonFusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLLcommon)\nggsurvplot(commonFusionFit, conf.int=TRUE, legend=\"right\", xlab=\"Time in days\")","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-5","dpi":72},"id":5},{"code":"# Be sure to run the preceding chunks!\nggplot(MLLcommon, aes(x=fusion, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\") + \n  theme(axis.text.x = element_text(angle = 45, vjust=0.5))  ","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-6","dpi":72},"id":6},{"code":"# Run the previous chunks first!\nlibrary(survminer)\nrnaFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(rnaFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-7","dpi":72},"id":7},{"code":"# Run previous chunks first!\nlibrary(mixR) \n\n# two-component Weibull mixture model \nweibMix <- mixfit(MLL$OS, family=\"weibull\", ncomp=2)\n(p2 <- plot(weibMix, xlab=\"Overall survival\", title=\"k = 2\"))\n\n# three-component Weibull mixture model\nweibMix3 <- mixfit(MLL$OS, family=\"weibull\", ncomp=3)\n(p3 <- plot(weibMix3, xlab=\"Overall Survival\", title=\"k = 3\"))\n\nlibrary(patchwork)\np2 + p3 \n\n# Which does the information criterion suggest is best?\nselect(MLL$OS, ncomp=2:3, family=\"weibull\")","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-8","dpi":72},"id":8},{"code":"# Run the previous chunks first\noutcomeGroup <- weibMix$comp.prob\nrownames(outcomeGroup) <- rownames(MLL) \nMLL$highRisk <- (apply(outcomeGroup, 1, which.max) < 2)\nwith(MLL, table(highRisk, EVI1high))\nchisq.test(with(MLL, table(highRisk, EVI1high)))","options":{"fig-height":5,"out-height":"","warning":"true","context":"interactive","message":"true","out-width":"700px","fig-width":7,"output":"true","results":"markup","autorun":"false","fig-cap":"","classes":"","comment":"","read-only":"false","label":"unnamed-chunk-9","dpi":72},"id":9}];
 
 </script>
 <script type="module">
@@ -995,7 +996,10 @@ window.Quarto = {
   <ul class="collapse">
   <li><a href="#mixture-models-the-math" id="toc-mixture-models-the-math" class="nav-link" data-scroll-target="#mixture-models-the-math">Mixture models: the math</a></li>
   </ul></li>
-  <li><a href="#a-preview-from-clinical-trials" id="toc-a-preview-from-clinical-trials" class="nav-link" data-scroll-target="#a-preview-from-clinical-trials">A preview from clinical trials</a></li>
+  <li><a href="#a-preview-from-clinical-trials" id="toc-a-preview-from-clinical-trials" class="nav-link" data-scroll-target="#a-preview-from-clinical-trials">A preview from clinical trials</a>
+  <ul class="collapse">
+  <li><a href="#table-1" id="toc-table-1" class="nav-link" data-scroll-target="#table-1">Table 1</a></li>
+  </ul></li>
   <li><a href="#non-genetic-heterogeneity-in-leukemia" id="toc-non-genetic-heterogeneity-in-leukemia" class="nav-link" data-scroll-target="#non-genetic-heterogeneity-in-leukemia">Non-genetic heterogeneity in leukemia</a>
   <ul class="collapse">
   <li><a href="#thirty-years-of-trial-data" id="toc-thirty-years-of-trial-data" class="nav-link" data-scroll-target="#thirty-years-of-trial-data">Thirty years of trial data</a></li>
@@ -1187,7 +1191,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Modeling phenotypes and survival with mixtures</h1>
+<h1 class="title">Modeling phenotypes with mixtures</h1>
 </div>
 
 
@@ -1243,6 +1247,13 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Rcpp 1.0.12"</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"bifurcatoR"</span>, <span class="fu">packageVersion</span>(<span class="st">"bifurcatoR"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "bifurcatoR 0.99.20240320"</code></pre>
+</div>
 </div>
 <section id="mixture-models-the-math" class="level3">
 <h3 class="anchored" data-anchor-id="mixture-models-the-math">Mixture models: the math</h3>
@@ -1280,20 +1291,22 @@ p(x) = \Sigma^K_{k=1}\pi_k\mathcal{N}(x|\mu_k,\sigma_k)
 </section>
 <section id="a-preview-from-clinical-trials" class="level2">
 <h2 class="anchored" data-anchor-id="a-preview-from-clinical-trials">A preview from clinical trials</h2>
-<p>Let’s fit a mixture model to the expression of EVI1 from the <em>MECOM</em> gene locus.</p>
+<p>Here we fit a mixture model to expression of EVI1 from the <em>MECOM</em> gene locus.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixR)</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dxsmall <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(<span class="st">"https://trichelab.github.io/data/dxsmall.csv"</span>), <span class="at">row=</span><span class="dv">1</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dxsmall <span class="ot">&lt;-</span> <span class="fu">subset</span>(dxsmall, <span class="sc">!</span><span class="fu">is.na</span>(dxsmall<span class="sc">$</span>OS) <span class="sc">&amp;</span> dxsmall<span class="sc">$</span>Protocol <span class="sc">!=</span> <span class="st">"CCG-2961"</span>)</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>MLL <span class="ot">&lt;-</span> <span class="fu">subset</span>(dxsmall, dxsmall<span class="sc">$</span>FusionGroup <span class="sc">==</span> <span class="st">"MLL"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># fit a Gaussian mixture model</span></span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixR)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>MLL_EVI1_fit <span class="ot">&lt;-</span> <span class="fu">mixfit</span>(MLL<span class="sc">$</span>MECOM, <span class="at">ncomp=</span><span class="dv">2</span>)</span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(MLL_EVI1_fit, <span class="at">xlab=</span><span class="st">"log(EVI1 transcripts)"</span>,</span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">title=</span><span class="st">"EVI1 expression in MLL-rearranged leukemia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># identical to data(MLL, package="bifurcatoR")</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(bifurcatoR)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(MLL, <span class="at">package=</span><span class="st">"bifurcatoR"</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>MLLcsv <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(<span class="st">"https://trichelab.github.io/data/MLL.csv"</span>), <span class="at">row=</span><span class="dv">1</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">stopifnot</span>(<span class="fu">identical</span>(MLL, MLLcsv))</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>MLL <span class="ot">&lt;-</span> MLLcsv</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># fit mixture </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixR)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>MLL_EVI1_fit <span class="ot">&lt;-</span> <span class="fu">mixfit</span>(MLL<span class="sc">$</span>MECOM, <span class="at">ncomp=</span><span class="dv">2</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(MLL_EVI1_fit, <span class="at">xlab=</span><span class="st">"log(EVI1 transcripts)"</span>,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>     <span class="at">title=</span><span class="st">"EVI1 expression in MLL-rearranged leukemia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1304,12 +1317,20 @@ p(x) = \Sigma^K_{k=1}\pi_k\mathcal{N}(x|\mu_k,\sigma_k)
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>classification <span class="ot">&lt;-</span> MLL_EVI1_fit<span class="sc">$</span>comp.prob <span class="co"># component probability, i.e., group</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>EVI1high <span class="ot">&lt;-</span> (<span class="fu">apply</span>(classification, <span class="dv">1</span>, which.max) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>classification <span class="ot">&lt;-</span> MLL_EVI1_fit<span class="sc">$</span>comp.prob <span class="co"># component probability, i.e., group</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>EVI1high <span class="ot">&lt;-</span> (<span class="fu">apply</span>(classification, <span class="dv">1</span>, which.max) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The above grouping is highly predictive of response to therapy in leukemia driven by MLL gene fusions:</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival) </span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survminer)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>mixFit <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(OS, OSI) <span class="sc">~</span> EVI1high, <span class="at">data=</span>MLL)</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(mixFit, <span class="at">conf.int=</span><span class="cn">TRUE</span>, <span class="at">pval=</span><span class="cn">TRUE</span>, <span class="at">xlab=</span><span class="st">"Overall survival (days)"</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>      <span class="at">tables.theme =</span> <span class="fu">theme_cleantable</span>(), <span class="at">palette=</span><span class="fu">c</span>(<span class="st">"darkgreen"</span>,<span class="st">"darkred"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1318,7 +1339,193 @@ p(x) = \Sigma^K_{k=1}\pi_k\mathcal{N}(x|\mu_k,\sigma_k)
 </div>
 </div>
 </div>
-<p>In the following sections, you can run (and edit) our code and data in your web browser to follow along (and test assumptions we have made in the analysis).</p>
+<section id="table-1" class="level3">
+<h3 class="anchored" data-anchor-id="table-1">Table 1</h3>
+<p>MLL-rearranged subjects from COG AML trials have the following characteristics:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(table1) </span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>pvalue <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  y <span class="ot">&lt;-</span> <span class="fu">unlist</span>(x)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  g <span class="ot">&lt;-</span> <span class="fu">factor</span>(<span class="fu">rep</span>(<span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(x), <span class="at">times=</span><span class="fu">sapply</span>(x, length)))</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">is.numeric</span>(y)) p <span class="ot">&lt;-</span> <span class="fu">t.test</span>(y <span class="sc">~</span> g)<span class="sc">$</span>p.value</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.numeric</span>(y)) p <span class="ot">&lt;-</span> <span class="fu">chisq.test</span>(<span class="fu">table</span>(y, g))<span class="sc">$</span>p.value</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">""</span>, <span class="fu">sub</span>(<span class="st">"&lt;"</span>, <span class="st">"&amp;lt;"</span>, <span class="fu">format.pval</span>(p, <span class="at">digits=</span><span class="dv">3</span>, <span class="at">eps=</span><span class="fl">0.001</span>)))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>common <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which</span>(<span class="fu">table</span>(MLL<span class="sc">$</span>fusion) <span class="sc">&gt;</span> <span class="dv">5</span>))</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>AgeGroup <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(MLL<span class="sc">$</span>AgeGroup), <span class="dv">2</span>), <span class="dv">3</span>)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>Fusion <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MLL<span class="sc">$</span>fusion <span class="sc">%in%</span> common, </span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>                     MLL<span class="sc">$</span>fusion, <span class="st">"Other MLL fusions"</span>)</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>Fusion <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(MLL<span class="sc">$</span>Fusion), <span class="dv">6</span>), <span class="dv">4</span>), <span class="dv">6</span>)</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a><span class="fu">table1</span>(<span class="sc">~</span> AgeGroup <span class="sc">+</span> Sex <span class="sc">+</span> Fusion <span class="sc">|</span> Protocol,</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>       <span class="at">data=</span>MLL, <span class="at">extra.col=</span><span class="fu">list</span>(<span class="at">p=</span>pvalue))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<div class="Rtable1">
+<table class="Rtable1 table table-sm table-striped small" data-quarto-postprocess="true">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th class="rowlabel firstrow lastrow" data-quarto-table-cell-role="th"></th>
+<th class="firstrow lastrow" data-quarto-table-cell-role="th"><span class="stratlabel">AAML03P1<br>
+<span class="stratn">(N=8)</span></span></th>
+<th class="firstrow lastrow" data-quarto-table-cell-role="th"><span class="stratlabel">AAML0531<br>
+<span class="stratn">(N=106)</span></span></th>
+<th class="firstrow lastrow" data-quarto-table-cell-role="th"><span class="stratlabel">AAML1031<br>
+<span class="stratn">(N=248)</span></span></th>
+<th class="firstrow lastrow" data-quarto-table-cell-role="th"><span class="stratlabel">Overall<br>
+<span class="stratn">(N=362)</span></span></th>
+<th class="firstrow lastrow" data-quarto-table-cell-role="th"><span class="stratlabel">p</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td class="rowlabel firstrow">AgeGroup</td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+</tr>
+<tr class="even">
+<td class="rowlabel">Infant</td>
+<td>1 (12.5%)</td>
+<td>50 (47.2%)</td>
+<td>113 (45.6%)</td>
+<td>164 (45.3%)</td>
+<td>0.726</td>
+</tr>
+<tr class="odd">
+<td class="rowlabel">Child</td>
+<td>5 (62.5%)</td>
+<td>40 (37.7%)</td>
+<td>97 (39.1%)</td>
+<td>142 (39.2%)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td class="rowlabel lastrow">AYA</td>
+<td class="lastrow">2 (25.0%)</td>
+<td class="lastrow">16 (15.1%)</td>
+<td class="lastrow">38 (15.3%)</td>
+<td class="lastrow">56 (15.5%)</td>
+<td class="lastrow"></td>
+</tr>
+<tr class="odd">
+<td class="rowlabel firstrow">Sex</td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+</tr>
+<tr class="even">
+<td class="rowlabel">Female</td>
+<td>5 (62.5%)</td>
+<td>57 (53.8%)</td>
+<td>111 (44.8%)</td>
+<td>173 (47.8%)</td>
+<td>0.372</td>
+</tr>
+<tr class="odd">
+<td class="rowlabel lastrow">Male</td>
+<td class="lastrow">3 (37.5%)</td>
+<td class="lastrow">49 (46.2%)</td>
+<td class="lastrow">137 (55.2%)</td>
+<td class="lastrow">189 (52.2%)</td>
+<td class="lastrow"></td>
+</tr>
+<tr class="even">
+<td class="rowlabel firstrow">Fusion</td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+<td class="firstrow"></td>
+</tr>
+<tr class="odd">
+<td class="rowlabel">KMT2A-MLLT3</td>
+<td>1 (12.5%)</td>
+<td>26 (24.5%)</td>
+<td>92 (37.1%)</td>
+<td>119 (32.9%)</td>
+<td>0.38</td>
+</tr>
+<tr class="even">
+<td class="rowlabel">KMT2A-MLLT10</td>
+<td>1 (12.5%)</td>
+<td>26 (24.5%)</td>
+<td>54 (21.8%)</td>
+<td>81 (22.4%)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td class="rowlabel">KMT2A-MLLT4</td>
+<td>3 (37.5%)</td>
+<td>14 (13.2%)</td>
+<td>26 (10.5%)</td>
+<td>43 (11.9%)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td class="rowlabel">KMT2A-ELL</td>
+<td>3 (37.5%)</td>
+<td>14 (13.2%)</td>
+<td>21 (8.5%)</td>
+<td>38 (10.5%)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td class="rowlabel">KMT2A-MLLT1</td>
+<td>0 (0%)</td>
+<td>4 (3.8%)</td>
+<td>14 (5.6%)</td>
+<td>18 (5.0%)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td class="rowlabel">KMT2A-MLLT11</td>
+<td>0 (0%)</td>
+<td>1 (0.9%)</td>
+<td>6 (2.4%)</td>
+<td>7 (1.9%)</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td class="rowlabel">KMT2A-SEPT6</td>
+<td>0 (0%)</td>
+<td>4 (3.8%)</td>
+<td>8 (3.2%)</td>
+<td>12 (3.3%)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td class="rowlabel lastrow">Other MLL fusions</td>
+<td class="lastrow">0 (0%)</td>
+<td class="lastrow">17 (16.0%)</td>
+<td class="lastrow">27 (10.9%)</td>
+<td class="lastrow">44 (12.2%)</td>
+<td class="lastrow"></td>
+</tr>
+</tbody>
+</table>
+
+</div>
+</div>
+</div>
+</div>
+<p>In the following sections, you can run (and edit) our code and data in your web browser to follow along (or test assumptions we have made in our analyses).</p>
+</section>
 </section>
 <section id="non-genetic-heterogeneity-in-leukemia" class="level2">
 <h2 class="anchored" data-anchor-id="non-genetic-heterogeneity-in-leukemia">Non-genetic heterogeneity in leukemia</h2>

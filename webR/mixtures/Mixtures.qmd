@@ -1,5 +1,5 @@
 ---
-title: "Modeling phenotypes and survival with mixtures"
+title: "Modeling phenotypes with mixtures"
 repo-url: https://github.com/trichelab/trichelab.github.io/
 format: 
   html:
@@ -59,12 +59,12 @@ It's a good idea to keep track of versions, in case something were to change.
 When this document was first compiled, the versions used were:
 
 ```{r}
-#| label: package versions
+#| label: Versions
 #| warning: false
 
 paste("mixR", packageVersion("mixR"))
 paste("Rcpp", packageVersion("Rcpp"))
-
+paste("bifurcatoR", packageVersion("bifurcatoR"))
 ```
 
 ### Mixture models: the math
@@ -113,8 +113,8 @@ $X$ need not be from a Normal (Gaussian) distribution for this to work,
 something that will be explored later.
 
 Convergence can take a while if there are a many observations, which is why we 
-use `mixR` for the calculations.  More on the mathematical details and cute 
-math tricks can be found at
+use `mixR` for the calculations. More on the mathematical details and cute math
+tricks can be found at
 [Matt Stephens' Five Minute Stats](https://stephens999.github.io/fiveMinuteStats/intro_to_em.html).
 
 ::: 
@@ -122,18 +122,20 @@ math tricks can be found at
 
 ## A preview from clinical trials
 
-Let's fit a mixture model to the expression of EVI1 from the _MECOM_ gene locus.
+Here we fit a mixture model to expression of EVI1 from the _MECOM_ gene locus.
 
 ```{r}
 #| label: MLL mixture model
 #| warning: false
 
-library(mixR)
-dxsmall <- read.csv(url("https://trichelab.github.io/data/dxsmall.csv"), row=1)
-dxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != "CCG-2961")
-MLL <- subset(dxsmall, dxsmall$FusionGroup == "MLL")
+# identical to data(MLL, package="bifurcatoR")
+library(bifurcatoR)
+data(MLL, package="bifurcatoR")
+MLLcsv <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
+stopifnot(identical(MLL, MLLcsv))
+MLL <- MLLcsv
 
-# fit a Gaussian mixture model
+# fit mixture 
 library(mixR)
 MLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)
 plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
@@ -148,7 +150,6 @@ driven by MLL gene fusions:
 ```{r}
 #| label: Survival by mixture
 #| warning: false
-#| echo: false
 
 library(survival) 
 library(survminer)
@@ -158,8 +159,35 @@ ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
 
 ```
 
+### Table 1
+
+MLL-rearranged subjects from COG AML trials have the following characteristics:
+
+```{r}
+#| label: Table 1
+#| warning: false
+
+library(table1) 
+pvalue <- function(x, ...) {
+  y <- unlist(x)
+  g <- factor(rep(1:length(x), times=sapply(x, length)))
+  if (is.numeric(y)) p <- t.test(y ~ g)$p.value
+  if (!is.numeric(y)) p <- chisq.test(table(y, g))$p.value
+  c("", sub("<", "&lt;", format.pval(p, digits=3, eps=0.001)))
+}
+
+common <- names(which(table(MLL$fusion) > 5))
+MLL$AgeGroup <- relevel(relevel(factor(MLL$AgeGroup), 2), 3)
+MLL$Fusion <- ifelse(MLL$fusion %in% common, 
+                     MLL$fusion, "Other MLL fusions")
+MLL$Fusion <- relevel(relevel(relevel(factor(MLL$Fusion), 6), 4), 6)
+table1(~ AgeGroup + Sex + Fusion | Protocol,
+       data=MLL, extra.col=list(p=pvalue))
+
+```
+
 In the following sections, you can run (and edit) our code and data in your 
-web browser to follow along (and test assumptions we have made in the analysis).
+web browser to follow along (or test assumptions we have made in our analyses).
 
 
 ## Non-genetic heterogeneity in leukemia
@@ -173,13 +201,12 @@ Over the past few decades, improvements in care have changed this to the point
 that most people now ask instead, "what determines if these drugs will work?"
 As we shall see, a patient's genetic lesions aren't always the best answer. 
 
+
 ### Thirty years of trial data
 
 ```{webr-r}
-# for interactive usage; identical to data(dxsmall, package="bifurcatoR")
-dxsmall <- read.csv(url("https://trichelab.github.io/data/dxsmall.csv"), row=1)
-dxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != "CCG-2961")
-MLL <- subset(dxsmall, dxsmall$FusionGroup == "MLL")
+# for interactive usage; identical to data(MLL, package="bifurcatoR")
+MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
 
 library(mixR)
 MLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)

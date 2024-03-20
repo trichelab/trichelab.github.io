@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -184,7 +218,7 @@ globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
 
 // Check to see if we have an empty array, if we do set to skip the installation.
 globalThis.qwebrSetupRPackages = !(qwebrInstallRPackagesList.indexOf("") !== -1);
-globalThis.qwebrAutoloadRPackages = false;
+globalThis.qwebrAutoloadRPackages = true;
 
 // Display a startup message?
 globalThis.qwebrShowStartupMessage = true;
@@ -199,7 +233,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"id":1,"code":"library(mixR)\npaste(\"mixR\", packageVersion(\"mixR\"))\npaste(\"Rcpp\", packageVersion(\"Rcpp\"))","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-1"}},{"id":2,"code":"# for interactive usage; identical to data(dxsmall, package=\"bifurcatoR\")\ndxsmall <- read.csv(url(\"https://trichelab.github.io/data/dxsmall.csv\"), row=1)\ndxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != \"CCG-2961\")\nMLL <- subset(dxsmall, dxsmall$FusionGroup == \"MLL\")\n\nlibrary(mixR)\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")\n\nclassification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group\nMLL$EVI1high <- (apply(classification, 1, which.max) > 1)","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-2"}},{"id":3,"code":"# Be sure to run the preceding chunks!\nlibrary(ggbeeswarm)\nggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\")","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-3"}},{"id":4,"code":"# run the earlier chunks first!\nlibrary(survival) \nlibrary(survminer)\nfusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLL)\nggsurvplot(fusionFit, conf.int=TRUE, legend=\"none\", xlab=\"Time in days\")","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-4"}},{"id":5,"code":"# Be sure to run the preceding chunks!\ncommon <- names(which(table(MLL$fusion) > 5))\nMLLcommon <- subset(MLL, fusion %in% common)\ncommonFusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLLcommon)\nggsurvplot(commonFusionFit, conf.int=TRUE, legend=\"right\", xlab=\"Time in days\")","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-5"}},{"id":6,"code":"# Be sure to run the preceding chunks!\nggplot(MLLcommon, aes(x=fusion, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\") + \n  theme(axis.text.x = element_text(angle = 45, vjust=0.5))  ","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-6"}},{"id":7,"code":"# Run the previous chunks first!\nlibrary(survminer)\nrnaFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(rnaFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-7"}},{"id":8,"code":"# Run previous chunks first!\nlibrary(mixR) \n\n# two-component Weibull mixture model \nweibMix <- mixfit(MLL$OS, family=\"weibull\", ncomp=2)\n(p2 <- plot(weibMix, xlab=\"Overall survival\", title=\"k = 2\"))\n\n# three-component Weibull mixture model\nweibMix3 <- mixfit(MLL$OS, family=\"weibull\", ncomp=3)\n(p3 <- plot(weibMix3, xlab=\"Overall Survival\", title=\"k = 3\"))\n\nlibrary(patchwork)\np2 + p3 \n\n# Which does the information criterion suggest is best?\nselect(MLL$OS, ncomp=2:3, family=\"weibull\")","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-8"}},{"id":9,"code":"outcomeGroup <- weibMix$comp.prob\nrownames(outcomeGroup) <- rownames(MLL) \nMLL$highRisk <- (apply(outcomeGroup, 1, which.max) < 2)\nwith(MLL, table(highRisk, EVI1high))\nchisq.test(with(MLL, table(highRisk, EVI1high)))","options":{"warning":"true","classes":"","dpi":72,"fig-height":5,"fig-cap":"","output":"true","context":"interactive","comment":"","results":"markup","fig-width":7,"message":"true","out-width":"700px","read-only":"false","out-height":"","autorun":"false","label":"unnamed-chunk-9"}}];
+globalThis.qwebrCellDetails = [{"options":{"warning":"true","label":"unnamed-chunk-1","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":1,"code":"library(mixR)\npaste(\"mixR\", packageVersion(\"mixR\"))\npaste(\"Rcpp\", packageVersion(\"Rcpp\"))"},{"options":{"warning":"true","label":"unnamed-chunk-2","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":2,"code":"# for interactive usage; identical to data(dxsmall, package=\"bifurcatoR\")\ndxsmall <- read.csv(url(\"https://trichelab.github.io/data/dxsmall.csv\"), row=1)\ndxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != \"CCG-2961\")\nMLL <- subset(dxsmall, dxsmall$FusionGroup == \"MLL\")\n\nlibrary(mixR)\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")\n\nclassification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group\nMLL$EVI1high <- (apply(classification, 1, which.max) > 1)"},{"options":{"warning":"true","label":"unnamed-chunk-3","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":3,"code":"# Be sure to run the preceding chunks!\nlibrary(ggbeeswarm)\nggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\")"},{"options":{"warning":"true","label":"unnamed-chunk-4","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":4,"code":"# run the earlier chunks first!\nlibrary(survival) \nlibrary(survminer)\nfusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLL)\nggsurvplot(fusionFit, conf.int=TRUE, legend=\"none\", xlab=\"Time in days\")"},{"options":{"warning":"true","label":"unnamed-chunk-5","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":5,"code":"# Be sure to run the preceding chunks!\ncommon <- names(which(table(MLL$fusion) > 5))\nMLLcommon <- subset(MLL, fusion %in% common)\ncommonFusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLLcommon)\nggsurvplot(commonFusionFit, conf.int=TRUE, legend=\"right\", xlab=\"Time in days\")"},{"options":{"warning":"true","label":"unnamed-chunk-6","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":6,"code":"# Be sure to run the preceding chunks!\nggplot(MLLcommon, aes(x=fusion, y=MECOM, color=fusion, alpha=I(0.5))) +\n  geom_beeswarm() + theme_classic() + ylab(\"log(EVI1 mRNA)\") + \n  theme(axis.text.x = element_text(angle = 45, vjust=0.5))  "},{"options":{"warning":"true","label":"unnamed-chunk-7","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":7,"code":"# Run the previous chunks first!\nlibrary(survminer)\nrnaFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(rnaFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))"},{"options":{"warning":"true","label":"unnamed-chunk-8","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":8,"code":"# Run previous chunks first!\nlibrary(mixR) \n\n# two-component Weibull mixture model \nweibMix <- mixfit(MLL$OS, family=\"weibull\", ncomp=2)\n(p2 <- plot(weibMix, xlab=\"Overall survival\", title=\"k = 2\"))\n\n# three-component Weibull mixture model\nweibMix3 <- mixfit(MLL$OS, family=\"weibull\", ncomp=3)\n(p3 <- plot(weibMix3, xlab=\"Overall Survival\", title=\"k = 3\"))\n\nlibrary(patchwork)\np2 + p3 \n\n# Which does the information criterion suggest is best?\nselect(MLL$OS, ncomp=2:3, family=\"weibull\")"},{"options":{"warning":"true","label":"unnamed-chunk-9","fig-cap":"","fig-width":7,"results":"markup","output":"true","message":"true","classes":"","comment":"","out-width":"700px","out-height":"","fig-height":5,"read-only":"false","context":"interactive","dpi":72,"autorun":"false"},"id":9,"code":"# Run the previous chunks first\noutcomeGroup <- weibMix$comp.prob\nrownames(outcomeGroup) <- rownames(MLL) \nMLL$highRisk <- (apply(outcomeGroup, 1, which.max) < 2)\nwith(MLL, table(highRisk, EVI1high))\nchisq.test(with(MLL, table(highRisk, EVI1high)))"}];
 
 </script>
 <script type="module">
@@ -948,10 +982,33 @@ window.Quarto = {
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Sections</h2>
+   
+  <ul>
+  <li><a href="#background-unexplained-phenotypic-variability" id="toc-background-unexplained-phenotypic-variability" class="nav-link active" data-scroll-target="#background-unexplained-phenotypic-variability">Background: unexplained phenotypic variability</a></li>
+  <li><a href="#mixture-modeling" id="toc-mixture-modeling" class="nav-link" data-scroll-target="#mixture-modeling">Mixture modeling</a>
+  <ul class="collapse">
+  <li><a href="#mixture-models-the-math" id="toc-mixture-models-the-math" class="nav-link" data-scroll-target="#mixture-models-the-math">Mixture models: the math</a></li>
+  </ul></li>
+  <li><a href="#a-preview-from-clinical-trials" id="toc-a-preview-from-clinical-trials" class="nav-link" data-scroll-target="#a-preview-from-clinical-trials">A preview from clinical trials</a></li>
+  <li><a href="#non-genetic-heterogeneity-in-leukemia" id="toc-non-genetic-heterogeneity-in-leukemia" class="nav-link" data-scroll-target="#non-genetic-heterogeneity-in-leukemia">Non-genetic heterogeneity in leukemia</a>
+  <ul class="collapse">
+  <li><a href="#thirty-years-of-trial-data" id="toc-thirty-years-of-trial-data" class="nav-link" data-scroll-target="#thirty-years-of-trial-data">Thirty years of trial data</a></li>
+  <li><a href="#a-survival-analysis-of-gene-fusions" id="toc-a-survival-analysis-of-gene-fusions" class="nav-link" data-scroll-target="#a-survival-analysis-of-gene-fusions">A survival analysis of gene fusions</a></li>
+  <li><a href="#a-survival-analysis-of-common-mll-fusions" id="toc-a-survival-analysis-of-common-mll-fusions" class="nav-link" data-scroll-target="#a-survival-analysis-of-common-mll-fusions">A survival analysis of common MLL fusions</a></li>
+  <li><a href="#examining-evidence-for-a-mixture" id="toc-examining-evidence-for-a-mixture" class="nav-link" data-scroll-target="#examining-evidence-for-a-mixture">Examining evidence for a mixture</a></li>
+  <li><a href="#a-mixture-of-outcomes" id="toc-a-mixture-of-outcomes" class="nav-link" data-scroll-target="#a-mixture-of-outcomes">A mixture of outcomes</a></li>
+  <li><a href="#a-mixture-of-survival-distributions" id="toc-a-mixture-of-survival-distributions" class="nav-link" data-scroll-target="#a-mixture-of-survival-distributions">A mixture of survival distributions</a></li>
+  <li><a href="#a-test-of-phenotypic-and-outcome-fits" id="toc-a-test-of-phenotypic-and-outcome-fits" class="nav-link" data-scroll-target="#a-test-of-phenotypic-and-outcome-fits">A test of phenotypic and outcome fits</a></li>
+  </ul></li>
+  </ul>
+<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/mixtures/Mixtures.qmd"><i class="bi bi-github"></i>Quarto (source code)</a></li></ul></div></nav>
+</div>
 <main class="content" id="quarto-document-content">
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
 <script type="module" id="qwebr-monaco-editor-init">
@@ -1149,7 +1206,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <section id="background-unexplained-phenotypic-variability" class="level2">
 <h2 class="anchored" data-anchor-id="background-unexplained-phenotypic-variability">Background: unexplained phenotypic variability</h2>
-<p>It is not uncommon for a genetic condition to show unexplained heterogeneity; the same genotype(s) can produce different effects in comparable individuals. A particularly vivid example comes from neurofibromatosis type 1, or NF1, and <a href="https://www.youtube.com/watch?v=V0Hp3HnS8M4">genetically identical twins who look nothing alike</a>.</p>
+<p>It is not uncommon for a genetic condition to show unexplained heterogeneity; the same genotype(s) can produce different effects in comparable individuals. A particularly vivid example comes from neurofibromatosis type 1: <a href="https://www.youtube.com/watch?v=V0Hp3HnS8M4">identical twins who look nothing alike</a>.</p>
 <p>Is this divergence restricted to rare predisposition syndromes? <a href="https://www.cell.com/fulltext/S0092-8674(15)01689-X">Studies of the <em>TRIM28</em> gene in childhood obesity</a> suggest it is not, and that genetic differences in epigenetic machinery may create stochastic branch-points in development. We might wonder if approaches to finding ‘splits’ could be handy.</p>
 <p>In short, we often ask ‘one lump or two?’ Mixture models can help answer this.</p>
 </section>
@@ -1172,21 +1229,31 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p>It’s a good idea to keep track of versions, in case something were to change.</p>
 <p>When this document was first compiled, the versions used were:</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"mixR"</span>, <span class="fu">packageVersion</span>(<span class="st">"mixR"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "mixR 0.2.0"</code></pre>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"Rcpp"</span>, <span class="fu">packageVersion</span>(<span class="st">"Rcpp"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] "Rcpp 1.0.12"</code></pre>
 </div>
 </div>
-<p>Below, I have written out the math for a simple mixture model like the ones we are fitting here. Most readers can skip it without missing too much.</p>
-<div class="callout callout-style-default callout-tip callout-titled" title="Mixture models: the math">
+<section id="mixture-models-the-math" class="level3">
+<h3 class="anchored" data-anchor-id="mixture-models-the-math">Mixture models: the math</h3>
+<p>Below you can find a quick review of mixture model math.</p>
+<div class="callout callout-style-default callout-tip callout-titled" title="Mixture model math (click to expand)">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Mixture models: the math
+Mixture model math (click to expand)
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
@@ -1196,24 +1263,38 @@ Mixture models: the math
 <p><span class="math display">\[
 p(x) = \Sigma^K_{k=1}\pi_k\mathcal{N}(x|\mu_k,\sigma_k)
 \]</span></p>
-<p>If we only have two components (K=2), then the probability <span class="math inline">\(\pi_1\)</span> of being in group 1 is <span class="math inline">\(1 - \pi_2\)</span>, where <span class="math inline">\(\pi_2\)</span> is the probability of NOT being in it. Formally, <span class="math inline">\(\pi_k = Pr(K = k | X = x)\)</span>. In a simple two-component model, we can start from a guess for <span class="math inline">\(\pi_1\)</span> based on k-means or cutting a dendrogram. We will seek parameters <span class="math inline">\(\theta_k = (\mu_k, \sigma_k)\)</span> for each group <span class="math inline">\(k\)</span> to maximize the probability of observing our actual data.</p>
-<p>The joint probability <span class="math inline">\(\prod_{i=1}^n (x; \theta)\)</span> of observing the data <span class="math inline">\(X\)</span> given the proposed model parameters <span class="math inline">\(\theta\)</span> is referred to as the <em>likelihood</em> <span class="math inline">\(\mathcal{L}(X|\theta)\)</span> of the data, with <span class="math inline">\(n\)</span> observations and parameters <span class="math inline">\(\theta = (\theta_1, ..., \theta_K) = (\theta_1, \theta_2)\)</span> for us.</p>
+<p>If we only have two components (K=2), then the probability <span class="math inline">\(\pi_1\)</span> of being in group 1 is <span class="math inline">\(1 - \pi_2\)</span>, where <span class="math inline">\(\pi_2\)</span> is the probability of NOT being in it. Formally, <span class="math inline">\(\pi_k = Pr(K = k | X = x)\)</span>. In a simple two-component model, we can start from a guess for <span class="math inline">\(\pi_1\)</span> based on k-means or cutting a dendrogram. We will seek parameters <span class="math inline">\(\theta_k = (\mu_k, \sigma_k)\)</span> for each group <span class="math inline">\(k\)</span> to maximize the probability of observing our actual data given our model.</p>
+<p>The joint probability <span class="math inline">\(\prod_{i=1}^n p(x; \theta)\)</span> of observing the data <span class="math inline">\(X\)</span> given the proposed parameters <span class="math inline">\(\theta\)</span> is referred to as the <em>likelihood</em> <span class="math inline">\(\mathcal{L}(\theta|X)\)</span> of the model, with <span class="math inline">\(n\)</span> observations and parameters <span class="math inline">\(\theta = (\theta_1, ..., \theta_K) = (\theta_1, \theta_2)\)</span> for us.</p>
 <p><span class="math display">\[
-\mathcal{L}(X|\theta) = \prod_{i=1}^n \sum_{k=1}^k \pi_k N(x_i; \theta_k)
+\mathcal{L}(\theta|X) = \prod_{i=1}^n \sum_{k=1}^k \pi_k N(x_i; \theta_k)
                       = \prod_{i=1}^n (\pi_1 N(x_i; \theta_1) +
                         (1 - \pi_1) N(x_i; \theta_2))
 \]</span></p>
-<p>Normally we could take logs, set the first and second derivatives to 0, and solve for appropriate values of <span class="math inline">\(\theta\)</span>, but since there is a sum in the way, we alternate back and forth between assigning each observation to group 1 or 2, then solving for the parameters <span class="math inline">\(\theta_1\)</span> and <span class="math inline">\(\theta_2\)</span> which maximize <span class="math inline">\(\mathcal{L}(X_i|\theta_k)\)</span> for all <span class="math inline">\(X_i\)</span> where <span class="math inline">\(K_i = k\)</span>. It turns out that<br>
+<p>Normally we could take logs, set the first and second derivatives to 0, and solve for appropriate values of <span class="math inline">\(\theta\)</span>, but since there is a sum in the way, we alternate back and forth between assigning each observation to group 1 or 2, then solving for the parameters <span class="math inline">\(\theta_1\)</span> and <span class="math inline">\(\theta_2\)</span> which maximize <span class="math inline">\(\mathcal{L}(\theta_k|X_i)\)</span> for all <span class="math inline">\(X_i\)</span> where <span class="math inline">\(K_i = k\)</span>. It turns out that<br>
 <span class="math inline">\(X\)</span> need not be from a Normal (Gaussian) distribution for this to work, something that will be explored later.</p>
 <p>Convergence can take a while if there are a many observations, which is why we use <code>mixR</code> for the calculations. More on the mathematical details and cute math tricks can be found at <a href="https://stephens999.github.io/fiveMinuteStats/intro_to_em.html">Matt Stephens’ Five Minute Stats</a>.</p>
 </div>
 </div>
 </div>
 </section>
+</section>
 <section id="a-preview-from-clinical-trials" class="level2">
 <h2 class="anchored" data-anchor-id="a-preview-from-clinical-trials">A preview from clinical trials</h2>
 <p>Let’s fit a mixture model to the expression of EVI1 from the <em>MECOM</em> gene locus.</p>
 <div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixR)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>dxsmall <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(<span class="st">"https://trichelab.github.io/data/dxsmall.csv"</span>), <span class="at">row=</span><span class="dv">1</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>dxsmall <span class="ot">&lt;-</span> <span class="fu">subset</span>(dxsmall, <span class="sc">!</span><span class="fu">is.na</span>(dxsmall<span class="sc">$</span>OS) <span class="sc">&amp;</span> dxsmall<span class="sc">$</span>Protocol <span class="sc">!=</span> <span class="st">"CCG-2961"</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>MLL <span class="ot">&lt;-</span> <span class="fu">subset</span>(dxsmall, dxsmall<span class="sc">$</span>FusionGroup <span class="sc">==</span> <span class="st">"MLL"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co"># fit a Gaussian mixture model</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixR)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>MLL_EVI1_fit <span class="ot">&lt;-</span> <span class="fu">mixfit</span>(MLL<span class="sc">$</span>MECOM, <span class="at">ncomp=</span><span class="dv">2</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(MLL_EVI1_fit, <span class="at">xlab=</span><span class="st">"log(EVI1 transcripts)"</span>,</span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>     <span class="at">title=</span><span class="st">"EVI1 expression in MLL-rearranged leukemia"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1221,6 +1302,11 @@ p(x) = \Sigma^K_{k=1}\pi_k\mathcal{N}(x|\mu_k,\sigma_k)
 </figure>
 </div>
 </div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>classification <span class="ot">&lt;-</span> MLL_EVI1_fit<span class="sc">$</span>comp.prob <span class="co"># component probability, i.e., group</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>EVI1high <span class="ot">&lt;-</span> (<span class="fu">apply</span>(classification, <span class="dv">1</span>, which.max) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
 </div>
 <p>The above grouping is highly predictive of response to therapy in leukemia driven by MLL gene fusions:</p>
 <div class="cell">
@@ -1237,30 +1323,51 @@ p(x) = \Sigma^K_{k=1}\pi_k\mathcal{N}(x|\mu_k,\sigma_k)
 <section id="non-genetic-heterogeneity-in-leukemia" class="level2">
 <h2 class="anchored" data-anchor-id="non-genetic-heterogeneity-in-leukemia">Non-genetic heterogeneity in leukemia</h2>
 <p>We often want to choose the most useful predictor of some outcome, not just the easiest to measure. In childhood leukemia, an example of this comes from the Mixed-Lineage Leukemia or MLL protein, encoded by the <em>KMT2A</em> gene on chromosome 11, band q23. Gene fusions involving MLL are quite common in infant leukemia, with dozens of partner genes, historically yielding poor outcomes. Over the past few decades, improvements in care have changed this to the point that most people now ask instead, “what determines if these drugs will work?” As we shall see, a patient’s genetic lesions aren’t always the best answer.</p>
+<section id="thirty-years-of-trial-data" class="level3">
+<h3 class="anchored" data-anchor-id="thirty-years-of-trial-data">Thirty years of trial data</h3>
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Above, we fitted a mixture model to expression of the <em>EVI1</em> isoform of the <em>MECOM</em> gene locus, which has the peculiar property of acting as either an oncogene or a tumor suppressor, depending on which isoform is expressed. It looks like there really are just two major groups. Let’s label the patients by which group they fall into. (Note that the high-expression group is smaller.) For a quick sanity check, let’s also plot the group-wise expression levels.</p>
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
+<section id="a-survival-analysis-of-gene-fusions" class="level3">
+<h3 class="anchored" data-anchor-id="a-survival-analysis-of-gene-fusions">A survival analysis of gene fusions</h3>
 <p>In large clinical trials, the primary endpoint (the thing the trial is meant to improve upon) usually involves time to an event. If that event is death, we refer to the analysis as a survival analysis. We might ask whether the gene fusion partner is informative in terms of MLL-rearranged patient survival.</p>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Well, that’s a big huge mess. Let’s limit the analysis to fusion partners that appear more than 5 times in the data, since otherwise we don’t have much power.</p>
+</section>
+<section id="a-survival-analysis-of-common-mll-fusions" class="level3">
+<h3 class="anchored" data-anchor-id="a-survival-analysis-of-common-mll-fusions">A survival analysis of common MLL fusions</h3>
 <div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Now we’re getting somewhere, but as the confidence intervals (pastel highlights) suggest, there’s a tremendous amount of overlap between some ‘common’ fusions. For example, patients with <em>SEPT6</em> fusions clearly do better than patients with <em>MLLT4</em>. Are there individual-level differences at play here?</p>
+</section>
+<section id="examining-evidence-for-a-mixture" class="level3">
+<h3 class="anchored" data-anchor-id="examining-evidence-for-a-mixture">Examining evidence for a mixture</h3>
 <div id="qwebr-insertion-location-6"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Hmm. It looks like most <em>SEPT6</em> fusion cases have low <em>EVI1</em> expression, whereas most <em>MLLT4</em> cases have high <em>EVI1</em> expression. Perhaps this is worth modeling. Let’s compare how well our EVI1/<em>MECOM</em> RNA expression predicts survival in MLL-rearranged leukemia cases, and let’s see if this might be better than basing treatment on the fusion partner. (<em>EVI1</em>-high cells tend to be chemoresistant.)</p>
+</section>
+<section id="a-mixture-of-outcomes" class="level3">
+<h3 class="anchored" data-anchor-id="a-mixture-of-outcomes">A mixture of outcomes</h3>
 <div id="qwebr-insertion-location-7"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>It sure looks like EVI1/<em>MECOM</em> expression level predicts outcomes better. Of course, it might be even more straightforward to build these and other models if it turned out that the treatment outcome was binary, i.e.&nbsp;some patients will be cured and some won’t. Then we could focus the majority of our research efforts on finding cures for those patients who don’t have any good treatment options. We can fit mixtures to time-to-event (survival) outcomes, too, but we will want to use a slightly different model, since the assumption underlying survival analysis is that the risk of having an event goes up exponentially over time as a function of the hazard rate. Here we will also entertain the possibility of there being more than two groups. (Most leukemia patients are considered cured after 5 years, after which point anyone who hasn’t succumbed to their disease is eventually lost to followup.)</p>
+</section>
+<section id="a-mixture-of-survival-distributions" class="level3">
+<h3 class="anchored" data-anchor-id="a-mixture-of-survival-distributions">A mixture of survival distributions</h3>
 <div id="qwebr-insertion-location-8"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>It appears that MLL-rearranged patients fall into two outcome groups. For lack of better words, we will refer to these groups as standard-risk and high-risk. How well does EVI1/<em>MECOM</em> expression predict a patient’s eventual outcome?</p>
+</section>
+<section id="a-test-of-phenotypic-and-outcome-fits" class="level3">
+<h3 class="anchored" data-anchor-id="a-test-of-phenotypic-and-outcome-fits">A test of phenotypic and outcome fits</h3>
 <div id="qwebr-insertion-location-9"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Not perfect, but certainly better than expected by chance, given the grouping. Obviously, there are many other possible predictors of outcome, and we include numerous gene expression levels along with patient age and (where available) blast counts (i.e., how many of the cells in their bone marrow are immature). (For example, the <em>CD34</em> and <em>MECOM</em> genes turn out to be jointly informative, and modeling the two together turns out to be more powerful than either alone.) But having an idea of whether the data supports natural grouping sure is handy.</p>
+<p>Not perfect, but certainly better than expected by chance, given the grouping. Obviously, there are many other possible predictors of outcome, and we include numerous gene expression levels along with patient age and (where available) blast counts (i.e., how many of the cells in their bone marrow are immature). For example, the <em>CD34</em> and <em>MECOM</em> genes turn out to be jointly informative; and modeling the two together turns out to be more powerful than either alone. But having an idea of whether the data supports natural grouping sure is handy.</p>
+</section>
 </section>
 
 </main>

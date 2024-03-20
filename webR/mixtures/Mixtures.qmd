@@ -1,12 +1,24 @@
 ---
 title: "Modeling phenotypes and survival with mixtures"
-format: html
+repo-url: https://github.com/trichelab/trichelab.github.io/
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 3
+    toc-title: Sections
+    code-fold: true
+    code-links:
+      - text: Quarto (source code)
+        icon: github
+        href: https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/mixtures/Mixtures.qmd
 engine: knitr
+execute:
+  warning: false
 filters:
   - webr
 webr:
   packages: ['mixR','survival','survminer','ggbeeswarm','patchwork','ggplot2']
-  autoload-packages: false
 ---
 
 
@@ -14,8 +26,8 @@ webr:
 
 It is not uncommon for a genetic condition to show unexplained heterogeneity;
 the same genotype(s) can produce different effects in comparable individuals. 
-A particularly vivid example comes from neurofibromatosis type 1, or NF1, and 
-<a href="https://www.youtube.com/watch?v=V0Hp3HnS8M4">genetically identical twins who look nothing alike</a>.
+A particularly vivid example comes from neurofibromatosis type 1:
+<a href="https://www.youtube.com/watch?v=V0Hp3HnS8M4">identical twins who look nothing alike</a>.
 
 Is this divergence restricted to rare predisposition syndromes?
 <a href="https://www.cell.com/fulltext/S0092-8674(15)01689-X">Studies of the _TRIM28_ gene in childhood obesity</a> suggest it is not, and that genetic 
@@ -49,18 +61,17 @@ When this document was first compiled, the versions used were:
 ```{r}
 #| label: package versions
 #| warning: false
-#| echo: false
 
 paste("mixR", packageVersion("mixR"))
 paste("Rcpp", packageVersion("Rcpp"))
 
 ```
 
-Below, I have written out the math for a simple mixture model like the ones we
-are fitting here. Most readers can skip it without missing too much. 
+### Mixture models: the math
 
+Below you can find a quick review of mixture model math.
 
-::: {.callout-tip collapse="true" title="Mixture models: the math"}
+::: {.callout-tip collapse="true" title="Mixture model math (click to expand)"}
 
 Formally, a _finite mixture model_ is a statistical model where two or more
 random processes, usually with different averages, happen to best explain the 
@@ -80,15 +91,15 @@ group 1 is $1 - \pi_2$, where $\pi_2$ is the probability of NOT being in it.
 Formally, $\pi_k = Pr(K = k | X = x)$. In a simple two-component model, we can 
 start from a guess for $\pi_1$ based on k-means or cutting a dendrogram.
 We will seek parameters $\theta_k = (\mu_k, \sigma_k)$ for each group $k$
-to maximize the probability of observing our actual data.
+to maximize the probability of observing our actual data given our model.
 
-The joint probability $\prod_{i=1}^n (x; \theta)$ of observing the data $X$ 
-given the proposed model parameters $\theta$ is referred to as the 
-_likelihood_ $\mathcal{L}(X|\theta)$ of the data, with $n$ observations and 
+The joint probability $\prod_{i=1}^n p(x; \theta)$ of observing the data $X$ 
+given the proposed parameters $\theta$ is referred to as the 
+_likelihood_ $\mathcal{L}(\theta|X)$ of the model, with $n$ observations and 
 parameters $\theta = (\theta_1, ..., \theta_K) = (\theta_1, \theta_2)$ for us.
 
 $$ 
-\mathcal{L}(X|\theta) = \prod_{i=1}^n \sum_{k=1}^k \pi_k N(x_i; \theta_k)
+\mathcal{L}(\theta|X) = \prod_{i=1}^n \sum_{k=1}^k \pi_k N(x_i; \theta_k)
                       = \prod_{i=1}^n (\pi_1 N(x_i; \theta_1) + 
                         (1 - \pi_1) N(x_i; \theta_2))
 $$ 
@@ -97,7 +108,7 @@ Normally we could take logs, set the first and second derivatives to 0, and
 solve for appropriate values of $\theta$, but since there is a sum in the way,
 we alternate back and forth between assigning each observation to group 1 or 2, 
 then solving for the parameters $\theta_1$ and $\theta_2$ which maximize
-$\mathcal{L}(X_i|\theta_k)$ for all $X_i$ where $K_i = k$. It turns out that  
+$\mathcal{L}(\theta_k|X_i)$ for all $X_i$ where $K_i = k$. It turns out that  
 $X$ need not be from a Normal (Gaussian) distribution for this to work, 
 something that will be explored later.
 
@@ -116,7 +127,6 @@ Let's fit a mixture model to the expression of EVI1 from the _MECOM_ gene locus.
 ```{r}
 #| label: MLL mixture model
 #| warning: false
-#| echo: false
 
 library(mixR)
 dxsmall <- read.csv(url("https://trichelab.github.io/data/dxsmall.csv"), row=1)
@@ -163,6 +173,8 @@ Over the past few decades, improvements in care have changed this to the point
 that most people now ask instead, "what determines if these drugs will work?"
 As we shall see, a patient's genetic lesions aren't always the best answer. 
 
+### Thirty years of trial data
+
 ```{webr-r}
 # for interactive usage; identical to data(dxsmall, package="bifurcatoR")
 dxsmall <- read.csv(url("https://trichelab.github.io/data/dxsmall.csv"), row=1)
@@ -192,6 +204,8 @@ ggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +
   geom_beeswarm() + theme_classic() + ylab("log(EVI1 mRNA)")
 ```
 
+### A survival analysis of gene fusions
+
 In large clinical trials, the primary endpoint (the thing the trial is meant
 to improve upon) usually involves time to an event. If that event is death, 
 we refer to the analysis as a survival analysis. We might ask whether the 
@@ -208,6 +222,8 @@ ggsurvplot(fusionFit, conf.int=TRUE, legend="none", xlab="Time in days")
 Well, that's a big huge mess.  Let's limit the analysis to fusion partners that
 appear more than 5 times in the data, since otherwise we don't have much power.
 
+### A survival analysis of common MLL fusions
+
 ```{webr-r}
 # Be sure to run the preceding chunks!
 common <- names(which(table(MLL$fusion) > 5))
@@ -221,6 +237,8 @@ suggest, there's a tremendous amount of overlap between some 'common' fusions.
 For example, patients with _SEPT6_ fusions clearly do better than patients with
 _MLLT4_. Are there individual-level differences at play here?
 
+### Examining evidence for a mixture 
+
 ```{webr-r}
 # Be sure to run the preceding chunks!
 ggplot(MLLcommon, aes(x=fusion, y=MECOM, color=fusion, alpha=I(0.5))) +
@@ -233,6 +251,8 @@ most _MLLT4_ cases have high _EVI1_ expression. Perhaps this is worth modeling.
 Let's compare how well our EVI1/_MECOM_ RNA expression predicts survival in 
 MLL-rearranged leukemia cases, and let's see if this might be better than basing
 treatment on the fusion partner. (_EVI1_-high cells tend to be chemoresistant.)
+
+### A mixture of outcomes
 
 ```{webr-r}
 # Run the previous chunks first!
@@ -254,6 +274,8 @@ event goes up exponentially over time as a function of the hazard rate. Here
 we will also entertain the possibility of there being more than two groups. 
 (Most leukemia patients are considered cured after 5 years, after which point
 anyone who hasn't succumbed to their disease is eventually lost to followup.)
+
+### A mixture of survival distributions
 
 ```{webr-r}
 # Run previous chunks first!
@@ -278,7 +300,10 @@ It appears that MLL-rearranged patients fall into two outcome groups. For lack
 of better words, we will refer to these groups as standard-risk and high-risk.
 How well does EVI1/_MECOM_ expression predict a patient's eventual outcome?
 
+### A test of phenotypic and outcome fits
+
 ```{webr-r}
+# Run the previous chunks first
 outcomeGroup <- weibMix$comp.prob
 rownames(outcomeGroup) <- rownames(MLL) 
 MLL$highRisk <- (apply(outcomeGroup, 1, which.max) < 2)
@@ -290,6 +315,6 @@ Not perfect, but certainly better than expected by chance, given the grouping.
 Obviously, there are many other possible predictors of outcome, and we include 
 numerous gene expression levels along with patient age and (where available) 
 blast counts (i.e., how many of the cells in their bone marrow are immature). 
-(For example, the _CD34_ and _MECOM_ genes turn out to be jointly informative,
- and modeling the two together turns out to be more powerful than either alone.)
+For example, the _CD34_ and _MECOM_ genes turn out to be jointly informative;
+and modeling the two together turns out to be more powerful than either alone.
 But having an idea of whether the data supports natural grouping sure is handy.

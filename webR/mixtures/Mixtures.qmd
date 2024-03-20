@@ -12,22 +12,147 @@ webr:
 
 ## Background: unexplained phenotypic variability
 
-It is not uncommon for a genetic condition to show unexplained heterogeneity,
-that is, the same variant produces different effects in comparable individuals. 
-A <a href="https://www.youtube.com/watch?v=V0Hp3HnS8M4">particularly vivid example</a> comes from neurofibromatosis type 1, or NF1. 
-Variants in the _NF1_ gene cause neurofibromatosis, but the way the disease 
-manifests can be shockingly different, even in identical twins. 
+It is not uncommon for a genetic condition to show unexplained heterogeneity;
+the same genotype(s) can produce different effects in comparable individuals. 
+A particularly vivid example comes from neurofibromatosis type 1, or NF1, and 
+<a href="https://www.youtube.com/watch?v=V0Hp3HnS8M4">genetically identical twins who look nothing alike</a>.
 
-Of course, disease states are not the only example of such divergence. Studies
-of <a href="https://www.cell.com/fulltext/S0092-8674(15)01689-X">the _TRIM28_ gene in mouse and human childhood obesity</a> suggest that 'epigenetic' machinery
-can create stochastic branch-points in development, rather than fixed outcomes.
-Instead of looking for 'spread' as the readout for such variability, we might 
-wonder if approaches geared specifically towards 'splits' are more powerful. 
+Is this divergence restricted to rare predisposition syndromes?
+<a href="https://www.cell.com/fulltext/S0092-8674(15)01689-X">Studies of the _TRIM28_ gene in childhood obesity</a> suggest it is not, and that genetic 
+differences in epigenetic machinery may create stochastic branch-points in
+development. We might wonder if approaches to finding 'splits' could be handy.
 
-In short, we often ask the question 'one lump or two?' Mixtures can answer this.
+In short, we often ask 'one lump or two?' Mixture models can help answer this.
 
 
-## An example from infant leukemia
+## Mixture modeling
+
+Modeling observed data as a mixture of groups is fairly intuitive, and the 
+process is iterative:
+
+[![Old faithful geyser eruption delays and durations](EM_Clustering_of_Old_Faithful_data.gif){fig-align="left"}](https://en.wikipedia.org/wiki/Expectation%E2%80%93maximization_algorithm)
+
+In the `bifurcatoR` package, we farm out the compute-intensive iteration to
+the `mixR` package, because it's fast (using `Rcpp` for loops) and it supports
+Weibull mixture models (as for survival analyses).
+
+```{webr-r}
+library(mixR)
+paste("mixR", packageVersion("mixR"))
+paste("Rcpp", packageVersion("Rcpp"))
+```
+
+It's a good idea to keep track of versions, in case something were to change.
+
+When this document was first compiled, the versions used were:
+
+```{r}
+#| label: package versions
+#| warning: false
+#| echo: false
+
+paste("mixR", packageVersion("mixR"))
+paste("Rcpp", packageVersion("Rcpp"))
+
+```
+
+Below, I have written out the math for a simple mixture model like the ones we
+are fitting here. Most readers can skip it without missing too much. 
+
+
+::: {.callout-tip collapse="true" title="Mixture models: the math"}
+
+Formally, a _finite mixture model_ is a statistical model where two or more
+random processes, usually with different averages, happen to best explain the 
+patterns in observed data. If the processes are distinguished by something like 
+a genotype or an observable phenotype, we might apply a statistical test (like
+Student's _t_-test) to gauge how often we'd see such differences by chance. But 
+in our line of work, we often want to identify distinguishable lumps that do not
+correspond to labels such as genotypes. This is where mixture models come in 
+handy. A simple example is a mixture of two Gaussian (Normal) distributions:
+
+$$ 
+p(x) = \Sigma^K_{k=1}\pi_k\mathcal{N}(x|\mu_k,\sigma_k)
+$$ 
+
+If we only have two components (K=2), then the probability $\pi_1$ of being in
+group 1 is $1 - \pi_2$, where $\pi_2$ is the probability of NOT being in it.
+Formally, $\pi_k = Pr(K = k | X = x)$. In a simple two-component model, we can 
+start from a guess for $\pi_1$ based on k-means or cutting a dendrogram.
+We will seek parameters $\theta_k = (\mu_k, \sigma_k)$ for each group $k$
+to maximize the probability of observing our actual data.
+
+The joint probability $\prod_{i=1}^n (x; \theta)$ of observing the data $X$ 
+given the proposed model parameters $\theta$ is referred to as the 
+_likelihood_ $\mathcal{L}(X|\theta)$ of the data, with $n$ observations and 
+parameters $\theta = (\theta_1, ..., \theta_K) = (\theta_1, \theta_2)$ for us.
+
+$$ 
+\mathcal{L}(X|\theta) = \prod_{i=1}^n \sum_{k=1}^k \pi_k N(x_i; \theta_k)
+                      = \prod_{i=1}^n (\pi_1 N(x_i; \theta_1) + 
+                        (1 - \pi_1) N(x_i; \theta_2))
+$$ 
+
+Normally we could take logs, set the first and second derivatives to 0, and 
+solve for appropriate values of $\theta$, but since there is a sum in the way,
+we alternate back and forth between assigning each observation to group 1 or 2, 
+then solving for the parameters $\theta_1$ and $\theta_2$ which maximize
+$\mathcal{L}(X_i|\theta_k)$ for all $X_i$ where $K_i = k$. It turns out that  
+$X$ need not be from a Normal (Gaussian) distribution for this to work, 
+something that will be explored later.
+
+Convergence can take a while if there are a many observations, which is why we 
+use `mixR` for the calculations.  More on the mathematical details and cute 
+math tricks can be found at
+[Matt Stephens' Five Minute Stats](https://stephens999.github.io/fiveMinuteStats/intro_to_em.html).
+
+::: 
+
+
+## A preview from clinical trials
+
+Let's fit a mixture model to the expression of EVI1 from the _MECOM_ gene locus.
+
+```{r}
+#| label: MLL mixture model
+#| warning: false
+#| echo: false
+
+library(mixR)
+dxsmall <- read.csv(url("https://trichelab.github.io/data/dxsmall.csv"), row=1)
+dxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != "CCG-2961")
+MLL <- subset(dxsmall, dxsmall$FusionGroup == "MLL")
+
+# fit a Gaussian mixture model
+library(mixR)
+MLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)
+plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
+     title="EVI1 expression in MLL-rearranged leukemia")
+classification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group
+MLL$EVI1high <- (apply(classification, 1, which.max) > 1)
+```
+
+The above grouping is highly predictive of response to therapy in leukemia
+driven by MLL gene fusions:
+
+```{r}
+#| label: Survival by mixture
+#| warning: false
+#| echo: false
+
+library(survival) 
+library(survminer)
+mixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)
+ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
+      tables.theme = theme_cleantable(), palette=c("darkgreen","darkred"))
+
+```
+
+In the following sections, you can run (and edit) our code and data in your 
+web browser to follow along (and test assumptions we have made in the analysis).
+
+
+## Non-genetic heterogeneity in leukemia
 
 We often want to choose the most useful predictor of some outcome, not just the
 easiest to measure. In childhood leukemia, an example of this comes from
@@ -39,21 +164,18 @@ that most people now ask instead, "what determines if these drugs will work?"
 As we shall see, a patient's genetic lesions aren't always the best answer. 
 
 ```{webr-r}
-
-library(mixR)
-#library(bifurcatoR) # not needed for webR demo
- 
 # for interactive usage; identical to data(dxsmall, package="bifurcatoR")
 dxsmall <- read.csv(url("https://trichelab.github.io/data/dxsmall.csv"), row=1)
 dxsmall <- subset(dxsmall, !is.na(dxsmall$OS) & dxsmall$Protocol != "CCG-2961")
 MLL <- subset(dxsmall, dxsmall$FusionGroup == "MLL")
 
-# fit a Gaussian mixture model
 library(mixR)
 MLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)
 plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
      title="EVI1 expression in MLL-rearranged leukemia")
 
+classification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group
+MLL$EVI1high <- (apply(classification, 1, which.max) > 1)
 ```
 
 Above, we fitted a mixture model to expression of the _EVI1_ isoform of the 
@@ -64,16 +186,10 @@ by which group they fall into. (Note that the high-expression group is smaller.)
 For a quick sanity check, let's also plot the group-wise expression levels. 
 
 ```{webr-r}
-
 # Be sure to run the preceding chunks!
-classification <- MLL_EVI1_fit$comp.prob # component probability, i.e., group
-MLL$EVI1high <- (apply(classification, 1, which.max) > 1)
-
-# plot expression
 library(ggbeeswarm)
 ggplot(MLL, aes(x=EVI1high, y=MECOM, color=fusion, alpha=I(0.5))) +
   geom_beeswarm() + theme_classic() + ylab("log(EVI1 mRNA)")
-
 ```
 
 In large clinical trials, the primary endpoint (the thing the trial is meant
@@ -82,25 +198,22 @@ we refer to the analysis as a survival analysis. We might ask whether the
 gene fusion partner is informative in terms of MLL-rearranged patient survival.
 
 ```{webr-r}
-
 # run the earlier chunks first!
 library(survival) 
 library(survminer)
 fusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLL)
 ggsurvplot(fusionFit, conf.int=TRUE, legend="none", xlab="Time in days")
-
 ```
 
 Well, that's a big huge mess.  Let's limit the analysis to fusion partners that
 appear more than 5 times in the data, since otherwise we don't have much power.
 
 ```{webr-r}
-
+# Be sure to run the preceding chunks!
 common <- names(which(table(MLL$fusion) > 5))
 MLLcommon <- subset(MLL, fusion %in% common)
 commonFusionFit <- survfit(Surv(OS, OSI) ~ fusion, data=MLLcommon)
 ggsurvplot(commonFusionFit, conf.int=TRUE, legend="right", xlab="Time in days")
-
 ```
 
 Now we're getting somewhere, but as the confidence intervals (pastel highlights)
@@ -109,12 +222,10 @@ For example, patients with _SEPT6_ fusions clearly do better than patients with
 _MLLT4_. Are there individual-level differences at play here?
 
 ```{webr-r}
-
 # Be sure to run the preceding chunks!
 ggplot(MLLcommon, aes(x=fusion, y=MECOM, color=fusion, alpha=I(0.5))) +
   geom_beeswarm() + theme_classic() + ylab("log(EVI1 mRNA)") + 
   theme(axis.text.x = element_text(angle = 45, vjust=0.5))  
-
 ```
 
 Hmm. It looks like most _SEPT6_ fusion cases have low _EVI1_ expression, whereas
@@ -124,13 +235,11 @@ MLL-rearranged leukemia cases, and let's see if this might be better than basing
 treatment on the fusion partner. (_EVI1_-high cells tend to be chemoresistant.)
 
 ```{webr-r}
-
 # Run the previous chunks first!
 library(survminer)
 rnaFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)
 ggsurvplot(rnaFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
       tables.theme = theme_cleantable(), palette=c("darkgreen","darkred"))
-
 ```
 
 It sure looks like EVI1/_MECOM_ expression level predicts outcomes better. 
@@ -147,25 +256,22 @@ we will also entertain the possibility of there being more than two groups.
 anyone who hasn't succumbed to their disease is eventually lost to followup.)
 
 ```{webr-r}
-
-# fit Weibull mixture models
+# Run previous chunks first!
 library(mixR) 
 
 # two-component Weibull mixture model 
 weibMix <- mixfit(MLL$OS, family="weibull", ncomp=2)
 (p2 <- plot(weibMix, xlab="Overall survival", title="k = 2"))
 
-# three-component
+# three-component Weibull mixture model
 weibMix3 <- mixfit(MLL$OS, family="weibull", ncomp=3)
 (p3 <- plot(weibMix3, xlab="Overall Survival", title="k = 3"))
 
-# both
 library(patchwork)
 p2 + p3 
 
 # Which does the information criterion suggest is best?
 select(MLL$OS, ncomp=2:3, family="weibull")
-
 ```
 
 It appears that MLL-rearranged patients fall into two outcome groups. For lack
@@ -173,13 +279,11 @@ of better words, we will refer to these groups as standard-risk and high-risk.
 How well does EVI1/_MECOM_ expression predict a patient's eventual outcome?
 
 ```{webr-r}
-
 outcomeGroup <- weibMix$comp.prob
 rownames(outcomeGroup) <- rownames(MLL) 
 MLL$highRisk <- (apply(outcomeGroup, 1, which.max) < 2)
 with(MLL, table(highRisk, EVI1high))
 chisq.test(with(MLL, table(highRisk, EVI1high)))
-
 ```
 
 Not perfect, but certainly better than expected by chance, given the grouping.
@@ -189,10 +293,3 @@ blast counts (i.e., how many of the cells in their bone marrow are immature).
 (For example, the _CD34_ and _MECOM_ genes turn out to be jointly informative,
  and modeling the two together turns out to be more powerful than either alone.)
 But having an idea of whether the data supports natural grouping sure is handy.
-
-
-
-## An example from identical twins
-
-This is where the UK Twins stuff goes. That dataset is kind of huge...
-

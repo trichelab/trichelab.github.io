@@ -20,6 +20,40 @@ ul.task-list li input[type="checkbox"] {
   margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
   vertical-align: middle;
 }
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
 </style>
 
 
@@ -177,14 +211,14 @@ ul.task-list li input[type="checkbox"] {
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['ggplot2', 'reshape2', 'ggbeeswarm', 'effects', 'sampling'];
+globalThis.qwebrInstallRPackagesList = ['ggplot2', 'reshape2', 'ggbeeswarm', 'effects', 'patchwork', 'mixR'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
 
 // Check to see if we have an empty array, if we do set to skip the installation.
 globalThis.qwebrSetupRPackages = !(qwebrInstallRPackagesList.indexOf("") !== -1);
-globalThis.qwebrAutoloadRPackages = false;
+globalThis.qwebrAutoloadRPackages = true;
 
 // Display a startup message?
 globalThis.qwebrShowStartupMessage = true;
@@ -199,7 +233,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"options":{"context":"interactive","results":"markup","dpi":72,"output":"true","comment":"","read-only":"false","autorun":"false","classes":"","fig-width":7,"out-width":"700px","fig-cap":"","out-height":"","label":"unnamed-chunk-1","warning":"true","fig-height":5,"message":"true"},"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nwith(combined, table(Group, Sex))\n\nfit <- glm(G_PLP ~ Lineage+AgeGroup + Sex+Source, data=combined, family=poisson)\nexp(confint(fit))[2:3,] # relative to B-ALL \n\nfit2 <- glm(G_PLP ~ Group + Source, data=combined, family=poisson)\nexp(confint(fit2))[2:4,] # relative to pediatric B-ALL\n\nif (FALSE) { # much nicer plots; alas, not currently working in webR\n  library(nloptr)\n  library(effects)\n  plot(predictorEffects(fit), ylab=\"Burden\", axes=list(x=list(rotate=35)))\n  plot(predictorEffects(fit2), ylab=\"Burden\", axes=list(x=list(rotate=35)))\n}","id":1},{"options":{"context":"interactive","results":"markup","dpi":72,"output":"true","comment":"","read-only":"false","autorun":"false","classes":"","fig-width":7,"out-width":"700px","fig-cap":"","out-height":"","label":"unnamed-chunk-2","warning":"true","fig-height":5,"message":"true"},"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\n\nrs <- function(y, n, m) replicate(m, sum(y[sample.int(n=length(y),size=n)]>0)/n)\n\nlibrary(reshape2)\nresults <- melt(data.frame(lapply(byGroup, rs, n=250, m=4000)), \n                variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\nggplot(results, aes(x=Group, y=Burden, color=Group)) + \n  scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                     breaks = seq(0, .15, .025)) + ylab(\"Germline burden\") +\n  geom_hline(yintercept=0.05, lty=3) + geom_quasirandom() + \n  theme_classic() + theme(legend.position=\"none\")","id":2},{"options":{"context":"interactive","results":"markup","dpi":72,"output":"true","comment":"","read-only":"false","autorun":"false","classes":"","fig-width":7,"out-width":"700px","fig-cap":"","out-height":"","label":"unnamed-chunk-3","warning":"true","fig-height":5,"message":"true"},"code":"\n# warmup plots (you will need to have run the previous chunks)\npar(mfrow=c(1,2))    # side by side plots, ugly but useful \n\nfit$call             # what was included in the model?\nplot(fit, which=2)   # how well is each case explained by it? \n\nfit2$call            # what was included in the model?\nplot(fit2, which=2)  # how well is each case explained by it? \n\npar(mfrow=c(1,1))    # back to defaults","id":3},{"options":{"context":"interactive","results":"markup","dpi":72,"output":"true","comment":"","read-only":"false","autorun":"false","classes":"","fig-width":7,"out-width":"700px","fig-cap":"","out-height":"","label":"unnamed-chunk-4","warning":"true","fig-height":5,"message":"true"},"code":"\nlibrary(sampling)\n# (put your code here; feel free to borrow from the resampling chunk & plots)","id":4},{"options":{"context":"interactive","results":"markup","dpi":72,"output":"true","comment":"","read-only":"false","autorun":"false","classes":"","fig-width":7,"out-width":"700px","fig-cap":"","out-height":"","label":"unnamed-chunk-5","warning":"true","fig-height":5,"message":"true"},"code":"sessionInfo()","id":5}];
+globalThis.qwebrCellDetails = [{"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nwith(combined, table(Group, Sex))\n\nfit <- glm(G_PLP ~ Lineage+AgeGroup + Sex+Source, data=combined, family=poisson)\nexp(confint(fit))[2:3,] # relative to B-ALL \n\nfit2 <- glm(G_PLP ~ Group + Source, data=combined, family=poisson)\nexp(confint(fit2))[2:4,] # relative to pediatric B-ALL\n\nif (FALSE) { # much nicer plots; alas, not currently working in webR\n  library(nloptr)\n  library(effects)\n  plot(predictorEffects(fit), ylab=\"Burden\", axes=list(x=list(rotate=35)))\n  plot(predictorEffects(fit2), ylab=\"Burden\", axes=list(x=list(rotate=35)))\n}","id":1,"options":{"out-height":"","dpi":72,"context":"interactive","fig-height":5,"comment":"","read-only":"false","classes":"","warning":"true","fig-width":7,"output":"true","message":"true","label":"unnamed-chunk-1","fig-cap":"","autorun":"false","out-width":"700px","results":"markup"}},{"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\n\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(mixR) \n# select(results$Burden, ncomp=2:4)\n# ncomp <- mixres$ncomp[mixres$best == \"*\"])\nncomp <- 4 # as previously shown above \nfit <- mixfit(results$Burden, ncomp=ncomp)\np1 <- plot(fit, \n      title=paste(\"Germline P/LP variant burden across\", \n                  nrow(combined), \"leukemia patients\"), \n      xlab=\"Germline burden\",\n      theme=\"minimal\") + \n      scale_x_continuous(labels = scales::label_percent(), limits = c(0, 0.15))\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\np2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + \n        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                           breaks = seq(0, .15, .025)) + \n        ylab(\"Germline burden\") +\n        geom_hline(yintercept=0.05, lty=3) + \n        geom_quasirandom() + \n        theme_classic() + \n        theme(legend.position=\"none\", \n              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))\n\nlibrary(patchwork)\np1 + p2 ","id":2,"options":{"out-height":"","dpi":72,"context":"interactive","fig-height":5,"comment":"","read-only":"false","classes":"","warning":"true","fig-width":7,"output":"true","message":"true","label":"unnamed-chunk-2","fig-cap":"","autorun":"false","out-width":"700px","results":"markup"}},{"code":"\n# warmup plots (you will need to have run the previous chunks)\npar(mfrow=c(1,2))    # side by side plots, ugly but useful \n\nfit$call             # what was included in the model?\nplot(fit, which=2)   # how well is each case explained by it? \n\nfit2$call            # what was included in the model?\nplot(fit2, which=2)  # how well is each case explained by it? \n\npar(mfrow=c(1,1))    # back to defaults","id":3,"options":{"out-height":"","dpi":72,"context":"interactive","fig-height":5,"comment":"","read-only":"false","classes":"","warning":"true","fig-width":7,"output":"true","message":"true","label":"unnamed-chunk-3","fig-cap":"","autorun":"false","out-width":"700px","results":"markup"}},{"code":"sessionInfo()","id":4,"options":{"out-height":"","dpi":72,"context":"interactive","fig-height":5,"comment":"","read-only":"false","classes":"","warning":"true","fig-width":7,"output":"true","message":"true","label":"unnamed-chunk-4","fig-cap":"","autorun":"false","out-width":"700px","results":"markup"}}];
 
 </script>
 <script type="module">
@@ -919,10 +953,27 @@ globalThis.qwebrExecuteCode = async function (
 
 </head>
 
-<body class="fullcontent">
+<body>
 
 <div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
-
+<div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+  <nav id="TOC" role="doc-toc" class="toc-active" data-toc-expanded="3">
+    <h2 id="toc-title">Sections</h2>
+   
+  <ul>
+  <li><a href="#background-acute-leukemia-as-a-model-for-cancer" id="toc-background-acute-leukemia-as-a-model-for-cancer" class="nav-link active" data-scroll-target="#background-acute-leukemia-as-a-model-for-cancer">Background: acute leukemia as a model for cancer</a>
+  <ul class="collapse">
+  <li><a href="#a-preview" id="toc-a-preview" class="nav-link" data-scroll-target="#a-preview">A preview</a></li>
+  </ul></li>
+  <li><a href="#modeling-germline-burden-with-poisson-regression" id="toc-modeling-germline-burden-with-poisson-regression" class="nav-link" data-scroll-target="#modeling-germline-burden-with-poisson-regression">Modeling germline burden with Poisson regression</a></li>
+  <li><a href="#resampling-based-inference-of-germline-burden" id="toc-resampling-based-inference-of-germline-burden" class="nav-link" data-scroll-target="#resampling-based-inference-of-germline-burden">Resampling-based inference of germline burden</a>
+  <ul class="collapse">
+  <li><a href="#exercise" id="toc-exercise" class="nav-link" data-scroll-target="#exercise">Exercise</a></li>
+  </ul></li>
+  <li><a href="#session-information" id="toc-session-information" class="nav-link" data-scroll-target="#session-information">Session information</a></li>
+  </ul>
+<div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/germline/Germline.qmd"><i class="bi bi-github"></i>Quarto (source code)</a></li></ul></div></nav>
+</div>
 <main class="content" id="quarto-document-content">
 <script src="https://cdn.jsdelivr.net/npm/monaco-editor@0.45.0/min/vs/loader.js"></script>
 <script type="module" id="qwebr-monaco-editor-init">
@@ -1120,9 +1171,145 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <section id="background-acute-leukemia-as-a-model-for-cancer" class="level2">
 <h2 class="anchored" data-anchor-id="background-acute-leukemia-as-a-model-for-cancer">Background: acute leukemia as a model for cancer</h2>
-<p>Childhood cancers, of which acute leukemia is the most common, present both a clinical need and a model for cancer more generally. These tumors often lack recurrent gene mutations, instead driven by structural variants (SVs) which rewire multiple genes. Many SVs are missed by standard karyotyping (chromosomal analysis), and all raise a key question: <em>where do these SVs come from?</em></p>
+<p>Childhood cancers, of which acute leukemia is the most common, present both a clinical need and a model for cancer more generally. These tumors often lack recurrent gene mutations, instead driven by structural variants (SVs) which rewire multiple genes. Many SVs are missed by standard karyotyping (chromosomal analysis), and all raise a key question: <strong><em>where do these SVs come from?</em></strong></p>
 <p>A seemingly straightforward answer is that mammals have three deeply conserved genes, millions of years old, whose function is to cut-and-paste DNA, and when these genes are inappropriately activated, structural variants ensue. The precise nature of these cut-and-paste enzymes (<em>RAG1</em>, <em>PGBD5</em>, and <em>THAP9</em>) addresses a key difference between pediatric and adult tumors (namely, the fact that most pediatric tumors harbor very few mutations). <em>RAG1</em> is critical for immune cell maturation, as it allows B and T (lymphoid) cells to activate in response to specific non-self proteins. However, in lymphoblastic leukemia and lymphoma (which together consitute the most common type of childhood cancer), off-target activity of <em>RAG1</em> is sufficient to induce some of the same gene fusions seen in patients. Meanwhile, in most childhood solid tumors, <a href="https://www.nature.com/articles/ng.3866">the <em>PGBD5</em> transposase gene is inappropriately activated</a>, leading to the type of cut-and-paste SVs that characterize ultra-low-mutation-burden rhabdoid tumors.</p>
 <p>But there is at least one major exception: none of the known transposase genes appear to be activated in acute myeloid leukemia (AML), nor are classical tumor suppressor genes like <em>TP53</em> often mutated or deleted in pediatric AML patients. Why is AML different from most other childhood tumors? Could inherited genetic variants explain the missing mechanism in AML (and especially pediatric AML)?</p>
+<section id="a-preview" class="level3">
+<h3 class="anchored" data-anchor-id="a-preview">A preview</h3>
+<p>For counts, such as pathogenic germline variants in leukemia, we can use Poisson models:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>combined <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(<span class="st">"https://trichelab.github.io/data/combined.csv"</span>),<span class="at">row=</span><span class="dv">1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>combined<span class="sc">$</span>Source <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(combined<span class="sc">$</span>Source), <span class="dv">4</span>), <span class="dv">4</span>), <span class="dv">4</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>combined<span class="sc">$</span>Lineage <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(combined<span class="sc">$</span>Lineage), <span class="dv">3</span>), <span class="dv">3</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>combined<span class="sc">$</span>Group <span class="ot">&lt;-</span> <span class="fu">paste</span>(combined<span class="sc">$</span>AgeGroup, <span class="fu">gsub</span>(<span class="st">"</span><span class="sc">\\</span><span class="st">-"</span>, <span class="st">""</span>, combined<span class="sc">$</span>Lineage))</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>combined<span class="sc">$</span>Group <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(combined<span class="sc">$</span>Group), <span class="dv">4</span>), <span class="dv">4</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">with</span>(combined, <span class="fu">table</span>(Group, Sex))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="do">##                 Sex</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="do">## Group            Female Male</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="do">##   Pediatric BALL    789  941</span></span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="do">##   Pediatric TALL    108  322</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">##   Adult AML         140  200</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="do">##   Pediatric AML     251  268</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>fit2 <span class="ot">&lt;-</span> <span class="fu">glm</span>(G_PLP <span class="sc">~</span> Group <span class="sc">+</span> Source, <span class="at">data=</span>combined, <span class="at">family=</span>poisson)</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit2)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="do">## Call:</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="do">## glm(formula = G_PLP ~ Group + Source, family = poisson, data = combined)</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="do">## Coefficients:</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a><span class="do">##                     Estimate Std. Error z value Pr(&gt;|z|)    </span></span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a><span class="do">## (Intercept)         -4.05445    0.18186 -22.295   &lt;2e-16 ***</span></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="do">## GroupPediatric TALL  0.32892    0.35170   0.935   0.3497    </span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a><span class="do">## GroupAdult AML       0.07997    1.12443   0.071   0.9433    </span></span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a><span class="do">## GroupPediatric AML   0.49548    1.00940   0.491   0.6235    </span></span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a><span class="do">## SourceTARGET         1.06301    1.02985   1.032   0.3020    </span></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="do">## SourceUBTF           1.24533    1.06695   1.167   0.2431    </span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a><span class="do">## SourceBEAT_AML       1.23658    1.10782   1.116   0.2643    </span></span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a><span class="do">## SourceZeroCancer     1.68716    0.72613   2.324   0.0202 *  </span></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a><span class="do">## ---</span></span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a><span class="do">## Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a><span class="do">## (Dispersion parameter for poisson family taken to be 1)</span></span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-34"><a href="#cb1-34" aria-hidden="true" tabindex="-1"></a><span class="do">##     Null deviance: 739.77  on 3018  degrees of freedom</span></span>
+<span id="cb1-35"><a href="#cb1-35" aria-hidden="true" tabindex="-1"></a><span class="do">## Residual deviance: 680.26  on 3011  degrees of freedom</span></span>
+<span id="cb1-36"><a href="#cb1-36" aria-hidden="true" tabindex="-1"></a><span class="do">## AIC: 910.72</span></span>
+<span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb1-38"><a href="#cb1-38" aria-hidden="true" tabindex="-1"></a><span class="do">## Number of Fisher Scoring iterations: 6</span></span>
+<span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(nloptr)</span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(effects)</span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(<span class="fu">predictorEffects</span>(fit2), <span class="at">ylab=</span><span class="st">"Burden"</span>, <span class="at">axes=</span><span class="fu">list</span>(<span class="at">x=</span><span class="fu">list</span>(<span class="at">rotate=</span><span class="dv">35</span>)))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Germline_files/figure-html/Poisson%20fit-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>However, sometimes we are curious if a natural boundary exists in the data, suggesting that a more than one process is generating the observations. We can use resampling and mixture models to probe this:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>byGroup <span class="ot">&lt;-</span> <span class="fu">split</span>(combined<span class="sc">$</span>G_PLP, combined<span class="sc">$</span>Group)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>rs <span class="ot">&lt;-</span> <span class="cf">function</span>(y, n, m, <span class="at">slop=</span><span class="dv">20</span>) {</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  s <span class="ot">&lt;-</span> n <span class="sc">+</span> (<span class="fu">round</span>(slop<span class="sc">/</span><span class="dv">2</span>)) <span class="sc">-</span> <span class="fu">sample</span>(<span class="fu">seq_len</span>(slop), <span class="dv">1</span>)</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replicate</span>(m, <span class="fu">sum</span>(y[<span class="fu">sample.int</span>(<span class="at">n=</span><span class="fu">length</span>(y), <span class="at">size=</span>s)] <span class="sc">&gt;</span> <span class="dv">0</span>) <span class="sc">/</span> s)</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">lapply</span>(byGroup, rs, <span class="at">n=</span><span class="dv">300</span>, <span class="at">m=</span><span class="dv">3333</span>, <span class="at">slop=</span><span class="dv">20</span>)) </span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>results <span class="ot">&lt;-</span> <span class="fu">melt</span>(res, <span class="at">variable.name=</span><span class="st">"Group"</span>, <span class="at">value.name=</span><span class="st">"Burden"</span>)</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixR) </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>mixres <span class="ot">&lt;-</span> <span class="fu">select</span>(results<span class="sc">$</span>Burden, <span class="at">ncomp=</span><span class="dv">2</span><span class="sc">:</span><span class="dv">4</span>)</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>ncomp <span class="ot">&lt;-</span> mixres<span class="sc">$</span>ncomp[mixres<span class="sc">$</span>best <span class="sc">==</span> <span class="st">"*"</span>]</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">mixfit</span>(results<span class="sc">$</span>Burden, <span class="at">ncomp=</span>ncomp)</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> <span class="fu">plot</span>(fit, </span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>           <span class="at">title=</span><span class="fu">paste</span>(<span class="st">"Germline P/LP variant burden across"</span>, </span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">nrow</span>(combined), <span class="st">"leukemia patients"</span>), </span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>           <span class="at">xlab=</span><span class="st">"Germline burden"</span>,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>           <span class="at">theme=</span><span class="st">"minimal"</span>) <span class="sc">+</span> </span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>           <span class="fu">scale_x_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span><span class="fu">label_percent</span>(), </span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>                              <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.15</span>))</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>p1</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Germline_files/figure-html/Resampling-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We might ask whether the observed cohorts split along roughly similar lines:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggbeeswarm)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(results, <span class="fu">aes</span>(<span class="at">x=</span>Group, <span class="at">y=</span>Burden, <span class="at">color=</span>Group)) <span class="sc">+</span> </span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>        <span class="fu">scale_y_continuous</span>(<span class="at">labels =</span> scales<span class="sc">::</span>percent, <span class="at">limits =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.15</span>),</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>                           <span class="at">breaks =</span> <span class="fu">seq</span>(<span class="dv">0</span>, .<span class="dv">15</span>, .<span class="dv">025</span>)) <span class="sc">+</span> </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>        <span class="fu">ylab</span>(<span class="st">"Germline burden"</span>) <span class="sc">+</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_hline</span>(<span class="at">yintercept=</span><span class="fl">0.05</span>, <span class="at">lty=</span><span class="dv">3</span>) <span class="sc">+</span> </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>        <span class="fu">geom_quasirandom</span>() <span class="sc">+</span> </span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>        <span class="fu">theme</span>(<span class="at">legend.position=</span><span class="st">"none"</span>, </span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>              <span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">35</span>, <span class="at">vjust =</span> <span class="dv">1</span>, <span class="at">hjust=</span><span class="dv">1</span>))</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>p2</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Germline_files/figure-html/Supervised-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Finally, we might want to plot the two results alongside one another.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(patchwork)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="sc">+</span> p2 </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Germline_files/figure-html/Patchwork-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Below, we will walk through each of these steps.</p>
+</section>
 </section>
 <section id="modeling-germline-burden-with-poisson-regression" class="level2">
 <h2 class="anchored" data-anchor-id="modeling-germline-burden-with-poisson-regression">Modeling germline burden with Poisson regression</h2>
@@ -1137,22 +1324,66 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>When you ran the code in the Poisson regression chunks above (and you did run the code, right? That’s the whole point of this exercise), you may have noticed a commented-out piece of code to make effect size plots. The same approach we took to resampling can be applied to all sorts of questions, and in fact the <a href="https://cran.r-project.org/web/packages/sampling/">sampling</a> package on CRAN is dedicated to implementing fancy designs for biased sampling.</p>
-<ul>
-<li><strong>Exercise</strong>: Can you find examples where our predictions are inaccurate? Are there specific cases with high variant burdens not explained by any fit?</li>
-</ul>
+<section id="exercise" class="level3">
+<h3 class="anchored" data-anchor-id="exercise">Exercise</h3>
+<p>Can you find examples where our predictions are inaccurate? Are there specific cases with high variant burdens not explained by any fit?</p>
 <div id="qwebr-insertion-location-3"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<ul>
-<li><strong>Exercise</strong>: Are there critical sources of variability we haven’t modeled? If you want to play with biased sampling, the <code>sampling</code> package is your friend. It is already installed in this webR instance, but you’ll need to load it.</li>
-</ul>
-<div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>Modeling human biology is complicated (you heard it here first). Nevertheless, it is somewhat unlikely that AML and ALL would show such significant differences in clinically annotated germline variant frequency across five different cohorts (each comprising multiple clinical trials, across decades of studies) by chance. It seems that relevant germline variants are found in at least 5% of AML cases, and the &gt; 5% burden in AML consistently emerges across age groups and studies. Moreover, pediatric AML is the group of patients where this threshold is most consistently crossed by random samples of patients from existing cohorts.</p>
 <p>We have <a href="https://www.nature.com/articles/s43018-023-00605-z">previously proposed</a> that all patients who present with acute leukemia should be offered germline genetic testing, as should their family members, in light of the role for related donors in stem cell transplantation. The above findings serve to strengthen this statement: given the cost (median of about $1.1M US) to treat a child with AML, successfully or otherwise, the cost of germline genetic testing (about $400 for whole-genome sequencing in 2024) is a drop in the ocean. Registries like <a href="https://childrensoncologygroup.org/cog-registry-project-everychild">Project EveryChild</a> ease the challenge of historical comparison, so one might ask, what’s standing in the way?</p>
 </section>
+</section>
 <section id="session-information" class="level2">
 <h2 class="anchored" data-anchor-id="session-information">Session information</h2>
-<div id="qwebr-insertion-location-5"></div>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sessionInfo</span>()</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="do">## R version 4.3.3 (2024-02-29)</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="do">## Platform: x86_64-pc-linux-gnu (64-bit)</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Running under: Ubuntu 22.04.4 LTS</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="do">## Matrix products: default</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="do">## BLAS:   /usr/lib/x86_64-linux-gnu/blas/libblas.so.3.10.0 </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="do">## LAPACK: /usr/lib/x86_64-linux-gnu/lapack/liblapack.so.3.10.0</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="do">## locale:</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="do">##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              </span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="do">##  [3] LC_TIME=en_US.UTF-8        LC_COLLATE=en_US.UTF-8    </span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="do">##  [5] LC_MONETARY=en_US.UTF-8    LC_MESSAGES=en_US.UTF-8   </span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a><span class="do">##  [7] LC_PAPER=en_US.UTF-8       LC_NAME=C                 </span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="do">##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            </span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="do">## [11] LC_MEASUREMENT=en_US.UTF-8 LC_IDENTIFICATION=C       </span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="do">## time zone: America/New_York</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="do">## tzcode source: system (glibc)</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a><span class="do">## attached base packages:</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] stats     graphics  grDevices datasets  utils     methods   base     </span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a><span class="do">## other attached packages:</span></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="do">## [1] patchwork_1.2.0  ggbeeswarm_0.7.2 ggplot2_3.5.0    mixR_0.2.0      </span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a><span class="do">## [5] reshape2_1.4.4   effects_4.2-2    carData_3.0-5    nloptr_2.0.3    </span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a><span class="do">## </span></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a><span class="do">## loaded via a namespace (and not attached):</span></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a><span class="do">##  [1] generics_0.1.3    utf8_1.2.4        bspm_0.5.5        stringi_1.8.3    </span></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="do">##  [5] lattice_0.22-5    lme4_1.1-35.1     digest_0.6.35     magrittr_2.0.3   </span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a><span class="do">##  [9] evaluate_0.23     grid_4.3.3        estimability_1.5  fastmap_1.1.1    </span></span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a><span class="do">## [13] plyr_1.8.9        jsonlite_1.8.8    Matrix_1.6-5      nnet_7.3-19      </span></span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a><span class="do">## [17] DBI_1.2.2         survival_3.5-8    fansi_1.0.6       scales_1.3.0     </span></span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a><span class="do">## [21] cli_3.6.2         mitools_2.4       rlang_1.1.3       munsell_0.5.0    </span></span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a><span class="do">## [25] splines_4.3.3     withr_3.0.0       yaml_2.3.8        tools_4.3.3      </span></span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a><span class="do">## [29] dplyr_1.1.4       minqa_1.2.6       colorspace_2.1-0  boot_1.3-30      </span></span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a><span class="do">## [33] vctrs_0.6.5       R6_2.5.1          lifecycle_1.0.4   stringr_1.5.1    </span></span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a><span class="do">## [37] htmlwidgets_1.6.4 vipor_0.4.7       MASS_7.3-60.0.1   insight_0.19.8   </span></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a><span class="do">## [41] beeswarm_0.4.0    pkgconfig_2.0.3   pillar_1.9.0      gtable_0.3.4     </span></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="do">## [45] glue_1.7.0        Rcpp_1.0.12       tidyselect_1.2.1  xfun_0.42        </span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a><span class="do">## [49] tibble_3.2.1      knitr_1.45        farver_2.1.1      htmltools_0.5.7  </span></span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a><span class="do">## [53] nlme_3.1-164      survey_4.4-1      labeling_0.4.3    rmarkdown_2.26   </span></span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a><span class="do">## [57] compiler_4.3.3</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 

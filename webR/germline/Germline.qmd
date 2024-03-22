@@ -1,12 +1,27 @@
 ---
 title: "Germline variant analysis via resampling"
-format: html
+repo-url: https://github.com/trichelab/trichelab.github.io/
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 3
+    toc-title: Sections
+    code-fold: true
+    code-links:
+      - text: Quarto (source code)
+        icon: github
+        href: https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/germline/Germline.qmd
 engine: knitr
+knitr: 
+  opts_chunk: 
+    collapse: true
+execute:
+  warning: false
 filters:
   - webr
 webr:
-  packages: ['ggplot2','reshape2','ggbeeswarm','effects','sampling']
-  autoload-packages: false
+  packages: ['ggplot2','reshape2','ggbeeswarm','effects','patchwork','mixR']
 ---
 
 
@@ -16,7 +31,7 @@ Childhood cancers, of which acute leukemia is the most common, present both a
 clinical need and a model for cancer more generally. These tumors often lack 
 recurrent gene mutations, instead driven by structural variants (SVs) which 
 rewire multiple genes. Many SVs are missed by standard karyotyping (chromosomal 
-analysis), and all raise a key question: _where do these SVs come from?_
+analysis), and all raise a key question: **_where do these SVs come from?_**
 
 A seemingly straightforward answer is that mammals have three deeply conserved 
 genes, millions of years old, whose function is to cut-and-paste DNA, and when
@@ -38,6 +53,96 @@ appear to be activated in acute myeloid leukemia (AML), nor are classical tumor
 suppressor genes like _TP53_ often mutated or deleted in pediatric AML patients.
 Why is AML different from most other childhood tumors? Could inherited genetic
 variants explain the missing mechanism in AML (and especially pediatric AML)? 
+
+
+### A preview
+
+For counts, such as pathogenic germline variants in leukemia, we can 
+use Poisson models:
+
+```{r}
+#| label: Poisson fit
+#| warning: false
+
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+with(combined, table(Group, Sex))
+fit2 <- glm(G_PLP ~ Group + Source, data=combined, family=poisson)
+summary(fit2)
+
+library(nloptr)
+library(effects)
+plot(predictorEffects(fit2), ylab="Burden", axes=list(x=list(rotate=35)))
+```
+
+However, sometimes we are curious if a natural boundary exists in the data, 
+suggesting that a more than one process is generating the observations.
+We can use resampling and mixture models to probe this: 
+
+```{r}
+#| label: Resampling 
+#| warning: false
+
+byGroup <- split(combined$G_PLP, combined$Group)
+rs <- function(y, n, m, slop=20) {
+  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)
+  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)
+}
+
+set.seed(1234)
+library(reshape2)
+res <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) 
+results <- melt(res, variable.name="Group", value.name="Burden")
+
+library(mixR) 
+library(ggplot2)
+mixres <- select(results$Burden, ncomp=2:4)
+ncomp <- mixres$ncomp[mixres$best == "*"]
+fit <- mixfit(results$Burden, ncomp=ncomp)
+p1 <- plot(fit, 
+           title=paste("Germline P/LP variant burden across", 
+                        nrow(combined), "leukemia patients"), 
+           xlab="Germline burden",
+           theme="minimal") + 
+           scale_x_continuous(labels = scales::label_percent(), 
+                              limits = c(0, 0.15))
+p1
+```
+
+We might ask whether the observed cohorts split along roughly similar lines:
+
+```{r}
+#| label: Supervised
+#| warning: false
+
+library(ggplot2)
+library(ggbeeswarm)
+p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + 
+        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),
+                           breaks = seq(0, .15, .025)) + 
+        ylab("Germline burden") +
+        geom_hline(yintercept=0.05, lty=3) + 
+        geom_quasirandom() + 
+        theme_classic() + 
+        theme(legend.position="none", 
+              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
+p2
+```
+
+Finally, we might want to plot the two results alongside one another. 
+
+```{r}
+#| label: Patchwork
+#| warning: false
+
+library(patchwork)
+p1 + p2 
+```
+
+Below, we will walk through each of these steps. 
 
 
 ## Modeling germline burden with Poisson regression
@@ -96,21 +201,44 @@ combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)
 combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
 combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
 combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+
 byGroup <- split(combined$G_PLP, combined$Group)
+rs <- function(y, n, m, slop=20) {
+  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)
+  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)
+}
 
-rs <- function(y, n, m) replicate(m, sum(y[sample.int(n=length(y),size=n)]>0)/n)
-
+set.seed(1234)
 library(reshape2)
-results <- melt(data.frame(lapply(byGroup, rs, n=250, m=4000)), 
-                variable.name="Group", value.name="Burden")
+res <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) 
+results <- melt(res, variable.name="Group", value.name="Burden")
+
+library(mixR) 
+# select(results$Burden, ncomp=2:4)
+# ncomp <- mixres$ncomp[mixres$best == "*"])
+ncomp <- 4 # as previously shown above 
+fit <- mixfit(results$Burden, ncomp=ncomp)
+p1 <- plot(fit, 
+      title=paste("Germline P/LP variant burden across", 
+                  nrow(combined), "leukemia patients"), 
+      xlab="Germline burden",
+      theme="minimal") + 
+      scale_x_continuous(labels = scales::label_percent(), limits = c(0, 0.15))
 
 library(ggplot2)
 library(ggbeeswarm)
-ggplot(results, aes(x=Group, y=Burden, color=Group)) + 
-  scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),
-                     breaks = seq(0, .15, .025)) + ylab("Germline burden") +
-  geom_hline(yintercept=0.05, lty=3) + geom_quasirandom() + 
-  theme_classic() + theme(legend.position="none")
+p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + 
+        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),
+                           breaks = seq(0, .15, .025)) + 
+        ylab("Germline burden") +
+        geom_hline(yintercept=0.05, lty=3) + 
+        geom_quasirandom() + 
+        theme_classic() + 
+        theme(legend.position="none", 
+              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
+
+library(patchwork)
+p1 + p2 
 ```
 
 When you ran the code in the Poisson regression chunks above (and you did run 
@@ -120,7 +248,9 @@ took to resampling can be applied to all sorts of questions, and in fact the
 <a href="https://cran.r-project.org/web/packages/sampling/">sampling</a> package
 on CRAN is dedicated to implementing fancy designs for biased sampling.
 
-* **Exercise**: Can you find examples where our predictions are inaccurate?
+### Exercise
+
+Can you find examples where our predictions are inaccurate?
 Are there specific cases with high variant burdens not explained by any fit?
 
 ```{webr-r}
@@ -135,17 +265,6 @@ fit2$call            # what was included in the model?
 plot(fit2, which=2)  # how well is each case explained by it? 
 
 par(mfrow=c(1,1))    # back to defaults
-
-```
-
-* **Exercise**: Are there critical sources of variability we haven't modeled?
-If you want to play with biased sampling, the `sampling` package is your friend.
-It is already installed in this webR instance, but you'll need to load it. 
-
-```{webr-r}
-
-library(sampling)
-# (put your code here; feel free to borrow from the resampling chunk & plots)
 
 ```
 
@@ -168,8 +287,11 @@ testing (about $400 for whole-genome sequencing in 2024) is a drop in the ocean.
 Registries like <a href="https://childrensoncologygroup.org/cog-registry-project-everychild">Project EveryChild</a> ease the challenge of historical comparison,
 so one might ask, what's standing in the way?
 
-
 ## Session information 
+
+```{r}
+sessionInfo()
+```
 
 ```{webr-r}
 sessionInfo()

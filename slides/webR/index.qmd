@@ -14,8 +14,7 @@ webr:
 
 ## knitr 
 
-`knitr` is an R package that runs R code and formats the output as HTML. 
-The code runs once, when the document is compiled to HTML.
+`knitr` runs R code and formats the output as HTML. 
 
 ```{r}
 #| echo: true
@@ -56,7 +55,7 @@ p1
 
 ## webR
 
-[`quarto-webr`](https://github.com/coatless/quarto-webr) code uses [Quarto](https://quarto.org) and [webR](https://docs.r-wasm.org/webr/latest/) so that users can run code live in the browser. 
+[`quarto-webr`](https://github.com/coatless/quarto-webr) code uses [webR](https://docs.r-wasm.org/webr/latest/) to run code in the browser. 
 
 ```{webr-r}
 combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
@@ -101,6 +100,5 @@ p2
 
 * **Caching**: projections and foundations
   - Need to cache everything possible (e.g. NMF GSEA)
-  - Need to farm everything possible out to AWS
   - Need to work in compressed space if possible.
 

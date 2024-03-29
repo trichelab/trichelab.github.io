@@ -550,7 +550,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"options":{"label":"unnamed-chunk-1","message":"true","fig-height":5,"context":"interactive","classes":"","results":"markup","dpi":72,"comment":"","out-height":"","output":"true","out-width":"700px","autorun":"false","fig-cap":"","read-only":"false","fig-width":7,"warning":"true"},"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\np2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + \n        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                           breaks = seq(0, .15, .025)) + \n        ylab(\"Germline burden\") +\n        geom_hline(yintercept=0.05, lty=3) + \n        geom_quasirandom() + \n        theme_classic() + \n        theme(legend.position=\"none\", \n              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))\np2","id":1}];
+  globalThis.qwebrCellDetails = [{"id":1,"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\np2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + \n        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                           breaks = seq(0, .15, .025)) + \n        ylab(\"Germline burden\") +\n        geom_hline(yintercept=0.05, lty=3) + \n        geom_quasirandom() + \n        theme_classic() + \n        theme(legend.position=\"none\", \n              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))\np2","options":{"classes":"","fig-cap":"","comment":"","fig-height":5,"read-only":"false","message":"true","context":"interactive","output":"true","results":"markup","out-height":"","warning":"true","fig-width":7,"dpi":72,"out-width":"700px","autorun":"false","label":"unnamed-chunk-1"}}];
 
   </script>
   <script type="module">
@@ -1454,7 +1454,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </section>
 <section id="knitr" class="slide level2">
 <h2>knitr</h2>
-<p><code>knitr</code> is an R package that runs R code and formats the output as HTML. The code runs once, when the document is compiled to HTML.</p>
+<p><code>knitr</code> runs R code and formats the output as HTML.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>expand for full code</summary>
@@ -1493,7 +1493,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <img data-src="index_files/figure-revealjs/unnamed-chunk-1-1.png" width="960" class="r-stretch"></section>
 <section id="webr" class="slide level2">
 <h2>webR</h2>
-<p><a href="https://github.com/coatless/quarto-webr"><code>quarto-webr</code></a> code uses <a href="https://quarto.org">Quarto</a> and <a href="https://docs.r-wasm.org/webr/latest/">webR</a> so that users can run code live in the browser.</p>
+<p><a href="https://github.com/coatless/quarto-webr"><code>quarto-webr</code></a> code uses <a href="https://docs.r-wasm.org/webr/latest/">webR</a> to run code in the browser.</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
@@ -1513,7 +1513,6 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <li><strong>Caching</strong>: projections and foundations
 <ul>
 <li>Need to cache everything possible (e.g.&nbsp;NMF GSEA)</li>
-<li>Need to farm everything possible out to AWS</li>
 <li>Need to work in compressed space if possible.</li>
 </ul></li>
 </ul>

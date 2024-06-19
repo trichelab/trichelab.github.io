@@ -140,7 +140,8 @@ ggplot(subset(gapminder,
 
 Suppose you wanted to look at a different year's worth of data (say, 1952), or
 a specific continent (for example, Asia). Can you modify the code so that it
-plots the data _you_ want it to plot?
+plots the data _you_ want it to plot? Can you add a title in `labs()` and 
+restore the `guides()` legend for `fill`, as well?
 
 ```{webr-r}
 

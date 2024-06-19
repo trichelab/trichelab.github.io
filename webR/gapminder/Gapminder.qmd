@@ -1,6 +1,6 @@
 ---
 title: "Rmarkdown: Gapminder"
-author: "Tim Triche"
+author: "Tim Triche, Jr."
 format: 
   html:
     toc: true
@@ -15,17 +15,17 @@ webr:
 
 # Mind the gaps
 
-The Gapminder dataset used in these examples comes from a popular TED talk by
-Hans Rosling, which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. Rosling used actuarial records of life expectancy,
-income, and population size for countries around the world, over many years.
+The Gapminder dataset comes from a popular TED talk by Hans Rosling, 
+which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. The Roslings compiled actuarial records of life expectancy,
+income, and population size for countries around the world over many years.
 
 Hans passed away in 2017, but the impact of his work remains, partly because the
 <a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder 
-foundation</a> helps keep the data and tools from his presentation available.
+foundation</a> helps keep the data and tools from the talk available and usable.
 
 You too can become immortal in this way. The first step is to make your data and
 analyses reproducible, so that other people can understand and build upon them.
-Let's use Rosling's data for an example of how to do this. If you want to peek
+Let's use Rosling's data for an example of how to do so. If you want to peek
 at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please do!
 
 

@@ -6,7 +6,7 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
-<meta name="author" content="Tim Triche">
+<meta name="author" content="Tim Triche, Jr.">
 
 <title>Rmarkdown: Gapminder</title>
 <style>
@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"id":1,"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"results":"markup","output":"true","classes":"","context":"interactive","autorun":"false","dpi":72,"warning":"true","comment":"","read-only":"false","fig-cap":"","fig-width":7,"message":"true","label":"unnamed-chunk-1","fig-height":5,"out-width":"700px","out-height":""}},{"id":2,"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)","options":{"results":"markup","output":"true","classes":"","context":"interactive","autorun":"false","dpi":72,"warning":"true","comment":"","read-only":"false","fig-cap":"","fig-width":7,"message":"true","label":"unnamed-chunk-2","fig-height":5,"out-width":"700px","out-height":""}},{"id":3,"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = FALSE, fill = FALSE) + \n  theme_classic()","options":{"results":"markup","output":"true","classes":"","context":"interactive","autorun":"false","dpi":72,"warning":"true","comment":"","read-only":"false","fig-cap":"","fig-width":7,"message":"true","label":"unnamed-chunk-3","fig-height":5,"out-width":"700px","out-height":""}}];
+globalThis.qwebrCellDetails = [{"id":1,"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"warning":"true","results":"markup","comment":"","fig-width":7,"out-width":"700px","output":"true","label":"unnamed-chunk-1","read-only":"false","context":"interactive","out-height":"","classes":"","fig-cap":"","dpi":72,"message":"true","fig-height":5,"autorun":"false"}},{"id":2,"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)","options":{"warning":"true","results":"markup","comment":"","fig-width":7,"out-width":"700px","output":"true","label":"unnamed-chunk-2","read-only":"false","context":"interactive","out-height":"","classes":"","fig-cap":"","dpi":72,"message":"true","fig-height":5,"autorun":"false"}},{"id":3,"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = FALSE, fill = FALSE) + \n  theme_classic()","options":{"warning":"true","results":"markup","comment":"","fig-width":7,"out-width":"700px","output":"true","label":"unnamed-chunk-3","read-only":"false","context":"interactive","out-height":"","classes":"","fig-cap":"","dpi":72,"message":"true","fig-height":5,"autorun":"false"}}];
 
 </script>
 <script type="module">
@@ -1163,7 +1163,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
     <div>
     <div class="quarto-title-meta-heading">Author</div>
     <div class="quarto-title-meta-contents">
-             <p>Tim Triche </p>
+             <p>Tim Triche, Jr. </p>
           </div>
   </div>
     
@@ -1178,9 +1178,9 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <section id="mind-the-gaps" class="level1">
 <h1>Mind the gaps</h1>
-<p>The Gapminder dataset used in these examples comes from a popular TED talk by Hans Rosling, which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. Rosling used actuarial records of life expectancy, income, and population size for countries around the world, over many years.</p>
-<p>Hans passed away in 2017, but the impact of his work remains, partly because the <a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder foundation</a> helps keep the data and tools from his presentation available.</p>
-<p>You too can become immortal in this way. The first step is to make your data and analyses reproducible, so that other people can understand and build upon them. Let’s use Rosling’s data for an example of how to do this. If you want to peek at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please do!</p>
+<p>The Gapminder dataset comes from a popular TED talk by Hans Rosling, which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. The Roslings compiled actuarial records of life expectancy, income, and population size for countries around the world over many years.</p>
+<p>Hans passed away in 2017, but the impact of his work remains, partly because the <a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder foundation</a> helps keep the data and tools from the talk available and usable.</p>
+<p>You too can become immortal in this way. The first step is to make your data and analyses reproducible, so that other people can understand and build upon them. Let’s use Rosling’s data for an example of how to do so. If you want to peek at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please do!</p>
 <section id="the-gapminder-data" class="level2">
 <h2 class="anchored" data-anchor-id="the-gapminder-data">The gapminder data</h2>
 <p>An excerpt of the data from Rosling’s talk is available in R via the <a href="https://cran.r-project.org/package=gapminder"><code>gapminder</code></a> package, which can be installed from CRAN via <code>install.packages("gapminder")</code>. We can also check which version of the package was installed:</p>

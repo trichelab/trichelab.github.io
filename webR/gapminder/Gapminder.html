@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['gapminder', 'dplyr', 'ggplot2', 'rmarkdown'];
+globalThis.qwebrInstallRPackagesList = ['gapminder', 'dplyr', 'ggplot2'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"id":1,"options":{"message":"true","results":"markup","comment":"","label":"unnamed-chunk-1","context":"interactive","autorun":"false","classes":"","output":"true","warning":"true","out-width":"700px","dpi":72,"fig-height":5,"fig-width":7,"out-height":"","fig-cap":"","read-only":"false"},"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))"},{"id":2,"options":{"message":"true","results":"markup","comment":"","label":"unnamed-chunk-2","context":"interactive","autorun":"false","classes":"","output":"true","warning":"true","out-width":"700px","dpi":72,"fig-height":5,"fig-width":7,"out-height":"","fig-cap":"","read-only":"false"},"code":"library(\"gapminder\")\nhead(gapminder)"},{"id":3,"options":{"message":"true","results":"markup","comment":"","label":"unnamed-chunk-3","context":"interactive","autorun":"false","classes":"","output":"true","warning":"true","out-width":"700px","dpi":72,"fig-height":5,"fig-width":7,"out-height":"","fig-cap":"","read-only":"false"},"code":"library(\"gapminder\")\ntail(gapminder)"}];
+globalThis.qwebrCellDetails = [{"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"warning":"true","label":"unnamed-chunk-1","autorun":"false","read-only":"false","context":"interactive","fig-width":7,"fig-height":5,"message":"true","results":"markup","classes":"","output":"true","out-width":"700px","fig-cap":"","dpi":72,"out-height":"","comment":""},"id":1},{"code":"library(\"gapminder\")\nhead(gapminder)","options":{"warning":"true","label":"unnamed-chunk-2","autorun":"false","read-only":"false","context":"interactive","fig-width":7,"fig-height":5,"message":"true","results":"markup","classes":"","output":"true","out-width":"700px","fig-cap":"","dpi":72,"out-height":"","comment":""},"id":2},{"code":"library(\"gapminder\")\ntail(gapminder)","options":{"warning":"true","label":"unnamed-chunk-3","autorun":"false","read-only":"false","context":"interactive","fig-width":7,"fig-height":5,"message":"true","results":"markup","classes":"","output":"true","out-width":"700px","fig-cap":"","dpi":72,"out-height":"","comment":""},"id":3}];
 
 </script>
 <script type="module">

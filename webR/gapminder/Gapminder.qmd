@@ -1,10 +1,9 @@
 ---
-title: "Gapminder"
+title: "Rmarkdown: Gapminder"
 author: "Tim Triche"
 format: 
   html:
     toc: true
-    code-fold: true
 engine: knitr
 execute:
   warning: false
@@ -27,7 +26,8 @@ foundation</a> helps keep the data and tools from his presentation available.
 
 You too can become immortal in this way. The first step is to make your data and
 analyses reproducible, so that other people can understand and build upon them.
-Let's use Rosling's data for an example of how to do this.
+Let's use Rosling's data for an example of how to do this. If you want to peek
+at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please feel free!
 
 
 ## The gapminder data
@@ -44,12 +44,9 @@ paste("gapminder", packageVersion("gapminder"))
 ```
 
 It's a good idea to keep track of versions, in case something were to change.
-When this document was first compiled, the version was:
+When this document was compiled, the version was 
+`paste("gapminder", packageVersion("gapminder"))`.
 
-```{r}
-#| label: Versions
-paste("gapminder", packageVersion("gapminder"))
-```
 
 ## A quick look
 
@@ -57,7 +54,7 @@ Let's take a quick look at the `gapminder` data itself. If you type the name
 of a data object into R, you will (almost always) get a glimpse of the data:
 
 ```{r}
-#| label: Quicklook 
+#| label: Quick look 
 library("gapminder")
 gapminder
 ```
@@ -69,16 +66,12 @@ What happens when you call these functions on the `gapminder` dataset?
 ```{webr-r}
 library("gapminder")
 head(gapminder)
-```
-
-```{webr-r}
-library("gapminder")
 tail(gapminder)
 ```
 
 ## Plotting with ggplot2
 
-Earlier on, you plotted a subset of the gapminder data with ggplot2:
+Earlier in the workshop, you plotted some of the gapminder data with `ggplot2`:
 
 ```{r}
 #| label: A faceted plot
@@ -99,8 +92,8 @@ ggplot(data = americas,
     title = "Figure 1",      # main title of figure
     color = "Continent"      # title of legend
   ) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
-  NULL
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))  
+
 ```
 
 However, if you have seen Rosling's talk, you may recall a particular style 
@@ -109,27 +102,58 @@ of plot (the "bubble plot") used to great impact.  Can we recreate that plot?
 
 ## A bubble plot
 
-It will be useful to have a color scheme for making bubble plots.  Thankfully,
-the `gapminder` package includes color keys for both countries and continents:
+Let's plot the relationships between life expectancy and gross domestic product
+with the size of the dots representing the population of a country in millions.
+We will start by doing this for the year 2007, like Rosling did. (We have data 
+from `nrow(subset(gapminder, year == "2007"))` countries in 2007.) We will use
+the included `continent_colors` from the `gapminder` package to standardize the
+fill colors (it is a good idea to standardize colors when making plots so that 
+your audience can expect for a given color to mean the same thing all the time).
 
 ```{r}
-#| label: Color schemes
+#| label: 2007 bubble plot
 
-library("gapminder") 
-head(country_colors)
-head(continent_colors)
+library("gapminder")
+library("ggplot2")
+ggplot(subset(gapminder, 
+              year == "2007"), 
+       aes(x = gdpPercap, 
+           y = lifeExp, 
+           size = pop,
+           fill = continent)) + 
+  geom_point(alpha=0.5, shape=21, color="black") +
+  scale_size(range = c(.1, 24), name="Population (M)") +
+  scale_fill_manual(values = continent_colors) + 
+  labs(y = "Life Expectancy (years)", 
+       x = "GDP per Capita (US$)") +
+  guides(size = FALSE, fill = FALSE) + 
+  theme_classic() 
 
 ```
 
-This is helpful, but our lives will be easier if we color-code all the entries
-in the `gapminder` dataset before we start experimenting.  Let's do that now:
+### Challenge
 
-```{r}
-#| label: Adding colors
+Suppose you wanted to look at a different year's worth of data (say, 1952), or
+a specific continent (for example, Asia). Can you modify the code so that it
+plots only the data you are interested in seeing?
 
-gapminder 
+```{webr-r}
 
+library("gapminder")
+library("ggplot2")
+
+ggplot(subset(gapminder, 
+              year == "2007"), 
+       aes(x = gdpPercap, 
+           y = lifeExp, 
+           size = pop,
+           fill = continent)) + 
+  geom_point(alpha=0.5, shape=21, color="black") +
+  scale_size(range = c(.1, 24), name="Population (M)") +
+  scale_fill_manual(values = continent_colors) + 
+  labs(y = "Life Expectancy (years)", 
+       x = "GDP per Capita (US$)") +
+  guides(size = FALSE, fill = FALSE) + 
+  theme_classic()
 
 ```
-
-

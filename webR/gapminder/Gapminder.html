@@ -8,7 +8,7 @@
 
 <meta name="author" content="Tim Triche">
 
-<title>Gapminder</title>
+<title>Rmarkdown: Gapminder</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"warning":"true","label":"unnamed-chunk-1","autorun":"false","read-only":"false","context":"interactive","fig-width":7,"fig-height":5,"message":"true","results":"markup","classes":"","output":"true","out-width":"700px","fig-cap":"","dpi":72,"out-height":"","comment":""},"id":1},{"code":"library(\"gapminder\")\nhead(gapminder)","options":{"warning":"true","label":"unnamed-chunk-2","autorun":"false","read-only":"false","context":"interactive","fig-width":7,"fig-height":5,"message":"true","results":"markup","classes":"","output":"true","out-width":"700px","fig-cap":"","dpi":72,"out-height":"","comment":""},"id":2},{"code":"library(\"gapminder\")\ntail(gapminder)","options":{"warning":"true","label":"unnamed-chunk-3","autorun":"false","read-only":"false","context":"interactive","fig-width":7,"fig-height":5,"message":"true","results":"markup","classes":"","output":"true","out-width":"700px","fig-cap":"","dpi":72,"out-height":"","comment":""},"id":3}];
+globalThis.qwebrCellDetails = [{"id":1,"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"output":"true","label":"unnamed-chunk-1","fig-width":7,"context":"interactive","out-height":"","fig-cap":"","warning":"true","comment":"","out-width":"700px","message":"true","dpi":72,"read-only":"false","results":"markup","classes":"","fig-height":5,"autorun":"false"}},{"id":2,"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)","options":{"output":"true","label":"unnamed-chunk-2","fig-width":7,"context":"interactive","out-height":"","fig-cap":"","warning":"true","comment":"","out-width":"700px","message":"true","dpi":72,"read-only":"false","results":"markup","classes":"","fig-height":5,"autorun":"false"}},{"id":3,"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = FALSE, fill = FALSE) + \n  theme_classic()","options":{"output":"true","label":"unnamed-chunk-3","fig-width":7,"context":"interactive","out-height":"","fig-cap":"","warning":"true","comment":"","out-width":"700px","message":"true","dpi":72,"read-only":"false","results":"markup","classes":"","fig-height":5,"autorun":"false"}}];
 
 </script>
 <script type="module">
@@ -967,7 +967,10 @@ globalThis.qwebrExecuteCode = async function (
   <li><a href="#the-gapminder-data" id="toc-the-gapminder-data" class="nav-link" data-scroll-target="#the-gapminder-data">The gapminder data</a></li>
   <li><a href="#a-quick-look" id="toc-a-quick-look" class="nav-link" data-scroll-target="#a-quick-look">A quick look</a></li>
   <li><a href="#plotting-with-ggplot2" id="toc-plotting-with-ggplot2" class="nav-link" data-scroll-target="#plotting-with-ggplot2">Plotting with ggplot2</a></li>
-  <li><a href="#a-bubble-plot" id="toc-a-bubble-plot" class="nav-link" data-scroll-target="#a-bubble-plot">A bubble plot</a></li>
+  <li><a href="#a-bubble-plot" id="toc-a-bubble-plot" class="nav-link" data-scroll-target="#a-bubble-plot">A bubble plot</a>
+  <ul class="collapse">
+  <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge">Challenge</a></li>
+  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -1150,7 +1153,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Gapminder</h1>
+<h1 class="title">Rmarkdown: Gapminder</h1>
 </div>
 
 
@@ -1177,32 +1180,20 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <h1>Mind the gaps</h1>
 <p>The Gapminder dataset used in these examples comes from a popular TED talk by Hans Rosling, which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. Rosling used actuarial records of life expectancy, income, and population size for countries around the world, over many years, to investigate misconceptions about so-called “developing countries”.</p>
 <p>Hans passed away in 2017, but the impact of his work remains, partly because the <a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder foundation</a> helps keep the data and tools from his presentation available.</p>
-<p>You too can become immortal in this way. The first step is to make your data and analyses reproducible, so that other people can understand and build upon them. Let’s use Rosling’s data for an example of how to do this.</p>
+<p>You too can become immortal in this way. The first step is to make your data and analyses reproducible, so that other people can understand and build upon them. Let’s use Rosling’s data for an example of how to do this. If you want to peek at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please feel free!</p>
 <section id="the-gapminder-data" class="level2">
 <h2 class="anchored" data-anchor-id="the-gapminder-data">The gapminder data</h2>
 <p>An excerpt of the data from Rosling’s talk is available in R via the <a href="https://cran.r-project.org/package=gapminder"><code>gapminder</code></a> package, which can be installed from CRAN via <code>install.packages("gapminder")</code>. We can also check which version of the package was installed:</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>It’s a good idea to keep track of versions, in case something were to change. When this document was first compiled, the version was:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">paste</span>(<span class="st">"gapminder"</span>, <span class="fu">packageVersion</span>(<span class="st">"gapminder"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>[1] "gapminder 1.0.0"</code></pre>
-</div>
-</div>
+<p>It’s a good idea to keep track of versions, in case something were to change. When this document was compiled, the version was <code>paste("gapminder", packageVersion("gapminder"))</code>.</p>
 </section>
 <section id="a-quick-look" class="level2">
 <h2 class="anchored" data-anchor-id="a-quick-look">A quick look</h2>
 <p>Let’s take a quick look at the <code>gapminder</code> data itself. If you type the name of a data object into R, you will (almost always) get a glimpse of the data:</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,704 × 6
    country     continent  year lifeExp      pop gdpPercap
@@ -1223,34 +1214,28 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p>This isn’t necessarily an ideal way to inspect a dataset. The <code>head</code> and <code>tail</code> functions in R can be helpful when a dataset is too big to digest in one shot. What happens when you call these functions on the <code>gapminder</code> dataset?</p>
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<div id="qwebr-insertion-location-3"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="plotting-with-ggplot2" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-with-ggplot2">Plotting with ggplot2</h2>
-<p>Earlier on, you plotted a subset of the gapminder data with ggplot2:</p>
+<p>Earlier in the workshop, you plotted some of the gapminder data with <code>ggplot2</code>:</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>) </span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>americas <span class="ot">&lt;-</span> gapminder[gapminder<span class="sc">$</span>continent <span class="sc">==</span> <span class="st">"Americas"</span>,]</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> americas, </span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> lifeExp, </span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">color =</span> continent)) <span class="sc">+</span></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>( <span class="sc">~</span> country) <span class="sc">+</span></span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,              <span class="co"># x axis title</span></span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Life expectancy"</span>,   <span class="co"># y axis title</span></span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Figure 1"</span>,      <span class="co"># main title of figure</span></span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Continent"</span>      <span class="co"># title of legend</span></span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span> </span>
-<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="cn">NULL</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>) </span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>americas <span class="ot">&lt;-</span> gapminder[gapminder<span class="sc">$</span>continent <span class="sc">==</span> <span class="st">"Americas"</span>,]</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> americas, </span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, </span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> lifeExp, </span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">color =</span> continent)) <span class="sc">+</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>( <span class="sc">~</span> country) <span class="sc">+</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,              <span class="co"># x axis title</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Life expectancy"</span>,   <span class="co"># y axis title</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Figure 1"</span>,      <span class="co"># main title of figure</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Continent"</span>      <span class="co"># title of legend</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1263,51 +1248,37 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </section>
 <section id="a-bubble-plot" class="level2">
 <h2 class="anchored" data-anchor-id="a-bubble-plot">A bubble plot</h2>
-<p>It will be useful to have a color scheme for making bubble plots. Thankfully, the <code>gapminder</code> package includes color keys for both countries and continents:</p>
+<p>Let’s plot the relationships between life expectancy and gross domestic product with the size of the dots representing the population of a country in millions. We will start by doing this for the year 2007, like Rosling did. (We have data from <code>nrow(subset(gapminder, year == "2007"))</code> countries in 2007.) We will use the included <code>continent_colors</code> from the <code>gapminder</code> package to standardize the fill colors (it is a good idea to standardize colors when making plots so that your audience can expect for a given color to mean the same thing all the time).</p>
 <div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>) </span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(country_colors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>         Nigeria            Egypt         Ethiopia Congo, Dem. Rep. 
-       "#7F3B08"        "#833D07"        "#873F07"        "#8B4107" 
-    South Africa            Sudan 
-       "#8F4407"        "#934607" </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(continent_colors)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>   Africa  Americas      Asia    Europe   Oceania 
-"#7F3B08" "#A50026" "#40004B" "#276419" "#313695" </code></pre>
-</div>
-</div>
-<p>This is helpful, but our lives will be easier if we color-code all the entries in the <code>gapminder</code> dataset before we start experimenting. Let’s do that now:</p>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>gapminder </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1,704 × 6
-   country     continent  year lifeExp      pop gdpPercap
-   &lt;fct&gt;       &lt;fct&gt;     &lt;int&gt;   &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
- 1 Afghanistan Asia       1952    28.8  8425333      779.
- 2 Afghanistan Asia       1957    30.3  9240934      821.
- 3 Afghanistan Asia       1962    32.0 10267083      853.
- 4 Afghanistan Asia       1967    34.0 11537966      836.
- 5 Afghanistan Asia       1972    36.1 13079460      740.
- 6 Afghanistan Asia       1977    38.4 14880372      786.
- 7 Afghanistan Asia       1982    39.9 12881816      978.
- 8 Afghanistan Asia       1987    40.8 13867957      852.
- 9 Afghanistan Asia       1992    41.7 16317921      649.
-10 Afghanistan Asia       1997    41.8 22227415      635.
-# ℹ 1,694 more rows</code></pre>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">subset</span>(gapminder, </span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>              year <span class="sc">==</span> <span class="st">"2007"</span>), </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, </span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> lifeExp, </span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> pop,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> continent)) <span class="sc">+</span> </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">shape=</span><span class="dv">21</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size</span>(<span class="at">range =</span> <span class="fu">c</span>(.<span class="dv">1</span>, <span class="dv">24</span>), <span class="at">name=</span><span class="st">"Population (M)"</span>) <span class="sc">+</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> continent_colors) <span class="sc">+</span> </span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Life Expectancy (years)"</span>, </span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"GDP per Capita (US$)"</span>) <span class="sc">+</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">size =</span> <span class="cn">FALSE</span>, <span class="at">fill =</span> <span class="cn">FALSE</span>) <span class="sc">+</span> </span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="Gapminder_files/figure-html/2007%20bubble%20plot-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
 </div>
 </div>
+</div>
+<section id="challenge" class="level3">
+<h3 class="anchored" data-anchor-id="challenge">Challenge</h3>
+<p>Suppose you wanted to look at a different year’s worth of data (say, 1952), or a specific continent (for example, Asia). Can you modify the code so that it plots only the data you are interested in seeing?</p>
+<div id="qwebr-insertion-location-3"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+</section>
 </section>
 </section>
 

@@ -131,7 +131,7 @@ ggplot(subset(gapminder,
   scale_fill_manual(values = continent_colors) + 
   labs(y = "Life Expectancy (years)", 
        x = "GDP per Capita (US$)") +
-  guides(size = FALSE, fill = FALSE) + 
+  guides(size = "none", fill = "none") + 
   theme_classic() 
 
 ```
@@ -158,7 +158,7 @@ ggplot(subset(gapminder,
   scale_fill_manual(values = continent_colors) + 
   labs(y = "Life Expectancy (years)", 
        x = "GDP per Capita (US$)") +
-  guides(size = FALSE, fill = FALSE) + 
+  guides(size = "none", fill = "none") + 
   theme_classic()
 
 ```

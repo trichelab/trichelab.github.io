@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"fig-height":5,"results":"markup","context":"interactive","output":"true","label":"unnamed-chunk-1","autorun":"false","message":"true","warning":"true","fig-width":7,"dpi":72,"classes":"","out-height":"","comment":"","fig-cap":"","read-only":"false","out-width":"700px"},"id":1},{"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)","options":{"fig-height":5,"results":"markup","context":"interactive","output":"true","label":"unnamed-chunk-2","autorun":"false","message":"true","warning":"true","fig-width":7,"dpi":72,"classes":"","out-height":"","comment":"","fig-cap":"","read-only":"false","out-width":"700px"},"id":2},{"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = FALSE, fill = FALSE) + \n  theme_classic()","options":{"fig-height":5,"results":"markup","context":"interactive","output":"true","label":"unnamed-chunk-3","autorun":"false","message":"true","warning":"true","fig-width":7,"dpi":72,"classes":"","out-height":"","comment":"","fig-cap":"","read-only":"false","out-width":"700px"},"id":3}];
+globalThis.qwebrCellDetails = [{"id":1,"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"context":"interactive","message":"true","autorun":"false","dpi":72,"warning":"true","results":"markup","out-width":"700px","classes":"","fig-height":5,"label":"unnamed-chunk-1","read-only":"false","comment":"","fig-width":7,"fig-cap":"","output":"true","out-height":""}},{"id":2,"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)","options":{"context":"interactive","message":"true","autorun":"false","dpi":72,"warning":"true","results":"markup","out-width":"700px","classes":"","fig-height":5,"label":"unnamed-chunk-2","read-only":"false","comment":"","fig-width":7,"fig-cap":"","output":"true","out-height":""}},{"id":3,"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = FALSE, fill = FALSE) + \n  theme_classic()","options":{"context":"interactive","message":"true","autorun":"false","dpi":72,"warning":"true","results":"markup","out-width":"700px","classes":"","fig-height":5,"label":"unnamed-chunk-3","read-only":"false","comment":"","fig-width":7,"fig-cap":"","output":"true","out-height":""}}];
 
 </script>
 <script type="module">
@@ -1186,7 +1186,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <p>An excerpt of the data from Rosling’s talk is available in R via the <a href="https://cran.r-project.org/package=gapminder"><code>gapminder</code></a> package, which can be installed from CRAN via <code>install.packages("gapminder")</code>. We can also check which version of the package was installed:</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>It’s a good idea to keep track of versions, in case something were to change. When this document was compiled, the version was <code>paste("gapminder", packageVersion("gapminder"))</code>.</p>
+<p>It’s a good idea to keep track of versions, in case something were to change. When this document was compiled, the version was gapminder 1.0.0.</p>
 </section>
 <section id="a-quick-look" class="level2">
 <h2 class="anchored" data-anchor-id="a-quick-look">A quick look</h2>
@@ -1248,7 +1248,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </section>
 <section id="a-bubble-plot" class="level2">
 <h2 class="anchored" data-anchor-id="a-bubble-plot">A bubble plot</h2>
-<p>Let’s plot the relationships between life expectancy and gross domestic product with the size of the dots representing the population of a country in millions. We will start by doing this for the year 2007, like Rosling did. (We have data from <code>nrow(subset(gapminder, year == "2007"))</code> countries in 2007.) We will use the included <code>continent_colors</code> from the <code>gapminder</code> package to standardize the fill colors (it is a good idea to standardize colors when making plots so that your audience can expect for a given color to mean the same thing all the time).</p>
+<p>Let’s plot the relationships between life expectancy and gross domestic product with the size of the dots representing the population of a country in millions. We will start by doing this for the year 2007, like Rosling did. (There is data from 142 countries in 2007.) We’ll use the included <code>continent_colors</code> from the <code>gapminder</code> package to standardize the fill colors (it is a good idea to standardize colors when making plots so that your audience can expect for a given color to mean the same thing all the time).</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
 <span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
@@ -1275,7 +1275,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </div>
 <section id="challenge" class="level3">
 <h3 class="anchored" data-anchor-id="challenge">Challenge</h3>
-<p>Suppose you wanted to look at a different year’s worth of data (say, 1952), or a specific continent (for example, Asia). Can you modify the code so that it plots only the data you are interested in seeing?</p>
+<p>Suppose you wanted to look at a different year’s worth of data (say, 1952), or a specific continent (for example, Asia). Can you modify the code so that it plots the data <em>you</em> want it to plot?</p>
 <div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>

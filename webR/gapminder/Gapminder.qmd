@@ -44,7 +44,7 @@ paste("gapminder", packageVersion("gapminder"))
 
 It's a good idea to keep track of versions, in case something were to change.
 When this document was compiled, the version was 
-`paste("gapminder", packageVersion("gapminder"))`.
+`{r} paste("gapminder", packageVersion("gapminder"))`.
 
 
 ## A quick look
@@ -103,8 +103,8 @@ of plot (the "bubble plot") used to great impact.  Can we recreate that plot?
 
 Let's plot the relationships between life expectancy and gross domestic product
 with the size of the dots representing the population of a country in millions.
-We will start by doing this for the year 2007, like Rosling did. (We have data 
-from `nrow(subset(gapminder, year == "2007"))` countries in 2007.) We will use
+We will start by doing this for the year 2007, like Rosling did. (There is data 
+from `{r} nrow(subset(gapminder, year == "2007"))` countries in 2007.) We'll use
 the included `continent_colors` from the `gapminder` package to standardize the
 fill colors (it is a good idea to standardize colors when making plots so that 
 your audience can expect for a given color to mean the same thing all the time).
@@ -134,7 +134,7 @@ ggplot(subset(gapminder,
 
 Suppose you wanted to look at a different year's worth of data (say, 1952), or
 a specific continent (for example, Asia). Can you modify the code so that it
-plots only the data you are interested in seeing?
+plots the data _you_ want it to plot?
 
 ```{webr-r}
 

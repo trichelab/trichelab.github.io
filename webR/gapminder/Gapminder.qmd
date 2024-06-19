@@ -13,13 +13,19 @@ webr:
   packages: ['gapminder','dplyr','ggplot2']
 ---
 
-# Mind the gaps
+# What `knitr` output looks like
 
-The Gapminder dataset comes from a popular TED talk by Hans Rosling, 
+It takes a moment to load the Rstudio plumbing which is recommended for the 
+<a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here's an example of what you can 
+do with these tools, and why you might want to learn how to use them. 
+
+
+## A bit of background
+
+The Gapminder dataset you've been using is from a TED talk by Hans Rosling, 
 which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. The Roslings compiled actuarial records of life expectancy,
-income, and population size for countries around the world over many years.
-
-Hans passed away in 2017, but the impact of his work remains, partly because the
+income, and population size for countries around the world over many years. Hans
+died in 2017, but the impact of his work lives on, partly because the
 <a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder 
 foundation</a> helps keep the data and tools from the talk available and usable.
 
@@ -29,7 +35,7 @@ Let's use Rosling's data to motivate a few examples. If you want to peek
 at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please do!
 
 
-## The gapminder data
+## The gapminder data in R
 
 An excerpt of the data from Rosling's talk is available in R via the
 <a href="https://cran.r-project.org/package=gapminder">`gapminder`</a>

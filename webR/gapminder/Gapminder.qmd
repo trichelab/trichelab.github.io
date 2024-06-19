@@ -25,7 +25,7 @@ foundation</a> helps keep the data and tools from the talk available and usable.
 
 You too can become immortal in this way. The first step is to make your data and
 analyses reproducible, so that other people can understand and build upon them.
-Let's use Rosling's data for an example of how to do so. If you want to peek
+Let's use Rosling's data to motivate a few examples. If you want to peek
 at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please do!
 
 

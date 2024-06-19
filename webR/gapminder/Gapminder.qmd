@@ -1,0 +1,135 @@
+---
+title: "Gapminder"
+author: "Tim Triche"
+format: 
+  html:
+    toc: true
+    code-fold: true
+engine: knitr
+execute:
+  warning: false
+filters:
+  - webr
+webr:
+  packages: ['gapminder','dplyr','ggplot2','rmarkdown']
+---
+
+# Mind the gaps
+
+The Gapminder dataset used in these examples comes from a popular TED talk by
+Hans Rosling, which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. Rosling used actuarial records of life expectancy,
+income, and population size for countries around the world, over many years, to 
+investigate misconceptions about so-called "developing countries". 
+
+Hans passed away in 2017, but the impact of his work remains, partly because the
+<a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder 
+foundation</a> helps keep the data and tools from his presentation available.
+
+You too can become immortal in this way. The first step is to make your data and
+analyses reproducible, so that other people can understand and build upon them.
+Let's use Rosling's data for an example of how to do this.
+
+
+## The gapminder data
+
+An excerpt of the data from Rosling's talk is available in R via the
+<a href="https://cran.r-project.org/package=gapminder">`gapminder`</a>
+package, which can be installed from CRAN via `install.packages("gapminder")`.
+We can also check which version of the package was installed:
+
+```{webr-r}
+install.packages("gapminder")
+library("gapminder")
+paste("gapminder", packageVersion("gapminder"))
+```
+
+It's a good idea to keep track of versions, in case something were to change.
+When this document was first compiled, the version was:
+
+```{r}
+#| label: Versions
+paste("gapminder", packageVersion("gapminder"))
+```
+
+## A quick look
+
+Let's take a quick look at the `gapminder` data itself. If you type the name
+of a data object into R, you will (almost always) get a glimpse of the data:
+
+```{r}
+#| label: Quicklook 
+library("gapminder")
+gapminder
+```
+
+This isn't necessarily an ideal way to inspect a dataset.  The `head` and `tail`
+functions in R can be helpful when a dataset is too big to digest in one shot. 
+What happens when you call these functions on the `gapminder` dataset?
+
+```{webr-r}
+library("gapminder")
+head(gapminder)
+```
+
+```{webr-r}
+library("gapminder")
+tail(gapminder)
+```
+
+## Plotting with ggplot2
+
+Earlier on, you plotted a subset of the gapminder data with ggplot2:
+
+```{r}
+#| label: A faceted plot
+
+library("gapminder") 
+americas <- gapminder[gapminder$continent == "Americas",]
+
+library("ggplot2")
+ggplot(data = americas, 
+       mapping = aes(x = year, 
+                     y = lifeExp, 
+                     color = continent)) +
+  geom_line() + 
+  facet_wrap( ~ country) +
+  labs(
+    x = "Year",              # x axis title
+    y = "Life expectancy",   # y axis title
+    title = "Figure 1",      # main title of figure
+    color = "Continent"      # title of legend
+  ) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1)) + 
+  NULL
+```
+
+However, if you have seen Rosling's talk, you may recall a particular style 
+of plot (the "bubble plot") used to great impact.  Can we recreate that plot?
+
+
+## A bubble plot
+
+It will be useful to have a color scheme for making bubble plots.  Thankfully,
+the `gapminder` package includes color keys for both countries and continents:
+
+```{r}
+#| label: Color schemes
+
+library("gapminder") 
+head(country_colors)
+head(continent_colors)
+
+```
+
+This is helpful, but our lives will be easier if we color-code all the entries
+in the `gapminder` dataset before we start experimenting.  Let's do that now:
+
+```{r}
+#| label: Adding colors
+
+gapminder 
+
+
+```
+
+

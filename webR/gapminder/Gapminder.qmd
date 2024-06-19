@@ -15,7 +15,7 @@ webr:
 
 # What `knitr` output looks like
 
-It takes a moment to load the Rstudio plumbing which is recommended for the 
+It takes a moment to load the Rstudio plumbing for the 
 <a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here's an example of what you can 
 do with these tools, and why you might want to learn how to use them. 
 

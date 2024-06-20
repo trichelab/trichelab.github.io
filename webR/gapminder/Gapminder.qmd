@@ -17,23 +17,17 @@ webr:
 
 `knitr` _knits_ markdown documents into webpages (or slides, or PDFs, or...). 
 It takes a moment to load the Rstudio plumbing for knitr/rmarkdown and the 
-<a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here's some examples of what you can
-do with these tools, and why you might want to learn how to use them.
-
-Note: You don't have to host your Rmarkdown documents! In fact, Rstudio has a 
+[Software Carpentries knitr lesson](https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html) so here's some examples of what you can
+do with knitr. Note: you don't have to host the output! In fact, Rstudio has a 
 lovely option where you can publish your Rmarkdown or Quarto documents directly 
-to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>. (Also: the linked
-markdown document was a quickie and contains a number of Worst Practices...)
+to [rpubs.com](https://rpubs.com/ttriche/1011627). (link is Not a Role Model)
 
 ## What `rmarkdown` does
 
 `knitr` calls the `rmarkdown` package to process the chunks of code and markdown
-that you have asked it to knit.  This implies that we can test `rmarkdown` while
-kicking the tires on other aspects of the rendering process. 
-
-Below, I use the `volcano` dataset included with R to test how well `rmarkdown`
-can render Rmarkdown from within Rmarkdown. If that sounds silly... well, it is.
-Here's the `volcano` data (press play to plot it):
+that you have asked it to knit.  This implies that we can test `rmarkdown` along
+with other aspects of the rendering process. Below, I use the `volcano` dataset,
+which comes with base R. Press play below to plot it:
 
 ```{webr-r}
 filled.contour(volcano, 

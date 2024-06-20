@@ -77,7 +77,7 @@ at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/w
 An excerpt of the data from Rosling's talk is available in R via the
 <a href="https://cran.r-project.org/package=gapminder">`gapminder`</a>
 package, which can be installed from CRAN via `install.packages("gapminder")`.
-We can also check which version of the package was installed:
+We can check which version was installed:
 
 ```{webr-r}
 install.packages("gapminder")

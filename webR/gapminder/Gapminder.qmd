@@ -10,14 +10,51 @@ execute:
 filters:
   - webr
 webr:
-  packages: ['gapminder','dplyr','ggplot2']
+  packages: ['gapminder','dplyr','ggplot2','rmarkdown']
 ---
 
 # What `knitr` output looks like
 
 It takes a moment to load the Rstudio plumbing for the 
 <a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here's an example of what you can 
-do with these tools, and why you might want to learn how to use them. 
+do with these tools, and why you might want to learn how to use them.
+
+You don't have to host your own Rmarkdown documents; in fact, Rstudio has a 
+lovely option where you can publish your Rmarkdown or Quarto documents directly 
+to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>. (Note: the linked
+markdown document was a quickie and contains a number of Worst Practices...)
+
+Depending on how fast webR loads, we may even have time to play with markdown
+from within this markdown document (press the play button to execute the code):
+
+```{webr-r}
+library("rmarkdown")
+
+markdown <- "
+A list
+* Dataset: the Mountain of the Whau Tree
+* μ(elevation) = `mean(volcano)`m
+* σ(elevation) = `sd(volcano)`m
+" 
+
+tmp_file <- tempfile(tmpdir=".")
+cat(markdown, file=tmp_file)
+output <- suppressWarnings(render(tmp_file))
+cat(output)
+```
+
+The above-described dataset is `volcano`, included with base R. 
+You can generate a plot of it below if you'd like to see it:
+
+```{webr-r}
+filled.contour(volcano, main="Topography of Maunga Whau volcano, Aotearoa")
+```
+
+
+Full disclosure: this particular document is also a sandbox for me (Tim)
+to experiment with <a href="https://docs.r-wasm.org/webr/latest/">webR</a>
+and dynamic rendering, for example using knitr to make
+<a href="/slides/webR/#/knitr">reveal.js slides</a>. Moving right along...
 
 
 ## A bit of background

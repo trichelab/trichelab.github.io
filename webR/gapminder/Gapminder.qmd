@@ -13,7 +13,7 @@ webr:
   packages: ['gapminder','dplyr','ggplot2','rmarkdown']
 ---
 
-# What `knitr` output looks like
+# What `knitr` gives you
 
 It takes a moment to load the Rstudio plumbing for the 
 <a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here's an example of what you can 
@@ -30,12 +30,12 @@ from within this markdown document (press the play button to execute the code):
 ```{webr-r}
 library("rmarkdown")
 
-markdown <- "
-A list
-* Dataset: the Mountain of the Whau Tree
-* μ(elevation) = `mean(volcano)`m
-* σ(elevation) = `sd(volcano)`m
-" 
+markdown <- paste(
+  "A list\n",
+  "* Dataset: the Mountain of the Whau Tree\n",
+  "* μ(elevation) =", mean(volcano), "m\n",
+  "* σ(elevation) =", sd(volcano), "m\n",
+  sep = "")
 
 tmp_file <- tempfile(tmpdir=".")
 cat(markdown, file=tmp_file)

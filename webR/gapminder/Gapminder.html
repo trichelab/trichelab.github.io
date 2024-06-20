@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['gapminder', 'dplyr', 'ggplot2', 'rmarkdown'];
+globalThis.qwebrInstallRPackagesList = ['gapminder', 'dplyr', 'ggplot2'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"options":{"warning":"true","label":"unnamed-chunk-1","out-height":"","comment":"","autorun":"false","results":"markup","message":"true","dpi":72,"read-only":"false","classes":"","output":"true","fig-height":5,"context":"interactive","out-width":"700px","fig-cap":"","fig-width":7},"id":1,"code":"library(\"rmarkdown\")\n\nmarkdown <- paste(\n  \"A list\\n\",\n  \"* Dataset: the Mountain of the Whau Tree\\n\",\n  \"* μ(elevation) =\", mean(volcano), \"m\\n\",\n  \"* σ(elevation) =\", sd(volcano), \"m\\n\",\n  sep = \"\")\n\ntmp_file <- tempfile(tmpdir=\".\")\ncat(markdown, file=tmp_file)\noutput <- suppressWarnings(render(tmp_file))\ncat(output)"},{"options":{"warning":"true","label":"unnamed-chunk-2","out-height":"","comment":"","autorun":"false","results":"markup","message":"true","dpi":72,"read-only":"false","classes":"","output":"true","fig-height":5,"context":"interactive","out-width":"700px","fig-cap":"","fig-width":7},"id":2,"code":"filled.contour(volcano, main=\"Topography of Maunga Whau volcano, Aotearoa\")"},{"options":{"warning":"true","label":"unnamed-chunk-3","out-height":"","comment":"","autorun":"false","results":"markup","message":"true","dpi":72,"read-only":"false","classes":"","output":"true","fig-height":5,"context":"interactive","out-width":"700px","fig-cap":"","fig-width":7},"id":3,"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))"},{"options":{"warning":"true","label":"unnamed-chunk-4","out-height":"","comment":"","autorun":"false","results":"markup","message":"true","dpi":72,"read-only":"false","classes":"","output":"true","fig-height":5,"context":"interactive","out-width":"700px","fig-cap":"","fig-width":7},"id":4,"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)"},{"options":{"warning":"true","label":"unnamed-chunk-5","out-height":"","comment":"","autorun":"false","results":"markup","message":"true","dpi":72,"read-only":"false","classes":"","output":"true","fig-height":5,"context":"interactive","out-width":"700px","fig-cap":"","fig-width":7},"id":5,"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = \"none\", fill = \"none\") + \n  theme_classic()"}];
+globalThis.qwebrCellDetails = [{"id":1,"options":{"message":"true","context":"interactive","autorun":"false","comment":"","fig-cap":"","label":"unnamed-chunk-1","output":"true","out-height":"","out-width":"700px","read-only":"false","warning":"true","classes":"","fig-height":5,"dpi":72,"results":"markup","fig-width":7},"code":"filled.contour(volcano, \n               main=\"Elevation of Maunga Whau, Aotearoa, in meters\")"},{"id":2,"options":{"message":"true","context":"interactive","autorun":"false","comment":"","fig-cap":"","label":"unnamed-chunk-2","output":"true","out-height":"","out-width":"700px","read-only":"false","warning":"true","classes":"","fig-height":5,"dpi":72,"results":"markup","fig-width":7},"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))"},{"id":3,"options":{"message":"true","context":"interactive","autorun":"false","comment":"","fig-cap":"","label":"unnamed-chunk-3","output":"true","out-height":"","out-width":"700px","read-only":"false","warning":"true","classes":"","fig-height":5,"dpi":72,"results":"markup","fig-width":7},"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)"},{"id":4,"options":{"message":"true","context":"interactive","autorun":"false","comment":"","fig-cap":"","label":"unnamed-chunk-4","output":"true","out-height":"","out-width":"700px","read-only":"false","warning":"true","classes":"","fig-height":5,"dpi":72,"results":"markup","fig-width":7},"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = \"none\", fill = \"none\") + \n  theme_classic()"}];
 
 </script>
 <script type="module">
@@ -962,8 +962,8 @@ globalThis.qwebrExecuteCode = async function (
     <h2 id="toc-title">Table of contents</h2>
    
   <ul>
-  <li><a href="#what-knitr-gives-you" id="toc-what-knitr-gives-you" class="nav-link active" data-scroll-target="#what-knitr-gives-you">What <code>knitr</code> gives you</a>
-  <ul class="collapse">
+  <li><a href="#what-knitr-does" id="toc-what-knitr-does" class="nav-link active" data-scroll-target="#what-knitr-does">What <code>knitr</code> does</a></li>
+  <li><a href="#what-rmarkdown-does" id="toc-what-rmarkdown-does" class="nav-link" data-scroll-target="#what-rmarkdown-does">What <code>rmarkdown</code> does</a></li>
   <li><a href="#a-bit-of-background" id="toc-a-bit-of-background" class="nav-link" data-scroll-target="#a-bit-of-background">A bit of background</a></li>
   <li><a href="#the-gapminder-data-in-r" id="toc-the-gapminder-data-in-r" class="nav-link" data-scroll-target="#the-gapminder-data-in-r">The gapminder data in R</a></li>
   <li><a href="#a-quick-look" id="toc-a-quick-look" class="nav-link" data-scroll-target="#a-quick-look">A quick look</a></li>
@@ -971,7 +971,6 @@ globalThis.qwebrExecuteCode = async function (
   <li><a href="#a-bubble-plot" id="toc-a-bubble-plot" class="nav-link" data-scroll-target="#a-bubble-plot">A bubble plot</a>
   <ul class="collapse">
   <li><a href="#challenge" id="toc-challenge" class="nav-link" data-scroll-target="#challenge">Challenge</a></li>
-  </ul></li>
   </ul></li>
   </ul>
 </nav>
@@ -1177,17 +1176,39 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </header>
 
 
-<section id="what-knitr-gives-you" class="level1">
-<h1>What <code>knitr</code> gives you</h1>
-<p>It takes a moment to load the Rstudio plumbing for the <a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here’s an example of what you can do with these tools, and why you might want to learn how to use them.</p>
-<p>You don’t have to host your own Rmarkdown documents; in fact, Rstudio has a lovely option where you can publish your Rmarkdown or Quarto documents directly to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>. (Note: the linked markdown document was a quickie and contains a number of Worst Practices…)</p>
-<p>Depending on how fast webR loads, we may even have time to play with markdown from within this markdown document (press the play button to execute the code):</p>
+<section id="what-knitr-does" class="level2">
+<h2 class="anchored" data-anchor-id="what-knitr-does">What <code>knitr</code> does</h2>
+<p><code>knitr</code> <em>knits</em> markdown documents into webpages (or slides, or PDFs, or…). It takes a moment to load the Rstudio plumbing for knitr/rmarkdown and the <a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here’s some examples of what you can do with these tools, and why you might want to learn how to use them.</p>
+<p>Note: You don’t have to host your Rmarkdown documents! In fact, Rstudio has a lovely option where you can publish your Rmarkdown or Quarto documents directly to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>. (Also: the linked markdown document was a quickie and contains a number of Worst Practices…)</p>
+</section>
+<section id="what-rmarkdown-does" class="level2">
+<h2 class="anchored" data-anchor-id="what-rmarkdown-does">What <code>rmarkdown</code> does</h2>
+<p><code>knitr</code> calls the <code>rmarkdown</code> package to process the chunks of code and markdown that you have asked it to knit. This implies that we can test <code>rmarkdown</code> while kicking the tires on other aspects of the rendering process.</p>
+<p>Below, I use the <code>volcano</code> dataset included with R to test how well <code>rmarkdown</code> can render Rmarkdown from within Rmarkdown. If that sounds silly… well, it is. Here’s the <code>volcano</code> data (press play to plot it):</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>The above-described dataset is <code>volcano</code>, included with base R. You can generate a plot of it below if you’d like to see it:</p>
-<div id="qwebr-insertion-location-2"></div>
-<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>Full disclosure: this particular document is also a sandbox for me (Tim) to experiment with <a href="https://docs.r-wasm.org/webr/latest/">webR</a> and dynamic rendering, for example using knitr to make <a href="/slides/webR/#/knitr">reveal.js slides</a>. Moving right along…</p>
+<p>If you are (say…) procrastinating on administrative tasks, you might even wonder how a piece of Rmarkdown is rendered into an HTML document. (If we are being honest with ourselves, this is likely not something you wondered.) Let’s run a bit of R code on the <code>volcano</code> dataset and render it to HTML:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rmarkdown"</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>markdown <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">A list</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">* Dataset: the Mountain of the Whau Tree</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="st">* μ(elevation) ="</span>, <span class="fu">mean</span>(volcano), <span class="st">"m</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="st">* σ(elevation) ="</span>, <span class="fu">sd</span>(volcano), <span class="st">"m</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(markdown, <span class="at">file=</span><span class="st">"markdown"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">"markdown"</span>) <span class="co"># generates markdown.html</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>/usr/bin/pandoc +RTS -K512m -RTS markdown --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output markdown.html --lua-filter /usr/lib/R/site-library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /usr/lib/R/site-library/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --section-divs --template /usr/lib/R/site-library/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpZuywO7/rmarkdown-str396f542680b5a.html </code></pre>
+</div>
+</div>
+<p>You can <a href="markdown.html">visit the HTML in your browser</a> if you like. At the moment, it’s not clear to me that <code>rmarkdown::render</code> does what it says, the way that it says in the manual. Alas!</p>
+<p>Full disclosure: this particular document is also a sandbox for me (Tim) to experiment with <a href="https://docs.r-wasm.org/webr/latest/">webR</a> and dynamic rendering, for example using knitr to make <a href="/slides/webR/#/knitr">reveal.js slides</a>.</p>
+<p>Moving right along…</p>
+</section>
 <section id="a-bit-of-background" class="level2">
 <h2 class="anchored" data-anchor-id="a-bit-of-background">A bit of background</h2>
 <p>The Gapminder dataset you’ve been using is from a TED talk by Hans Rosling, which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. The Roslings compiled actuarial records of life expectancy, income, and population size for countries around the world over many years. Hans died in 2017, but the impact of his work lives on, partly because the <a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder foundation</a> helps keep the data and tools from the talk available and usable.</p>
@@ -1196,7 +1217,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <section id="the-gapminder-data-in-r" class="level2">
 <h2 class="anchored" data-anchor-id="the-gapminder-data-in-r">The gapminder data in R</h2>
 <p>An excerpt of the data from Rosling’s talk is available in R via the <a href="https://cran.r-project.org/package=gapminder"><code>gapminder</code></a> package, which can be installed from CRAN via <code>install.packages("gapminder")</code>. We can check which version was installed:</p>
-<div id="qwebr-insertion-location-3"></div>
+<div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>It’s a good idea to keep track of versions, in case something were to change. When this document was compiled, the version was gapminder 1.0.0.</p>
 </section>
@@ -1204,8 +1225,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <h2 class="anchored" data-anchor-id="a-quick-look">A quick look</h2>
 <p>Let’s take a quick look at the <code>gapminder</code> data itself. If you type the name of a data object into R, you will (almost always) get a glimpse of the data:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>gapminder</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 1,704 × 6
    country     continent  year lifeExp      pop gdpPercap
@@ -1224,30 +1245,30 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </div>
 </div>
 <p>This isn’t necessarily an ideal way to inspect a dataset. The <code>head</code> and <code>tail</code> functions in R can be helpful when a dataset is too big to digest in one shot. What happens when you call these functions on the <code>gapminder</code> dataset?</p>
-<div id="qwebr-insertion-location-4"></div>
+<div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="plotting-with-ggplot2" class="level2">
 <h2 class="anchored" data-anchor-id="plotting-with-ggplot2">Plotting with ggplot2</h2>
 <p>Earlier in the workshop, you plotted some of the gapminder data with <code>ggplot2</code>:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>) </span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>americas <span class="ot">&lt;-</span> gapminder[gapminder<span class="sc">$</span>continent <span class="sc">==</span> <span class="st">"Americas"</span>,]</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> americas, </span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> lifeExp, </span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">color =</span> continent)) <span class="sc">+</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>( <span class="sc">~</span> country) <span class="sc">+</span></span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,              <span class="co"># x axis title</span></span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Life expectancy"</span>,   <span class="co"># y axis title</span></span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Figure 1"</span>,      <span class="co"># main title of figure</span></span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Continent"</span>      <span class="co"># title of legend</span></span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>) </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>americas <span class="ot">&lt;-</span> gapminder[gapminder<span class="sc">$</span>continent <span class="sc">==</span> <span class="st">"Americas"</span>,]</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> americas, </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> year, </span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>                     <span class="at">y =</span> lifeExp, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>                     <span class="at">color =</span> continent)) <span class="sc">+</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>() <span class="sc">+</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">facet_wrap</span>( <span class="sc">~</span> country) <span class="sc">+</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Year"</span>,              <span class="co"># x axis title</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Life expectancy"</span>,   <span class="co"># y axis title</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Figure 1"</span>,      <span class="co"># main title of figure</span></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">"Continent"</span>      <span class="co"># title of legend</span></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">hjust =</span> <span class="dv">1</span>))  </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1262,21 +1283,21 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <h2 class="anchored" data-anchor-id="a-bubble-plot">A bubble plot</h2>
 <p>Let’s plot the relationships between life expectancy and gross domestic product with the size of the dots representing the population of a country in millions. We will start by doing this for the year 2007, like Rosling did. (There is data from 142 countries in 2007.) We’ll use the included <code>continent_colors</code> from the <code>gapminder</code> package to standardize the fill colors (it is a good idea to standardize colors when making plots so that your audience can expect for a given color to mean the same thing all the time).</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">subset</span>(gapminder, </span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>              year <span class="sc">==</span> <span class="st">"2007"</span>), </span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, </span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> lifeExp, </span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> pop,</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> continent)) <span class="sc">+</span> </span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">shape=</span><span class="dv">21</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size</span>(<span class="at">range =</span> <span class="fu">c</span>(.<span class="dv">1</span>, <span class="dv">24</span>), <span class="at">name=</span><span class="st">"Population (M)"</span>) <span class="sc">+</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> continent_colors) <span class="sc">+</span> </span>
-<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Life Expectancy (years)"</span>, </span>
-<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"GDP per Capita (US$)"</span>) <span class="sc">+</span></span>
-<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">size =</span> <span class="st">"none"</span>, <span class="at">fill =</span> <span class="st">"none"</span>) <span class="sc">+</span> </span>
-<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"gapminder"</span>)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"ggplot2"</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="fu">subset</span>(gapminder, </span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>              year <span class="sc">==</span> <span class="st">"2007"</span>), </span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>       <span class="fu">aes</span>(<span class="at">x =</span> gdpPercap, </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> lifeExp, </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>           <span class="at">size =</span> pop,</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>           <span class="at">fill =</span> continent)) <span class="sc">+</span> </span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">alpha=</span><span class="fl">0.5</span>, <span class="at">shape=</span><span class="dv">21</span>, <span class="at">color=</span><span class="st">"black"</span>) <span class="sc">+</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_size</span>(<span class="at">range =</span> <span class="fu">c</span>(.<span class="dv">1</span>, <span class="dv">24</span>), <span class="at">name=</span><span class="st">"Population (M)"</span>) <span class="sc">+</span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(<span class="at">values =</span> continent_colors) <span class="sc">+</span> </span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">y =</span> <span class="st">"Life Expectancy (years)"</span>, </span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">x =</span> <span class="st">"GDP per Capita (US$)"</span>) <span class="sc">+</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">guides</span>(<span class="at">size =</span> <span class="st">"none"</span>, <span class="at">fill =</span> <span class="st">"none"</span>) <span class="sc">+</span> </span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure">
@@ -1288,9 +1309,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <section id="challenge" class="level3">
 <h3 class="anchored" data-anchor-id="challenge">Challenge</h3>
 <p>Suppose you wanted to look at a different year’s worth of data (say, 1952), or a specific continent (for example, Asia). Can you modify the code so that it plots the data <em>you</em> want it to plot? Can you add a title in <code>labs()</code> and restore the <code>guides()</code> legend for <code>fill</code>, as well?</p>
-<div id="qwebr-insertion-location-5"></div>
+<div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-</section>
 </section>
 </section>
 

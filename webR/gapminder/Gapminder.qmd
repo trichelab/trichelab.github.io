@@ -10,51 +10,67 @@ execute:
 filters:
   - webr
 webr:
-  packages: ['gapminder','dplyr','ggplot2','rmarkdown']
+  packages: ['gapminder','dplyr','ggplot2']
 ---
 
-# What `knitr` gives you
+## What `knitr` does
 
-It takes a moment to load the Rstudio plumbing for the 
-<a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here's an example of what you can 
+`knitr` _knits_ markdown documents into webpages (or slides, or PDFs, or...). 
+It takes a moment to load the Rstudio plumbing for knitr/rmarkdown and the 
+<a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here's some examples of what you can
 do with these tools, and why you might want to learn how to use them.
 
-You don't have to host your own Rmarkdown documents; in fact, Rstudio has a 
+Note: You don't have to host your Rmarkdown documents! In fact, Rstudio has a 
 lovely option where you can publish your Rmarkdown or Quarto documents directly 
-to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>. (Note: the linked
+to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>. (Also: the linked
 markdown document was a quickie and contains a number of Worst Practices...)
 
-Depending on how fast webR loads, we may even have time to play with markdown
-from within this markdown document (press the play button to execute the code):
+## What `rmarkdown` does
+
+`knitr` calls the `rmarkdown` package to process the chunks of code and markdown
+that you have asked it to knit.  This implies that we can test `rmarkdown` while
+kicking the tires on other aspects of the rendering process. 
+
+Below, I use the `volcano` dataset included with R to test how well `rmarkdown`
+can render Rmarkdown from within Rmarkdown. If that sounds silly... well, it is.
+Here's the `volcano` data (press play to plot it):
 
 ```{webr-r}
+filled.contour(volcano, 
+               main="Elevation of Maunga Whau, Aotearoa, in meters")
+```
+
+If you are (say...) procrastinating on administrative tasks, you might even 
+wonder how a piece of Rmarkdown is rendered into an HTML document.  (If we are 
+being honest with ourselves, this is likely not something you wondered.)
+Let's run a bit of R code on the `volcano` dataset and render it to HTML:
+
+```{r}
+#| label: Rmarkdown
 library("rmarkdown")
 
-markdown <- paste(
-  "A list\n",
-  "* Dataset: the Mountain of the Whau Tree\n",
-  "* μ(elevation) =", mean(volcano), "m\n",
-  "* σ(elevation) =", sd(volcano), "m\n",
-  sep = "")
+markdown <- paste("
+A list
+* Dataset: the Mountain of the Whau Tree
+* μ(elevation) =", mean(volcano), "m
+* σ(elevation) =", sd(volcano), "m
+",
+sep = "")
 
-tmp_file <- tempfile(tmpdir=".")
-cat(markdown, file=tmp_file)
-output <- suppressWarnings(render(tmp_file))
-cat(output)
+cat(markdown, file="markdown")
+rmarkdown::render("markdown") # generates markdown.html
 ```
 
-The above-described dataset is `volcano`, included with base R. 
-You can generate a plot of it below if you'd like to see it:
-
-```{webr-r}
-filled.contour(volcano, main="Topography of Maunga Whau volcano, Aotearoa")
-```
-
+You can <a href="markdown.html">visit the HTML in your browser</a> if you like.
+At the moment, it's not clear to me that `rmarkdown::render` does what it
+says, the way that it says in the manual. Alas!
 
 Full disclosure: this particular document is also a sandbox for me (Tim)
 to experiment with <a href="https://docs.r-wasm.org/webr/latest/">webR</a>
 and dynamic rendering, for example using knitr to make
-<a href="/slides/webR/#/knitr">reveal.js slides</a>. Moving right along...
+<a href="/slides/webR/#/knitr">reveal.js slides</a>.
+
+Moving right along...
 
 
 ## A bit of background

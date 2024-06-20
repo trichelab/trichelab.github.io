@@ -52,26 +52,24 @@ A list
 sep = "")
 
 cat(markdown, file="markdown")
-rmarkdown::render("markdown") # generates markdown.html
+rmarkdown::render("markdown", 
+                  output_format = "html_document", 
+                  output_file = "markdown.html")
 ```
 
 You can <a href="markdown.html">visit the HTML in your browser</a> if you like.
-At the moment, it's not clear to me that `rmarkdown::render` does what it
-says, the way that it says in the manual. Alas!
 
 Full disclosure: this particular document is also a sandbox for me (Tim)
 to experiment with <a href="https://docs.r-wasm.org/webr/latest/">webR</a>
 and dynamic rendering, for example using knitr to make
 <a href="/slides/webR/#/knitr">reveal.js slides</a>.
 
-Moving right along...
-
 
 ## A bit of background
 
-The Gapminder dataset you've been using is from a TED talk by Hans Rosling, 
-which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a> if you like. The Roslings compiled actuarial records of life expectancy,
-income, and population size for countries around the world over many years. Hans
+The Gapminder dataset you may have used is from a TED talk by Hans Rosling, 
+which you can view <a href="https://www.youtube.com/watch?v=hVimVzgtD6w">here</a>. The Roslings compiled actuarial records of life expectancy, income, and
+population size for countries around the world over many years. Hans
 died in 2017, but the impact of his work lives on, partly because the
 <a href="https://www.gapminder.org/about/about-gapminder/history/">Gapminder 
 foundation</a> helps keep the data and tools from the talk available and usable.

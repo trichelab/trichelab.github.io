@@ -83,7 +83,11 @@ and dynamic rendering, for example using knitr to make
 ## What `webR` does
 
 If you pressed play on the volcano or markdown examples, you might wonder what's
-happening behind the scenes. [More information about webR can be found here](https://docs.r-wasm.org/webr/latest/).
+happening behind the scenes. [More information about webR can be found here](https://docs.r-wasm.org/webr/latest/). Note that webR is  _experimental_!
+Nevertheless, we find it helpful for discussing topics like 
+[mixture modeling](https://trichelab.github.io/webR/mixtures/)
+and 
+[resampling](https://trichelab.github.io/webR/germline/).
 
 ## A bit of background
 
@@ -97,7 +101,7 @@ foundation</a> helps keep the data and tools from the talk available and usable.
 You too can become immortal in this way. The first step is to make your data and
 analyses reproducible, so that other people can understand and build upon them.
 Let's use Rosling's data to motivate a few examples. If you want to peek
-at the <a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd">markdown document itself</a>, please do!
+at the [the source for this markdown document](https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/gapminder/Gapminder.qmd), please do!
 
 
 ## The gapminder data in R
@@ -131,17 +135,28 @@ gapminder
 
 This isn't necessarily an ideal way to inspect a dataset.  The `head` and `tail`
 functions in R can be helpful when a dataset is too big to digest in one shot. 
-What happens when you call these functions on the `gapminder` dataset?
+What happens when you call `head` on the `gapminder` dataset?
 
 ```{webr-r}
 library("gapminder")
+message("head(gapminder)")
 head(gapminder)
+```
+
+That's kind of boring. What about `tail`?
+
+```{webr-r}
+library("gapminder")
+message("tail(gapminder)")
 tail(gapminder)
 ```
 
+As usual, you can use `help(head)` or `help(tail)` for more information.
+
+
 ## Plotting with ggplot2
 
-Earlier in the workshop, you plotted some of the gapminder data with `ggplot2`:
+Earlier in this workshop, you plotted some of the gapminder data with `ggplot2`:
 
 ```{r}
 #| label: A faceted plot

@@ -8,7 +8,7 @@
 
 <meta name="author" content="Tim Triche, Jr.">
 
-<title>Rmarkdown: Gapminder</title>
+<title>Knitr and rmarkdown</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"filled.contour(volcano, \n               main=\"Elevation of Maunga Whau, Aotearoa, in meters\")","options":{"warning":"true","autorun":"false","results":"markup","classes":"","fig-width":7,"message":"true","context":"interactive","read-only":"false","label":"unnamed-chunk-1","dpi":72,"output":"true","out-width":"700px","out-height":"","comment":"","fig-cap":"","fig-height":5},"id":1},{"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","options":{"warning":"true","autorun":"false","results":"markup","classes":"","fig-width":7,"message":"true","context":"interactive","read-only":"false","label":"unnamed-chunk-2","dpi":72,"output":"true","out-width":"700px","out-height":"","comment":"","fig-cap":"","fig-height":5},"id":2},{"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)","options":{"warning":"true","autorun":"false","results":"markup","classes":"","fig-width":7,"message":"true","context":"interactive","read-only":"false","label":"unnamed-chunk-3","dpi":72,"output":"true","out-width":"700px","out-height":"","comment":"","fig-cap":"","fig-height":5},"id":3},{"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = \"none\", fill = \"none\") + \n  theme_classic()","options":{"warning":"true","autorun":"false","results":"markup","classes":"","fig-width":7,"message":"true","context":"interactive","read-only":"false","label":"unnamed-chunk-4","dpi":72,"output":"true","out-width":"700px","out-height":"","comment":"","fig-cap":"","fig-height":5},"id":4}];
+globalThis.qwebrCellDetails = [{"options":{"context":"interactive","comment":"","fig-width":7,"message":"true","results":"markup","fig-height":5,"read-only":"false","label":"unnamed-chunk-1","dpi":72,"classes":"","autorun":"false","fig-cap":"","warning":"true","out-width":"700px","out-height":"","output":"true"},"code":"filled.contour(volcano, \n               main=\"Elevation of Maunga Whau, Aotearoa, in meters\")","id":1},{"options":{"context":"interactive","comment":"","fig-width":7,"message":"true","results":"markup","fig-height":5,"read-only":"false","label":"unnamed-chunk-2","dpi":72,"classes":"","autorun":"false","fig-cap":"","warning":"true","out-width":"700px","out-height":"","output":"true"},"code":"markdown <- paste(\"\n* Dataset: the Mountain of the Whau Tree\n* μ(elevation) = \", mean(volcano), \"m\n* σ(elevation) = \", sd(volcano), \"m\n\",\nsep = \"\")\n\ncat(markdown, \"\\n\")","id":2},{"options":{"context":"interactive","comment":"","fig-width":7,"message":"true","results":"markup","fig-height":5,"read-only":"false","label":"unnamed-chunk-3","dpi":72,"classes":"","autorun":"false","fig-cap":"","warning":"true","out-width":"700px","out-height":"","output":"true"},"code":"install.packages(\"gapminder\")\nlibrary(\"gapminder\")\npaste(\"gapminder\", packageVersion(\"gapminder\"))","id":3},{"options":{"context":"interactive","comment":"","fig-width":7,"message":"true","results":"markup","fig-height":5,"read-only":"false","label":"unnamed-chunk-4","dpi":72,"classes":"","autorun":"false","fig-cap":"","warning":"true","out-width":"700px","out-height":"","output":"true"},"code":"library(\"gapminder\")\nhead(gapminder)\ntail(gapminder)","id":4},{"options":{"context":"interactive","comment":"","fig-width":7,"message":"true","results":"markup","fig-height":5,"read-only":"false","label":"unnamed-chunk-5","dpi":72,"classes":"","autorun":"false","fig-cap":"","warning":"true","out-width":"700px","out-height":"","output":"true"},"code":"\nlibrary(\"gapminder\")\nlibrary(\"ggplot2\")\n\nggplot(subset(gapminder, \n              year == \"2007\"), \n       aes(x = gdpPercap, \n           y = lifeExp, \n           size = pop,\n           fill = continent)) + \n  geom_point(alpha=0.5, shape=21, color=\"black\") +\n  scale_size(range = c(.1, 24), name=\"Population (M)\") +\n  scale_fill_manual(values = continent_colors) + \n  labs(y = \"Life Expectancy (years)\", \n       x = \"GDP per Capita (US$)\") +\n  guides(size = \"none\", fill = \"none\") + \n  theme_classic()","id":5}];
 
 </script>
 <script type="module">
@@ -964,6 +964,7 @@ globalThis.qwebrExecuteCode = async function (
   <ul>
   <li><a href="#what-knitr-does" id="toc-what-knitr-does" class="nav-link active" data-scroll-target="#what-knitr-does">What <code>knitr</code> does</a></li>
   <li><a href="#what-rmarkdown-does" id="toc-what-rmarkdown-does" class="nav-link" data-scroll-target="#what-rmarkdown-does">What <code>rmarkdown</code> does</a></li>
+  <li><a href="#what-webr-does" id="toc-what-webr-does" class="nav-link" data-scroll-target="#what-webr-does">What <code>webR</code> does</a></li>
   <li><a href="#a-bit-of-background" id="toc-a-bit-of-background" class="nav-link" data-scroll-target="#a-bit-of-background">A bit of background</a></li>
   <li><a href="#the-gapminder-data-in-r" id="toc-the-gapminder-data-in-r" class="nav-link" data-scroll-target="#the-gapminder-data-in-r">The gapminder data in R</a></li>
   <li><a href="#a-quick-look" id="toc-a-quick-look" class="nav-link" data-scroll-target="#a-quick-look">A quick look</a></li>
@@ -1153,7 +1154,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Rmarkdown: Gapminder</h1>
+<h1 class="title">Knitr and rmarkdown</h1>
 </div>
 
 
@@ -1178,35 +1179,45 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 
 <section id="what-knitr-does" class="level2">
 <h2 class="anchored" data-anchor-id="what-knitr-does">What <code>knitr</code> does</h2>
-<p><code>knitr</code> <em>knits</em> markdown documents into webpages (or slides, or PDFs, or…). It takes a moment to load the Rstudio plumbing for knitr/rmarkdown and the <a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a> so here’s some examples of what you can do with knitr. Note: you don’t have to host the output! In fact, Rstudio has a lovely option where you can publish your Rmarkdown or Quarto documents directly to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>. (link is Not a Role Model)</p>
+<p><code>knitr</code> <em>knits</em> markdown documents into webpages (or slides, or PDFs, or…). It takes a moment to load the Rstudio plumbing for knitr/rmarkdown and the <a href="https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html">Software Carpentries knitr lesson</a>, so here are a few examples of why you might want to be patient. Note: you don’t have to host the output! In fact, Rstudio has a nice option where you can publish your Rmarkdown (or Quarto) documents directly to <a href="https://rpubs.com/ttriche/1011627">rpubs.com</a>.</p>
 </section>
 <section id="what-rmarkdown-does" class="level2">
 <h2 class="anchored" data-anchor-id="what-rmarkdown-does">What <code>rmarkdown</code> does</h2>
 <p><code>knitr</code> calls the <code>rmarkdown</code> package to process the chunks of code and markdown that you have asked it to knit. This implies that we can test <code>rmarkdown</code> along with other aspects of the rendering process. Below, I use the <code>volcano</code> dataset, which comes with base R. Press play below to plot it:</p>
 <div id="qwebr-insertion-location-1"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
-<p>If you are (say…) procrastinating on administrative tasks, you might even wonder how a piece of Rmarkdown is rendered into an HTML document. (If we are being honest with ourselves, this is likely not something you wondered.) Let’s run a bit of R code on the <code>volcano</code> dataset and render it to HTML:</p>
+<p>You might wonder how a piece of Rmarkdown is rendered into an HTML document. Let’s run a bit of R code on the <code>volcano</code> dataset and render it to HTML:</p>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rmarkdown"</span>)</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>markdown <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">A list</span></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">* Dataset: the Mountain of the Whau Tree</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="st">* μ(elevation) ="</span>, <span class="fu">mean</span>(volcano), <span class="st">"m</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="st">* σ(elevation) ="</span>, <span class="fu">sd</span>(volcano), <span class="st">"m</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>,</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="at">sep =</span> <span class="st">""</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(markdown, <span class="at">file=</span><span class="st">"markdown"</span>)</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">"markdown"</span>, </span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>                  <span class="at">output_format =</span> <span class="st">"html_document"</span>, </span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>                  <span class="at">output_file =</span> <span class="st">"markdown.html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>markdown <span class="ot">&lt;-</span> <span class="fu">paste</span>(<span class="st">"</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="st">* Dataset: the Mountain of the Whau Tree</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="st">* μ(elevation) = "</span>, <span class="fu">mean</span>(volcano), <span class="st">"m</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="st">* σ(elevation) = "</span>, <span class="fu">sd</span>(volcano), <span class="st">"m</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="st">"</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="at">sep =</span> <span class="st">""</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(<span class="st">"rmarkdown"</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(markdown, <span class="at">file=</span><span class="st">"markdown"</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>rmarkdown<span class="sc">::</span><span class="fu">render</span>(<span class="st">"markdown"</span>, </span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>                  <span class="at">output_format =</span> <span class="st">"html_document"</span>, </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>                  <span class="at">output_file =</span> <span class="st">"markdown.html"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>/usr/bin/pandoc +RTS -K512m -RTS markdown --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output markdown.html --lua-filter /usr/lib/R/site-library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /usr/lib/R/site-library/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --section-divs --template /usr/lib/R/site-library/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/RtmpvdzQAS/rmarkdown-str3b9241401ed6e.html </code></pre>
+<pre><code>/usr/bin/pandoc +RTS -K512m -RTS markdown --to html4 --from markdown+autolink_bare_uris+tex_math_single_backslash --output markdown.html --lua-filter /usr/lib/R/site-library/rmarkdown/rmarkdown/lua/pagebreak.lua --lua-filter /usr/lib/R/site-library/rmarkdown/rmarkdown/lua/latex-div.lua --self-contained --variable bs3=TRUE --section-divs --template /usr/lib/R/site-library/rmarkdown/rmd/h/default.html --no-highlight --variable highlightjs=1 --variable theme=bootstrap --mathjax --variable 'mathjax-url=https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML' --include-in-header /tmp/Rtmp8t1yiV/rmarkdown-strbb2709c0bed0.html </code></pre>
 </div>
 </div>
-<p>You can <a href="markdown.html">visit the HTML in your browser</a> if you like.</p>
+<p>You can <a href="markdown.html">view the output in your browser</a> if you like. Not everything works the way we expect on the first try! It turns out that if there is leading text, <code>rmarkdown</code> will pout. You can inspect the input too:</p>
+<div id="qwebr-insertion-location-2"></div>
+<noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
+<p>If the rendering step works as expected, <a href="markdown.html">the HTML output</a> will look like so:</p>
+<ul>
+<li>Dataset: the Mountain of the Whau Tree</li>
+<li>μ(elevation) = 130.187865083852m</li>
+<li>σ(elevation) = 25.8323325343889m</li>
+</ul>
 <p>Full disclosure: this particular document is also a sandbox for me (Tim) to experiment with <a href="https://docs.r-wasm.org/webr/latest/">webR</a> and dynamic rendering, for example using knitr to make <a href="/slides/webR/#/knitr">reveal.js slides</a>.</p>
+</section>
+<section id="what-webr-does" class="level2">
+<h2 class="anchored" data-anchor-id="what-webr-does">What <code>webR</code> does</h2>
+<p>If you pressed play on the volcano or markdown examples, you might wonder what’s happening behind the scenes. <a href="https://docs.r-wasm.org/webr/latest/">More information about webR can be found here</a>.</p>
 </section>
 <section id="a-bit-of-background" class="level2">
 <h2 class="anchored" data-anchor-id="a-bit-of-background">A bit of background</h2>
@@ -1216,7 +1227,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <section id="the-gapminder-data-in-r" class="level2">
 <h2 class="anchored" data-anchor-id="the-gapminder-data-in-r">The gapminder data in R</h2>
 <p>An excerpt of the data from Rosling’s talk is available in R via the <a href="https://cran.r-project.org/package=gapminder"><code>gapminder</code></a> package, which can be installed from CRAN via <code>install.packages("gapminder")</code>. We can check which version was installed:</p>
-<div id="qwebr-insertion-location-2"></div>
+<div id="qwebr-insertion-location-3"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>It’s a good idea to keep track of versions, in case something were to change. When this document was compiled, the version was gapminder 1.0.0.</p>
 </section>
@@ -1244,7 +1255,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </div>
 </div>
 <p>This isn’t necessarily an ideal way to inspect a dataset. The <code>head</code> and <code>tail</code> functions in R can be helpful when a dataset is too big to digest in one shot. What happens when you call these functions on the <code>gapminder</code> dataset?</p>
-<div id="qwebr-insertion-location-3"></div>
+<div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 <section id="plotting-with-ggplot2" class="level2">
@@ -1308,7 +1319,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <section id="challenge" class="level3">
 <h3 class="anchored" data-anchor-id="challenge">Challenge</h3>
 <p>Suppose you wanted to look at a different year’s worth of data (say, 1952), or a specific continent (for example, Asia). Can you modify the code so that it plots the data <em>you</em> want it to plot? Can you add a title in <code>labs()</code> and restore the <code>guides()</code> legend for <code>fill</code>, as well?</p>
-<div id="qwebr-insertion-location-4"></div>
+<div id="qwebr-insertion-location-5"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 </section>
 </section>

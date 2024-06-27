@@ -1,5 +1,5 @@
 ---
-title: "Rmarkdown: Gapminder"
+title: "Knitr and rmarkdown"
 author: "Tim Triche, Jr."
 format: 
   html:
@@ -17,10 +17,10 @@ webr:
 
 `knitr` _knits_ markdown documents into webpages (or slides, or PDFs, or...). 
 It takes a moment to load the Rstudio plumbing for knitr/rmarkdown and the 
-[Software Carpentries knitr lesson](https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html) so here's some examples of what you can
-do with knitr. Note: you don't have to host the output! In fact, Rstudio has a 
-lovely option where you can publish your Rmarkdown or Quarto documents directly 
-to [rpubs.com](https://rpubs.com/ttriche/1011627). (link is Not a Role Model)
+[Software Carpentries knitr lesson](https://swcarpentry.github.io/r-novice-gapminder/14-knitr-markdown.html), so here are a few examples of why you might want 
+to be patient. Note: you don't have to host the output! In fact, Rstudio has a 
+nice option where you can publish your Rmarkdown (or Quarto) documents directly 
+to [rpubs.com](https://rpubs.com/ttriche/1011627).
 
 ## What `rmarkdown` does
 
@@ -34,36 +34,56 @@ filled.contour(volcano,
                main="Elevation of Maunga Whau, Aotearoa, in meters")
 ```
 
-If you are (say...) procrastinating on administrative tasks, you might even 
-wonder how a piece of Rmarkdown is rendered into an HTML document.  (If we are 
-being honest with ourselves, this is likely not something you wondered.)
+You might wonder how a piece of Rmarkdown is rendered into an HTML document.
 Let's run a bit of R code on the `volcano` dataset and render it to HTML:
 
 ```{r}
 #| label: Rmarkdown
-library("rmarkdown")
-
 markdown <- paste("
-A list
 * Dataset: the Mountain of the Whau Tree
-* μ(elevation) =", mean(volcano), "m
-* σ(elevation) =", sd(volcano), "m
+* μ(elevation) = ", mean(volcano), "m
+* σ(elevation) = ", sd(volcano), "m
 ",
 sep = "")
 
+library("rmarkdown")
 cat(markdown, file="markdown")
 rmarkdown::render("markdown", 
                   output_format = "html_document", 
                   output_file = "markdown.html")
 ```
 
-You can <a href="markdown.html">visit the HTML in your browser</a> if you like.
+You can [view the output in your browser](markdown.html) if you like.
+Not everything works the way we expect on the first try! It turns out that if
+there is leading text, `rmarkdown` will pout. You can inspect the input too:
+
+```{webr-r}
+markdown <- paste("
+* Dataset: the Mountain of the Whau Tree
+* μ(elevation) = ", mean(volcano), "m
+* σ(elevation) = ", sd(volcano), "m
+",
+sep = "")
+
+cat(markdown, "\n")
+```
+
+If the rendering step works as expected, [the HTML output](markdown.html) 
+will look like so:
+
+* Dataset: the Mountain of the Whau Tree
+* μ(elevation) = 130.187865083852m
+* σ(elevation) = 25.8323325343889m
 
 Full disclosure: this particular document is also a sandbox for me (Tim)
 to experiment with <a href="https://docs.r-wasm.org/webr/latest/">webR</a>
 and dynamic rendering, for example using knitr to make
 <a href="/slides/webR/#/knitr">reveal.js slides</a>.
 
+## What `webR` does
+
+If you pressed play on the volcano or markdown examples, you might wonder what's
+happening behind the scenes. [More information about webR can be found here](https://docs.r-wasm.org/webr/latest/).
 
 ## A bit of background
 

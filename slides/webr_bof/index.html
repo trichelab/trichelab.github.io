@@ -538,7 +538,7 @@
   globalThis.qwebrAutoloadRPackages = true;
 
   // Display a startup message?
-  globalThis.qwebrShowStartupMessage = true;
+  globalThis.qwebrShowStartupMessage = false;
   globalThis.qwebrShowHeaderMessage = false;
 
   // Describe the webR settings that should be used
@@ -550,7 +550,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\np2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + \n        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                           breaks = seq(0, .15, .025)) + \n        ylab(\"Germline burden\") +\n        geom_hline(yintercept=0.05, lty=3) + \n        geom_quasirandom() + \n        theme_classic() + \n        theme(legend.position=\"none\", \n              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))\np2","id":1,"options":{"fig-height":5,"label":"unnamed-chunk-1","message":"true","read-only":"false","out-height":"","warning":"true","autorun":"false","fig-cap":"","context":"interactive","output":"true","comment":"","fig-width":7,"results":"markup","classes":"","dpi":72,"out-width":"700px"}}];
+  globalThis.qwebrCellDetails = [{"options":{"results":"markup","comment":"","out-width":"700px","out-height":"","fig-width":7,"context":"interactive","message":"true","read-only":"false","fig-height":5,"warning":"true","classes":"","autorun":"false","label":"unnamed-chunk-1","output":"true","dpi":72,"fig-cap":""},"id":1,"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\np2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + \n        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                           breaks = seq(0, .15, .025)) + \n        ylab(\"Germline burden\") +\n        geom_hline(yintercept=0.05, lty=3) + \n        geom_quasirandom() + \n        theme_classic() + \n        theme(legend.position=\"none\", \n              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))\np2"}];
 
   </script>
   <script type="module">

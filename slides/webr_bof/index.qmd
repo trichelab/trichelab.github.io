@@ -1,0 +1,109 @@
+---
+title: "webR BoF"
+format: 
+  revealjs:
+    slide-number: true
+    footer: "trichelab.github.io/slides/webr_bof"
+    title-slide-attributes: 
+      data-background-image: "QRcode.png"
+      data-background-size: contain
+execute: 
+  warning: false
+filters:
+- webr
+webr:
+  packages: ['ggplot2','ggbeeswarm','mixR','survminer','survival','reshape2']
+---
+
+## Quarto
+
+I use [quarto](https://quarto.org/) with 
+[webR](https://webr.r-wasm.org/latest/),
+usually via [quarto-webr](https://quarto-webr.thecoatlessprofessor.com/).
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "expand for full code"
+
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+byGroup <- split(combined$G_PLP, combined$Group)
+rs <- function(y, n, m, slop=20) {
+  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)
+  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)
+}
+
+set.seed(1234)
+library(reshape2)
+res <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) 
+results <- melt(res, variable.name="Group", value.name="Burden")
+
+library(mixR) 
+library(ggplot2)
+mixres <- select(results$Burden, ncomp=2:4)
+ncomp <- mixres$ncomp[mixres$best == "*"]
+fit <- mixfit(results$Burden, ncomp=ncomp)
+p1 <- plot(fit, 
+           title=paste("Germline P/LP variant burden across", 
+                        nrow(combined), "leukemia patients"), 
+           xlab="Germline burden",
+           theme="minimal") + 
+           scale_x_continuous(labels = scales::label_percent(), 
+                              limits = c(0, 0.15))
+p1
+```
+
+
+## webR
+
+[`quarto-webr`](https://github.com/coatless/quarto-webr) code uses [webR](https://docs.r-wasm.org/webr/latest/) to run code in the browser. 
+
+```{webr-r}
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+byGroup <- split(combined$G_PLP, combined$Group)
+rs <- function(y, n, m, slop=20) {
+  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)
+  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)
+}
+
+set.seed(1234)
+library(reshape2)
+res <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) 
+results <- melt(res, variable.name="Group", value.name="Burden")
+
+library(ggplot2)
+library(ggbeeswarm)
+p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + 
+        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),
+                           breaks = seq(0, .15, .025)) + 
+        ylab("Germline burden") +
+        geom_hline(yintercept=0.05, lty=3) + 
+        geom_quasirandom() + 
+        theme_classic() + 
+        theme(legend.position="none", 
+              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
+p2
+```
+
+
+## Challenges
+
+* **Security**: how to ensure that we control the sandbox?
+  - set up WASM hosting on lab website
+  - if users pull in new data, their responsibility
+
+* **Performance**: where is the breaking point? 
+  - BioC packages are bloated; see Kana for kludges
+  - Heavy lifts still require callouts 
+
+* **Caching**: projections and foundations
+  - Need to cache everything possible (e.g. NMF GSEA)
+  - Need to work in compressed space if possible.
+

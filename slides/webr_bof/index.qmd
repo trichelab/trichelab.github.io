@@ -173,7 +173,7 @@ ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
 ## webR + BioC
 
 ```{webr-r}
-webr::install("GEOqeuery", repos=c("https://repo.r-wasm.org/","https://webr.bioconductor.org/3.18"))
+webr::install("GEOquery", repos=c("https://repo.r-wasm.org/","https://webr.bioconductor.org/3.18"))
 library(GEOquery)
 getGEOSuppFiles("GSM2545336", fetch=FALSE)
 ```

@@ -146,18 +146,11 @@ p2
 
 ::: {.panel-tabset}
 
-### summarize trials
-
-```{webr-r}
-library(table1) 
-MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
-table1(~ AgeGroup + Sex + Fusion | Protocol, data=MLL)
-```
-
 ### fit a mixture
 
 ```{webr-r}
 library(mixR)
+MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
 MLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)
 plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
      title="EVI1 expression in MLL-rearranged leukemia")
@@ -166,7 +159,6 @@ plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
 ### fit survival
 
 ```{webr-r}
-
 library(survival)
 library(survminer)
 MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
@@ -181,7 +173,7 @@ ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
 ## webR + BioC
 
 ```{webr-r}
-webr::install("GEOqeuery", repos=c("https://repo.r-wasm.org/","https://webr.bioconductor.org/3.19"))
+webr::install("GEOqeuery", repos=c("https://repo.r-wasm.org/","https://webr.bioconductor.org/3.18"))
 library(GEOquery)
 getGEOSuppFiles("GSM2545336", fetch=FALSE)
 ```

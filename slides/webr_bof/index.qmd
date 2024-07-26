@@ -1,6 +1,5 @@
 ---
-title: "webR BoF"
-subtitle: "BioC2024"
+title: "BioC2024: webR BoF"
 author: "Tim Triche, Jr."
 institute: "Van Andel Institute"
 format: 

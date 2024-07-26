@@ -211,6 +211,8 @@ bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 
 ## observable.js
 
+Observable does not like me very much.
+
 ```{ojs}
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length_mm &&
@@ -255,10 +257,12 @@ Plot.rectY(filtered,
 ## tidytutor
 
 This is just plain cool. 
+[tidy data tutor](https://tidydatatutor.com){target="_blank"}
 It uses the datamations package.
 
-[tidy data tutor](tidydatatutor.com){target="_blank"}
-
+```{=html}
+<iframe width="780" height="300" src="https://microsoft.github.io/datamations/articles/Examples.html" title="Webpage example"></iframe>
+```
 
 
 ## Challenges

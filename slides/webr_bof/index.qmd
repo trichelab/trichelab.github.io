@@ -6,8 +6,8 @@ format:
     footer: "bit.ly/webr_bof"
     title-slide-attributes: 
       data-background-image: "QRcode.png"
-      data-background-size: "30%"
-      data-background-opacity: "0.5"
+      data-background-size: "20%"
+      data-background-position: bottom
 execute: 
   warning: false
 filters:

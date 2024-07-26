@@ -15,7 +15,7 @@ execute:
 filters:
 - webr
 webr:
-  packages: ['ggplot2','ggbeeswarm','mixR','survminer','survival','reshape2']
+  packages: ['ggplot2','ggbeeswarm','mixR','survminer','survival','table1','reshape2']
   show-startup-message: false
 ---
 
@@ -141,6 +141,52 @@ p2
 
 :::
 
+
+## more webR
+
+::: {.panel-tabset}
+
+### summarize trials
+
+```{webr-r}
+library(table1) 
+MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
+table1(~ AgeGroup + Sex + Fusion | Protocol, data=MLL)
+```
+
+### fit a mixture
+
+```{webr-r}
+library(mixR)
+MLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)
+plot(MLL_EVI1_fit, xlab="log(EVI1 transcripts)",
+     title="EVI1 expression in MLL-rearranged leukemia")
+```
+
+### fit survival
+
+```{webr-r}
+
+library(survival)
+library(survminer)
+MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
+mixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)
+ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
+      tables.theme = theme_cleantable(), palette=c("darkgreen","darkred"))
+```
+
+:::
+
+
+## webR + BioC
+
+```{webr-r}
+webr::install("GEOqeuery", repos=c("https://repo.r-wasm.org/","https://webr.bioconductor.org/3.19"))
+library(GEOquery)
+getGEOSuppFiles("GSM2545336", fetch=FALSE)
+```
+
+
 ## htmlwidgets
 
 Quarto also supports [htmlwidgets](htmlwidgets.org).
@@ -150,15 +196,9 @@ benefits from this approach:
 ```{r}
 # devtools::install_github("timelyportfolio/RBioFabric")
 library(RBioFabric)
-
-# d3 example from BioFabric
-#  source:   https://github.com/wjrl/D3BioFabric
-#  example:  http://rawgit.com/wjrl/D3BioFabric/master/src/JustBioFabric.html
-
 miserables <- jsonlite::fromJSON(
   "https://rawgit.com/wjrl/D3BioFabric/master/src/data/miserablesSimple.json"
 )
-
 mis_igraph <- graph.data.frame(
   d = miserables$links
   ,vertices = data.frame(
@@ -167,18 +207,66 @@ mis_igraph <- graph.data.frame(
     ,stringsAsFactors = F
   )
 )
-
 bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 ```
 
 
+## more htmlwidgets
+
+![In action](lauren_biofabric.jpg){.lightbox}
+
+
+
 ## observable.js
 
-ojs example goes here.
+```{ojs}
+filtered = data.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length_mm &&
+         islands.includes(penguin.island);
+})
+```
+
+```{ojs}
+viewof bill_length_min = Inputs.range(
+  [32, 50], 
+  {value: 35, step: 1, label: "Bill length (min):"}
+)
+viewof islands = Inputs.checkbox(
+  ["Torgersen", "Biscoe", "Dream"], 
+  { value: ["Torgersen", "Biscoe"], 
+    label: "Islands:"
+  }
+)
+```
+
+```{ojs}
+Plot.rectY(filtered, 
+  Plot.binX(
+    {y: "count"}, 
+    {x: "body_mass_g", fill: "species", thresholds: 20}
+  ))
+  .plot({
+    facet: {
+      data: filtered,
+      x: "sex",
+      y: "species",
+      marginRight: 80
+    },
+    marks: [
+      Plot.frame(),
+    ]
+  }
+)
+```
 
 
+## tidytutor
 
-## datamations and tidytutor
+This is just plain cool. 
+It uses the datamations package.
+
+[tidy data tutor](tidydatatutor.com){target="_blank"}
+
 
 
 ## Challenges

@@ -7,7 +7,7 @@ format:
     title-slide-attributes: 
       data-background-image: "QRcode.png"
       data-background-size: "20%"
-      data-background-position: bottom
+      data-background-position: top
 execute: 
   warning: false
 filters:

@@ -67,9 +67,6 @@ p1
 
 ## webR
 
-[`quarto-webr`](https://github.com/coatless/quarto-webr) code uses [webR](https://docs.r-wasm.org/webr/latest/) to run code in the browser. 
-
-
 ::: {.panel-tabset}
 
 ### webR runner
@@ -139,7 +136,6 @@ p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) +
         theme_classic() + 
         theme(legend.position="none", 
               axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
-p2
 ```
 
 :::

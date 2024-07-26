@@ -25,6 +25,8 @@ I use [quarto](https://quarto.org/) with
 [webR](https://webr.r-wasm.org/latest/),
 usually via [quarto-webr](https://quarto-webr.thecoatlessprofessor.com/).
 
+Below, a snippet from [germline variant reanalysis in pediatric leukemia](trichelab.github.io/webR/germline/){target="_blank"}.
+
 ```{r}
 #| echo: true
 #| code-fold: true

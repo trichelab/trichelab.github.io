@@ -136,6 +136,7 @@ p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) +
         theme_classic() + 
         theme(legend.position="none", 
               axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
+p2
 ```
 
 :::

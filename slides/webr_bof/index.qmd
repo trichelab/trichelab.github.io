@@ -19,6 +19,7 @@ webr:
   show-startup-message: false
 ---
 
+
 ## Quarto
 
 I use [quarto](https://quarto.org/) with 
@@ -68,6 +69,11 @@ p1
 
 [`quarto-webr`](https://github.com/coatless/quarto-webr) code uses [webR](https://docs.r-wasm.org/webr/latest/) to run code in the browser. 
 
+
+::: {.panel-tabset}
+
+### webR runner
+
 ```{webr-r}
 combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
 combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
@@ -97,6 +103,85 @@ p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) +
               axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
 p2
 ```
+
+### output
+
+```{r}
+#| echo: true
+#| code-fold: true
+#| code-summary: "expand for full code"
+#| label: Supervised
+#| warning: false
+
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+byGroup <- split(combined$G_PLP, combined$Group)
+rs <- function(y, n, m, slop=20) {
+  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)
+  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)
+}
+
+set.seed(1234)
+library(reshape2)
+res <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) 
+results <- melt(res, variable.name="Group", value.name="Burden")
+
+library(ggplot2)
+library(ggbeeswarm)
+p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + 
+        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),
+                           breaks = seq(0, .15, .025)) + 
+        ylab("Germline burden") +
+        geom_hline(yintercept=0.05, lty=3) + 
+        geom_quasirandom() + 
+        theme_classic() + 
+        theme(legend.position="none", 
+              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
+p2
+```
+
+:::
+
+## htmlwidgets
+
+Quarto also supports [htmlwidgets](htmlwidgets.org).
+We think [biofabric](https://biofabric.systemsbiology.net/) particularly 
+benefits from this approach:
+
+```{r}
+# devtools::install_github("timelyportfolio/RBioFabric")
+library(RBioFabric)
+
+# d3 example from BioFabric
+#  source:   https://github.com/wjrl/D3BioFabric
+#  example:  http://rawgit.com/wjrl/D3BioFabric/master/src/JustBioFabric.html
+
+miserables <- jsonlite::fromJSON(
+  "https://rawgit.com/wjrl/D3BioFabric/master/src/data/miserablesSimple.json"
+)
+
+mis_igraph <- graph.data.frame(
+  d = miserables$links
+  ,vertices = data.frame(
+    id = as.character( 0:(nrow(miserables$nodes)-1) ) 
+    ,name = miserables$nodes
+    ,stringsAsFactors = F
+  )
+)
+
+bioFabric_htmlwidget( bioFabric( mis_igraph ) )
+```
+
+
+## observable.js
+
+ojs example goes here.
+
+
+
+## datamations and tidytutor
 
 
 ## Challenges

@@ -3,10 +3,11 @@ title: "webR BoF"
 format: 
   revealjs:
     slide-number: true
-    footer: "trichelab.github.io/slides/webr_bof"
+    footer: "bit.ly/webr_bof"
     title-slide-attributes: 
       data-background-image: "QRcode.png"
-      data-background-size: contain
+      data-background-size: "30%"
+      data-background-opacity: "0.5"
 execute: 
   warning: false
 filters:

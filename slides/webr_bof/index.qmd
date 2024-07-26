@@ -1,5 +1,8 @@
 ---
 title: "webR BoF"
+subtitle: "BioC2024"
+author: "Tim Triche, Jr."
+institute: "Van Andel Institute"
 format: 
   revealjs:
     slide-number: true

@@ -17,8 +17,8 @@ filters:
 webr:
   packages: ['ggplot2','ggbeeswarm','mixR','survminer','survival','table1','reshape2']
   show-startup-message: false
-#revealjs-plugins:
-#  - drop
+revealjs-plugins:
+  - drop
 ---
 
 
@@ -202,7 +202,7 @@ getGEOSuppFiles("GSM2545336", fetch=FALSE)
 
 
 
-## htmlwidgets {.scrollable}
+## htmlwidgets
 
 Quarto supports [htmlwidgets](htmlwidgets.org) such as [biofabric](https://biofabric.systemsbiology.net/):
 
@@ -225,13 +225,13 @@ bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 ```
 
 
-## more htmlwidgets {.scrollable}
+## more htmlwidgets
 
 ![In action](lauren_biofabric.jpg){.lightbox}
 
 
 
-## observable.js {.scrollable}
+## observable.js
 
 Observable does not like me very much.
 
@@ -279,7 +279,7 @@ Plot.rectY(filtered,
 
 
 
-## tidytutor {.scrollable}
+## tidytutor
 
 [tidy data tutor](https://tidydatatutor.com){target="_blank"} is just plain cool
 It uses the datamations package:

@@ -72,7 +72,7 @@ p1
 
 
 
-## webR {.scrollable}
+## webR
 
 ::: {.panel-tabset}
 
@@ -151,13 +151,14 @@ p2
 
 
 
-## more webR {.scrollable}
+## more webR
 
 ::: {.panel-tabset}
 
 ### summarize trials
 
-```{webr-r}
+```{r}
+#| label: Table1
 library(table1)
 MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
 table1(~ AgeGroup + Sex + Fusion | Protocol, data=MLL)

@@ -562,7 +562,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\np2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + \n        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                           breaks = seq(0, .15, .025)) + \n        ylab(\"Germline burden\") +\n        geom_hline(yintercept=0.05, lty=3) + \n        geom_quasirandom() + \n        theme_classic() + \n        theme(legend.position=\"none\", \n              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))\np2","options":{"context":"interactive","warning":"true","autorun":"false","fig-width":7,"fig-height":5,"out-width":"700px","comment":"","message":"true","results":"markup","read-only":"false","label":"unnamed-chunk-1","output":"true","fig-cap":"","classes":"","out-height":"","dpi":72},"id":1},{"code":"library(mixR)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")","options":{"context":"interactive","warning":"true","autorun":"false","fig-width":7,"fig-height":5,"out-width":"700px","comment":"","message":"true","results":"markup","read-only":"false","label":"unnamed-chunk-2","output":"true","fig-cap":"","classes":"","out-height":"","dpi":72},"id":2},{"code":"library(survival)\nlibrary(survminer)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nmixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))","options":{"context":"interactive","warning":"true","autorun":"false","fig-width":7,"fig-height":5,"out-width":"700px","comment":"","message":"true","results":"markup","read-only":"false","label":"unnamed-chunk-3","output":"true","fig-cap":"","classes":"","out-height":"","dpi":72},"id":3},{"code":"webr::install(\"GEOquery\", repos=c(\"https://repo.r-wasm.org/\",\"https://webr.bioconductor.org/3.18\"))\nlibrary(GEOquery)\ngetGEOSuppFiles(\"GSM2545336\", fetch=FALSE)","options":{"context":"interactive","warning":"true","autorun":"false","fig-width":7,"fig-height":5,"out-width":"700px","comment":"","message":"true","results":"markup","read-only":"false","label":"unnamed-chunk-4","output":"true","fig-cap":"","classes":"","out-height":"","dpi":72},"id":4}];
+  globalThis.qwebrCellDetails = [{"id":1,"options":{"out-height":"","message":"true","comment":"","results":"markup","fig-width":7,"classes":"","autorun":"false","out-width":"700px","context":"interactive","read-only":"false","label":"unnamed-chunk-1","fig-height":5,"warning":"true","dpi":72,"fig-cap":"","output":"true"},"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(ggplot2)\nlibrary(ggbeeswarm)\np2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + \n        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),\n                           breaks = seq(0, .15, .025)) + \n        ylab(\"Germline burden\") +\n        geom_hline(yintercept=0.05, lty=3) + \n        geom_quasirandom() + \n        theme_classic() + \n        theme(legend.position=\"none\", \n              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))\np2"},{"id":2,"options":{"out-height":"","message":"true","comment":"","results":"markup","fig-width":7,"classes":"","autorun":"false","out-width":"700px","context":"interactive","read-only":"false","label":"unnamed-chunk-2","fig-height":5,"warning":"true","dpi":72,"fig-cap":"","output":"true"},"code":"library(mixR)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")"},{"id":3,"options":{"out-height":"","message":"true","comment":"","results":"markup","fig-width":7,"classes":"","autorun":"false","out-width":"700px","context":"interactive","read-only":"false","label":"unnamed-chunk-3","fig-height":5,"warning":"true","dpi":72,"fig-cap":"","output":"true"},"code":"library(survival)\nlibrary(survminer)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nmixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))"},{"id":4,"options":{"out-height":"","message":"true","comment":"","results":"markup","fig-width":7,"classes":"","autorun":"false","out-width":"700px","context":"interactive","read-only":"false","label":"unnamed-chunk-4","fig-height":5,"warning":"true","dpi":72,"fig-cap":"","output":"true"},"code":"webr::install(\"GEOquery\", repos=c(\"https://repo.r-wasm.org/\",\"https://webr.bioconductor.org/3.18\"))\nlibrary(GEOquery)\ngetGEOSuppFiles(\"GSM2545336\", fetch=FALSE)"}];
 
   </script>
   <script type="module">
@@ -1735,7 +1735,7 @@ Tim Triche, Jr.
 </section>
 <section id="htmlwidgets" class="slide level2 scrollable">
 <h2>htmlwidgets</h2>
-<p>Quarto also supports <a href="htmlwidgets.org">htmlwidgets</a>. We think <a href="https://biofabric.systemsbiology.net/">biofabric</a> particularly benefits from this approach:</p>
+<p>Quarto supports <a href="htmlwidgets.org">htmlwidgets</a> such as <a href="https://biofabric.systemsbiology.net/">biofabric</a>:</p>
 <div class="cell">
 
 <div class="cell-output-display">
@@ -1757,42 +1757,42 @@ Tim Triche, Jr.
 <h2>observable.js</h2>
 <p>Observable does not like me very much.</p>
 <div id="observablejstest" class="cell">
-<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="243" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 242;"><span id="cb3-243"><a href=""></a>data <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"penguins.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({ <span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span> })</span>
-<span id="cb3-244"><a href=""></a></span>
-<span id="cb3-245"><a href=""></a>viewof bill_length_min <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
-<span id="cb3-246"><a href=""></a>  [<span class="dv">32</span><span class="op">,</span> <span class="dv">50</span>]<span class="op">,</span> </span>
-<span id="cb3-247"><a href=""></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">35</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Bill length (min):"</span>}</span>
-<span id="cb3-248"><a href=""></a>)</span>
-<span id="cb3-249"><a href=""></a></span>
-<span id="cb3-250"><a href=""></a>viewof islands <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
-<span id="cb3-251"><a href=""></a>  [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span><span class="op">,</span> <span class="st">"Dream"</span>]<span class="op">,</span> </span>
-<span id="cb3-252"><a href=""></a>  { <span class="dt">value</span><span class="op">:</span> [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span>]<span class="op">,</span> </span>
-<span id="cb3-253"><a href=""></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Islands:"</span></span>
-<span id="cb3-254"><a href=""></a>  }</span>
-<span id="cb3-255"><a href=""></a>)</span>
-<span id="cb3-256"><a href=""></a></span>
-<span id="cb3-257"><a href=""></a>filtered <span class="op">=</span> data<span class="op">.</span><span class="fu">filter</span>(<span class="kw">function</span>(penguin) {</span>
-<span id="cb3-258"><a href=""></a>  <span class="cf">return</span> bill_length_min <span class="op">&lt;</span> penguin<span class="op">.</span><span class="at">bill_length_mm</span> <span class="op">&amp;&amp;</span></span>
-<span id="cb3-259"><a href=""></a>         islands<span class="op">.</span><span class="fu">includes</span>(penguin<span class="op">.</span><span class="at">island</span>)<span class="op">;</span></span>
-<span id="cb3-260"><a href=""></a>})</span>
-<span id="cb3-261"><a href=""></a></span>
-<span id="cb3-262"><a href=""></a>Plot<span class="op">.</span><span class="fu">rectY</span>(filtered<span class="op">,</span> </span>
-<span id="cb3-263"><a href=""></a>  Plot<span class="op">.</span><span class="fu">binX</span>(</span>
-<span id="cb3-264"><a href=""></a>    {<span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span>}<span class="op">,</span> </span>
-<span id="cb3-265"><a href=""></a>    {<span class="dt">x</span><span class="op">:</span> <span class="st">"body_mass_g"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span> <span class="dt">thresholds</span><span class="op">:</span> <span class="dv">20</span>}</span>
-<span id="cb3-266"><a href=""></a>  ))</span>
-<span id="cb3-267"><a href=""></a>  <span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb3-268"><a href=""></a>    <span class="dt">facet</span><span class="op">:</span> {</span>
-<span id="cb3-269"><a href=""></a>      <span class="dt">data</span><span class="op">:</span> filtered<span class="op">,</span></span>
-<span id="cb3-270"><a href=""></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"sex"</span><span class="op">,</span></span>
-<span id="cb3-271"><a href=""></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span></span>
-<span id="cb3-272"><a href=""></a>      <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">80</span></span>
-<span id="cb3-273"><a href=""></a>    }<span class="op">,</span></span>
-<span id="cb3-274"><a href=""></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb3-275"><a href=""></a>      Plot<span class="op">.</span><span class="fu">frame</span>()<span class="op">,</span></span>
-<span id="cb3-276"><a href=""></a>    ]</span>
-<span id="cb3-277"><a href=""></a>  }</span>
-<span id="cb3-278"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="241" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 240;"><span id="cb3-241"><a href=""></a>data <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"penguins.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({ <span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span> })</span>
+<span id="cb3-242"><a href=""></a></span>
+<span id="cb3-243"><a href=""></a>viewof bill_length_min <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb3-244"><a href=""></a>  [<span class="dv">32</span><span class="op">,</span> <span class="dv">50</span>]<span class="op">,</span> </span>
+<span id="cb3-245"><a href=""></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">35</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Bill length (min):"</span>}</span>
+<span id="cb3-246"><a href=""></a>)</span>
+<span id="cb3-247"><a href=""></a></span>
+<span id="cb3-248"><a href=""></a>viewof islands <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb3-249"><a href=""></a>  [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span><span class="op">,</span> <span class="st">"Dream"</span>]<span class="op">,</span> </span>
+<span id="cb3-250"><a href=""></a>  { <span class="dt">value</span><span class="op">:</span> [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span>]<span class="op">,</span> </span>
+<span id="cb3-251"><a href=""></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Islands:"</span></span>
+<span id="cb3-252"><a href=""></a>  }</span>
+<span id="cb3-253"><a href=""></a>)</span>
+<span id="cb3-254"><a href=""></a></span>
+<span id="cb3-255"><a href=""></a>filtered <span class="op">=</span> data<span class="op">.</span><span class="fu">filter</span>(<span class="kw">function</span>(penguin) {</span>
+<span id="cb3-256"><a href=""></a>  <span class="cf">return</span> bill_length_min <span class="op">&lt;</span> penguin<span class="op">.</span><span class="at">bill_length_mm</span> <span class="op">&amp;&amp;</span></span>
+<span id="cb3-257"><a href=""></a>         islands<span class="op">.</span><span class="fu">includes</span>(penguin<span class="op">.</span><span class="at">island</span>)<span class="op">;</span></span>
+<span id="cb3-258"><a href=""></a>})</span>
+<span id="cb3-259"><a href=""></a></span>
+<span id="cb3-260"><a href=""></a>Plot<span class="op">.</span><span class="fu">rectY</span>(filtered<span class="op">,</span> </span>
+<span id="cb3-261"><a href=""></a>  Plot<span class="op">.</span><span class="fu">binX</span>(</span>
+<span id="cb3-262"><a href=""></a>    {<span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span>}<span class="op">,</span> </span>
+<span id="cb3-263"><a href=""></a>    {<span class="dt">x</span><span class="op">:</span> <span class="st">"body_mass_g"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span> <span class="dt">thresholds</span><span class="op">:</span> <span class="dv">20</span>}</span>
+<span id="cb3-264"><a href=""></a>  ))</span>
+<span id="cb3-265"><a href=""></a>  <span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb3-266"><a href=""></a>    <span class="dt">facet</span><span class="op">:</span> {</span>
+<span id="cb3-267"><a href=""></a>      <span class="dt">data</span><span class="op">:</span> filtered<span class="op">,</span></span>
+<span id="cb3-268"><a href=""></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"sex"</span><span class="op">,</span></span>
+<span id="cb3-269"><a href=""></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span></span>
+<span id="cb3-270"><a href=""></a>      <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">80</span></span>
+<span id="cb3-271"><a href=""></a>    }<span class="op">,</span></span>
+<span id="cb3-272"><a href=""></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb3-273"><a href=""></a>      Plot<span class="op">.</span><span class="fu">frame</span>()<span class="op">,</span></span>
+<span id="cb3-274"><a href=""></a>    ]</span>
+<span id="cb3-275"><a href=""></a>  }</span>
+<span id="cb3-276"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="observablejstest-1">
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -2410,7 +2410,7 @@ Tim Triche, Jr.
       }
     );
     </script>
-    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","loop":false,"selector":".lightbox","descPosition":"bottom","openEffect":"zoom"});
+    <script>var lightboxQuarto = GLightbox({"selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom","openEffect":"zoom"});
     window.onload = () => {
       lightboxQuarto.on('slide_before_load', (data) => {
         const { slideIndex, slideNode, slideConfig, player, trigger } = data;

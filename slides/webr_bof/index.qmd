@@ -204,9 +204,7 @@ getGEOSuppFiles("GSM2545336", fetch=FALSE)
 
 ## htmlwidgets {.scrollable}
 
-Quarto also supports [htmlwidgets](htmlwidgets.org).
-We think [biofabric](https://biofabric.systemsbiology.net/) particularly 
-benefits from this approach:
+Quarto supports [htmlwidgets](htmlwidgets.org) such as [biofabric](https://biofabric.systemsbiology.net/):
 
 ```{r}
 #| label: RBioFabric

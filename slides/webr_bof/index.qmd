@@ -31,7 +31,7 @@ usually via [quarto-webr](https://quarto-webr.thecoatlessprofessor.com/).
 Below, a [germline variant analysis in pediatric leukemia](https://trichelab.github.io/webR/germline/){target="_blank"}.
 
 ```{r}
-#| label: Germline variant resampling
+#| label: GermlineVariantResampling
 #| echo: true
 #| code-fold: true
 #| code-summary: "expand for full code"
@@ -111,7 +111,7 @@ p2
 ### output
 
 ```{r}
-#| label: Resampling webR output
+#| label: ResamplingWebrOutput
 #| echo: true
 #| code-fold: true
 #| code-summary: "expand for full code"
@@ -237,7 +237,7 @@ bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 Observable does not like me very much.
 
 ```{ojs}
-//| label: ojs test
+//| label: ObservableJsTest
 
 data = FileAttachment("penguins.csv").csv({ typed: true })
 

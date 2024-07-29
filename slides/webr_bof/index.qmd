@@ -71,7 +71,7 @@ p1
 :::
 
 
-## more webR
+## more webR {.scrollable}
 
 ::: {.panel-tabset}
 
@@ -117,7 +117,7 @@ suppressWarnings(
   suppressMessages(
     webr::install("GEOquery", 
                   repos=c("https://repo.r-wasm.org/",
-                          "https://webr.bioconductor.org/3.20"))\
+                          "https://webr.bioconductor.org/3.20"))
   )
 )
 library(GEOquery)
@@ -156,7 +156,7 @@ bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 
 
 
-## observable.js
+## observable.js {.scrollable}
 
 Observable does not like me very much.
 

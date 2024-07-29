@@ -111,10 +111,10 @@ p2
 ### output
 
 ```{r}
+#| label: Resampling webR output
 #| echo: true
 #| code-fold: true
 #| code-summary: "expand for full code"
-#| label: Supervised
 #| warning: false
 
 combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
@@ -154,6 +154,14 @@ p2
 ## more webR {.scrollable}
 
 ::: {.panel-tabset}
+
+### summarize trials
+
+```{webr-r}
+library(table1)
+MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
+table1(~ AgeGroup + Sex + Fusion | Protocol, data=MLL)
+```
 
 ### fit a mixture
 
@@ -200,6 +208,7 @@ We think [biofabric](https://biofabric.systemsbiology.net/) particularly
 benefits from this approach:
 
 ```{r}
+#| label: RBioFabric
 # devtools::install_github("timelyportfolio/RBioFabric")
 library(RBioFabric)
 miserables <- jsonlite::fromJSON(
@@ -229,10 +238,8 @@ Observable does not like me very much.
 
 ```{ojs}
 //| label: ojs test
-filtered = data.filter(function(penguin) {
-  return bill_length_min < penguin.bill_length_mm &&
-         islands.includes(penguin.island);
-})
+
+data = FileAttachment("penguins.csv").csv({ typed: true })
 
 viewof bill_length_min = Inputs.range(
   [32, 50], 
@@ -245,6 +252,11 @@ viewof islands = Inputs.checkbox(
     label: "Islands:"
   }
 )
+
+filtered = data.filter(function(penguin) {
+  return bill_length_min < penguin.bill_length_mm &&
+         islands.includes(penguin.island);
+})
 
 Plot.rectY(filtered, 
   Plot.binX(

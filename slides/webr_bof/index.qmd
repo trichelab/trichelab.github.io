@@ -226,7 +226,7 @@ bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 ```
 
 
-## more htmlwidgets
+## more htmlwidgets {.scrollable}
 
 ![In action](lauren_biofabric.jpg){.lightbox}
 

@@ -4,6 +4,8 @@ author: "Tim Triche, Jr."
 institute: "Van Andel Institute"
 format: 
   revealjs:
+    view: 'scroll'
+    scrollProgress: true
     slide-number: true
     footer: "bit.ly/webr_bof"
     title-slide-attributes: 

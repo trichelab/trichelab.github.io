@@ -10,8 +10,6 @@ format:
       data-background-image: "QRcode.png"
       data-background-size: "20%"
       data-background-position: top
-#revealjs-plugins:
-#  - drop
 execute: 
   warning: false
 filters:
@@ -19,6 +17,8 @@ filters:
 webr:
   packages: ['ggplot2','ggbeeswarm','mixR','survminer','survival','table1','reshape2']
   show-startup-message: false
+#revealjs-plugins:
+#  - drop
 ---
 
 
@@ -190,7 +190,7 @@ ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
 
 
 
-## webR + BioC {.scrollable}
+## webR + BioC
 
 ```{webr-r}
 webr::install("GEOquery", repos=c("https://repo.r-wasm.org/","https://webr.bioconductor.org/3.18"))

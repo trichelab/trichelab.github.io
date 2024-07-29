@@ -4,18 +4,18 @@ author: "Tim Triche, Jr."
 institute: "Van Andel Institute"
 format: 
   revealjs:
-    view: 'scroll'
-    scrollProgress: true
     slide-number: true
     footer: "[Click for source code](https://github.com/trichelab/trichelab.github.io/blob/gh-pages/slides/webr_bof/index.qmd)"
     title-slide-attributes: 
       data-background-image: "QRcode.png"
       data-background-size: "20%"
       data-background-position: top
+revealjs-plugins:
+  - drop
 execute: 
   warning: false
 filters:
-- webr
+  - webr
 webr:
   packages: ['ggplot2','ggbeeswarm','mixR','survminer','survival','table1','reshape2']
   show-startup-message: false
@@ -31,6 +31,7 @@ usually via [quarto-webr](https://quarto-webr.thecoatlessprofessor.com/).
 Below, a [germline variant analysis in pediatric leukemia](https://trichelab.github.io/webR/germline/){target="_blank"}.
 
 ```{r}
+#| label: Germline variant resampling
 #| echo: true
 #| code-fold: true
 #| code-summary: "expand for full code"
@@ -67,7 +68,11 @@ p1
 ```
 
 
-## webR
+
+
+
+
+## webR {.scrollable}
 
 ::: {.panel-tabset}
 
@@ -144,7 +149,9 @@ p2
 :::
 
 
-## more webR
+
+
+## more webR {.scrollable}
 
 ::: {.panel-tabset}
 
@@ -172,7 +179,10 @@ ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
 :::
 
 
-## webR + BioC
+
+
+
+## webR + BioC {.scrollable}
 
 ```{webr-r}
 webr::install("GEOquery", repos=c("https://repo.r-wasm.org/","https://webr.bioconductor.org/3.18"))
@@ -181,7 +191,9 @@ getGEOSuppFiles("GSM2545336", fetch=FALSE)
 ```
 
 
-## htmlwidgets
+
+
+## htmlwidgets {.scrollable}
 
 Quarto also supports [htmlwidgets](htmlwidgets.org).
 We think [biofabric](https://biofabric.systemsbiology.net/) particularly 
@@ -211,7 +223,7 @@ bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 
 
 
-## observable.js
+## observable.js {.scrollable}
 
 Observable does not like me very much.
 
@@ -254,7 +266,9 @@ Plot.rectY(filtered,
 ```
 
 
-## tidytutor
+
+
+## tidytutor {.scrollable}
 
 This is just plain cool. 
 [tidy data tutor](https://tidydatatutor.com){target="_blank"}

@@ -282,8 +282,8 @@ Plot.rectY(filtered,
 
 ## tidytutor
 
-[tidy data tutor](https://tidydatatutor.com){target="_blank"} is just plain cool
-It uses the datamations package:
+[tidy data tutor](https://tidydatatutor.com){target="_blank"} does its magic via
+[datamations](https://microsoft.github.io/datamation){target="_blank"}.
 
 ```{=html}
 <iframe width="800" height="600" src="https://microsoft.github.io/datamations/articles/Examples.html" title="Webpage example"></iframe>

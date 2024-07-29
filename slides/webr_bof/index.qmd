@@ -77,11 +77,10 @@ p1
 
 ### summarize trials
 
-```{r}
-#| label: Table1
+```{webr-r}
 library(table1)
 MLL <- readRDS(url("https://trichelab.github.io/data/MLL.rds"))
-table1(~ AgeGroup + Sex + Fusion | Protocol, data=MLL)
+table1(~ AgeGroup + Sex + Fusion | Protocol, data=MLL, topclass="Rtable1-zebra")
 ```
 
 ### fit a mixture
@@ -216,8 +215,6 @@ Plot.rectY(filtered,
 
 
 ## shinylive
-
-Shinylive application in a Quarto doc:
 
 ```{shinylive-r}
 #| standalone: true

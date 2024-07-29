@@ -18,8 +18,8 @@ filters:
 webr:
   packages: ['ggplot2','ggbeeswarm','mixR','survminer','survival','table1','reshape2']
   show-startup-message: false
-revealjs-plugins:
-  - drop
+#revealjs-plugins:
+#  - drop
 ---
 
 

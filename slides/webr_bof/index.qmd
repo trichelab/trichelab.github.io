@@ -226,7 +226,6 @@ library(shiny)
 library(bslib)
 library(dplyr)
 library(ggplot2)
-library(ggExtra)
 
 penguins_csv <- "https://raw.githubusercontent.com/jcheng5/simplepenguins.R/main/penguins.csv"
 
@@ -245,7 +244,6 @@ ui <- page_sidebar(
     ),
     hr(), # Add a horizontal rule
     checkboxInput("by_species", "Show species", TRUE),
-    checkboxInput("show_margins", "Show marginal plots", TRUE),
     checkboxInput("smooth", "Add smoother"),
   ),
   plotOutput("scatter")
@@ -264,12 +262,6 @@ server <- function(input, output, session) {
       geom_point(),
       if (input$smooth) geom_smooth()
     )
-
-    if (input$show_margins) {
-      margin_type <- if (input$by_species) "density" else "histogram"
-      p <- ggExtra::ggMarginal(p, type = margin_type, margins = "both",
-        size = 8, groupColour = input$by_species, groupFill = input$by_species)
-    }
 
     p
   }, res = 100)

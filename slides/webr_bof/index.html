@@ -691,7 +691,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"options":{"out-height":"","comment":"","out-width":"700px","label":"unnamed-chunk-1","output":"true","editor-font-scale":"0.5","warning":"true","dpi":72,"read-only":"false","editor-quick-suggestions":"false","message":"true","fig-width":7,"context":"interactive","classes":"","results":"markup","autorun":"false","fig-height":5,"editor-max-height":"","fig-cap":"","editor-word-wrap":"true"},"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(mixR) \nlibrary(ggplot2)\nmixres <- select(results$Burden, ncomp=2:4)\nncomp <- mixres$ncomp[mixres$best == \"*\"]\nfit <- mixfit(results$Burden, ncomp=ncomp)\np1 <- plot(fit, \n           title=paste(\"Germline P/LP variant burden across\", \n                        nrow(combined), \"leukemia patients\"), \n           xlab=\"Germline burden\",\n           theme=\"minimal\") + \n           scale_x_continuous(labels = scales::label_percent(), \n                              limits = c(0, 0.15))\np1","id":1},{"options":{"out-height":"","comment":"","out-width":"700px","label":"unnamed-chunk-2","output":"true","editor-font-scale":"0.5","warning":"true","dpi":72,"read-only":"false","editor-quick-suggestions":"false","message":"true","fig-width":7,"context":"interactive","classes":"","results":"markup","autorun":"false","fig-height":5,"editor-max-height":"","fig-cap":"","editor-word-wrap":"true"},"code":"library(mixR)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")","id":2},{"options":{"out-height":"","comment":"","out-width":"700px","label":"unnamed-chunk-3","output":"true","editor-font-scale":"0.5","warning":"true","dpi":72,"read-only":"false","editor-quick-suggestions":"false","message":"true","fig-width":7,"context":"interactive","classes":"","results":"markup","autorun":"false","fig-height":5,"editor-max-height":"","fig-cap":"","editor-word-wrap":"true"},"code":"library(survival)\nlibrary(survminer)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nmixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))","id":3},{"options":{"out-height":"","comment":"","out-width":"700px","label":"unnamed-chunk-4","output":"true","editor-font-scale":"0.5","warning":"true","dpi":72,"read-only":"false","editor-quick-suggestions":"false","message":"true","fig-width":7,"context":"interactive","classes":"","results":"markup","autorun":"false","fig-height":5,"editor-max-height":"","fig-cap":"","editor-word-wrap":"true"},"code":"suppressWarnings(\n  suppressMessages(\n    webr::install(\"GEOquery\", \n                  repos=c(\"https://repo.r-wasm.org/\",\n                          \"https://webr.bioconductor.org/3.20\"))\\\n  )\n)\nlibrary(GEOquery)\ngetGEOSuppFiles(\"GSM2545336\", fetch=FALSE)","id":4}];
+  globalThis.qwebrCellDetails = [{"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(mixR) \nlibrary(ggplot2)\nmixres <- select(results$Burden, ncomp=2:4)\nncomp <- mixres$ncomp[mixres$best == \"*\"]\nfit <- mixfit(results$Burden, ncomp=ncomp)\np1 <- plot(fit, \n           title=paste(\"Germline P/LP variant burden across\", \n                        nrow(combined), \"leukemia patients\"), \n           xlab=\"Germline burden\",\n           theme=\"minimal\") + \n           scale_x_continuous(labels = scales::label_percent(), \n                              limits = c(0, 0.15))\np1","options":{"output":"true","fig-height":5,"out-width":"700px","editor-word-wrap":"true","editor-quick-suggestions":"false","editor-max-height":"","results":"markup","comment":"","read-only":"false","dpi":72,"out-height":"","fig-width":7,"classes":"","autorun":"false","editor-font-scale":"0.5","message":"true","fig-cap":"","warning":"true","context":"interactive","label":"unnamed-chunk-1"},"id":1},{"code":"library(mixR)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")","options":{"output":"true","fig-height":5,"out-width":"700px","editor-word-wrap":"true","editor-quick-suggestions":"false","editor-max-height":"","results":"markup","comment":"","read-only":"false","dpi":72,"out-height":"","fig-width":7,"classes":"","autorun":"false","editor-font-scale":"0.5","message":"true","fig-cap":"","warning":"true","context":"interactive","label":"unnamed-chunk-2"},"id":2},{"code":"library(survival)\nlibrary(survminer)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nmixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))","options":{"output":"true","fig-height":5,"out-width":"700px","editor-word-wrap":"true","editor-quick-suggestions":"false","editor-max-height":"","results":"markup","comment":"","read-only":"false","dpi":72,"out-height":"","fig-width":7,"classes":"","autorun":"false","editor-font-scale":"0.5","message":"true","fig-cap":"","warning":"true","context":"interactive","label":"unnamed-chunk-3"},"id":3},{"code":"suppressWarnings(\n  suppressMessages(\n    webr::install(\"GEOquery\", \n                  repos=c(\"https://repo.r-wasm.org/\",\n                          \"https://webr.bioconductor.org/3.20\"))\\\n  )\n)\nlibrary(GEOquery)\ngetGEOSuppFiles(\"GSM2545336\", fetch=FALSE)","options":{"output":"true","fig-height":5,"out-width":"700px","editor-word-wrap":"true","editor-quick-suggestions":"false","editor-max-height":"","results":"markup","comment":"","read-only":"false","dpi":72,"out-height":"","fig-width":7,"classes":"","autorun":"false","editor-font-scale":"0.5","message":"true","fig-cap":"","warning":"true","context":"interactive","label":"unnamed-chunk-4"},"id":4}];
 
   </script>
   <script type="module">
@@ -2514,57 +2514,49 @@ Tim Triche, Jr.
 <span id="cb3-4"><a href=""></a>library(bslib)</span>
 <span id="cb3-5"><a href=""></a>library(dplyr)</span>
 <span id="cb3-6"><a href=""></a>library(ggplot2)</span>
-<span id="cb3-7"><a href=""></a>library(ggExtra)</span>
-<span id="cb3-8"><a href=""></a></span>
-<span id="cb3-9"><a href=""></a>penguins_csv &lt;- "https://raw.githubusercontent.com/jcheng5/simplepenguins.R/main/penguins.csv"</span>
-<span id="cb3-10"><a href=""></a></span>
-<span id="cb3-11"><a href=""></a>df &lt;- readr::read_csv(penguins_csv)</span>
-<span id="cb3-12"><a href=""></a># Find subset of columns that are suitable for scatter plot</span>
-<span id="cb3-13"><a href=""></a>df_num &lt;- df |&gt; select(where(is.numeric), -Year)</span>
-<span id="cb3-14"><a href=""></a></span>
-<span id="cb3-15"><a href=""></a>ui &lt;- page_sidebar(</span>
-<span id="cb3-16"><a href=""></a>  sidebar = sidebar(</span>
-<span id="cb3-17"><a href=""></a>    varSelectInput("xvar", "X variable", df_num, selected = "Bill Length (mm)"),</span>
-<span id="cb3-18"><a href=""></a>    varSelectInput("yvar", "Y variable", df_num, selected = "Bill Depth (mm)"),</span>
-<span id="cb3-19"><a href=""></a>    checkboxGroupInput(</span>
-<span id="cb3-20"><a href=""></a>      "species", "Filter by species",</span>
-<span id="cb3-21"><a href=""></a>      choices = unique(df$Species), </span>
-<span id="cb3-22"><a href=""></a>      selected = unique(df$Species)</span>
-<span id="cb3-23"><a href=""></a>    ),</span>
-<span id="cb3-24"><a href=""></a>    hr(), # Add a horizontal rule</span>
-<span id="cb3-25"><a href=""></a>    checkboxInput("by_species", "Show species", TRUE),</span>
-<span id="cb3-26"><a href=""></a>    checkboxInput("show_margins", "Show marginal plots", TRUE),</span>
-<span id="cb3-27"><a href=""></a>    checkboxInput("smooth", "Add smoother"),</span>
-<span id="cb3-28"><a href=""></a>  ),</span>
-<span id="cb3-29"><a href=""></a>  plotOutput("scatter")</span>
-<span id="cb3-30"><a href=""></a>)</span>
-<span id="cb3-31"><a href=""></a></span>
-<span id="cb3-32"><a href=""></a>server &lt;- function(input, output, session) {</span>
-<span id="cb3-33"><a href=""></a>  subsetted &lt;- reactive({</span>
-<span id="cb3-34"><a href=""></a>    req(input$species)</span>
-<span id="cb3-35"><a href=""></a>    df |&gt; filter(Species %in% input$species)</span>
-<span id="cb3-36"><a href=""></a>  })</span>
-<span id="cb3-37"><a href=""></a></span>
-<span id="cb3-38"><a href=""></a>  output$scatter &lt;- renderPlot({</span>
-<span id="cb3-39"><a href=""></a>    p &lt;- ggplot(subsetted(), aes(!!input$xvar, !!input$yvar)) + list(</span>
-<span id="cb3-40"><a href=""></a>      theme(legend.position = "bottom"),</span>
-<span id="cb3-41"><a href=""></a>      if (input$by_species) aes(color = Species),</span>
-<span id="cb3-42"><a href=""></a>      geom_point(),</span>
-<span id="cb3-43"><a href=""></a>      if (input$smooth) geom_smooth()</span>
-<span id="cb3-44"><a href=""></a>    )</span>
-<span id="cb3-45"><a href=""></a></span>
-<span id="cb3-46"><a href=""></a>    if (input$show_margins) {</span>
-<span id="cb3-47"><a href=""></a>      margin_type &lt;- if (input$by_species) "density" else "histogram"</span>
-<span id="cb3-48"><a href=""></a>      p &lt;- ggExtra::ggMarginal(p, type = margin_type, margins = "both",</span>
-<span id="cb3-49"><a href=""></a>        size = 8, groupColour = input$by_species, groupFill = input$by_species)</span>
-<span id="cb3-50"><a href=""></a>    }</span>
-<span id="cb3-51"><a href=""></a></span>
-<span id="cb3-52"><a href=""></a>    p</span>
-<span id="cb3-53"><a href=""></a>  }, res = 100)</span>
-<span id="cb3-54"><a href=""></a>}</span>
-<span id="cb3-55"><a href=""></a></span>
-<span id="cb3-56"><a href=""></a>shinyApp(ui, server)</span>
-<span id="cb3-57"><a href=""></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-7"><a href=""></a></span>
+<span id="cb3-8"><a href=""></a>penguins_csv &lt;- "https://raw.githubusercontent.com/jcheng5/simplepenguins.R/main/penguins.csv"</span>
+<span id="cb3-9"><a href=""></a></span>
+<span id="cb3-10"><a href=""></a>df &lt;- readr::read_csv(penguins_csv)</span>
+<span id="cb3-11"><a href=""></a># Find subset of columns that are suitable for scatter plot</span>
+<span id="cb3-12"><a href=""></a>df_num &lt;- df |&gt; select(where(is.numeric), -Year)</span>
+<span id="cb3-13"><a href=""></a></span>
+<span id="cb3-14"><a href=""></a>ui &lt;- page_sidebar(</span>
+<span id="cb3-15"><a href=""></a>  sidebar = sidebar(</span>
+<span id="cb3-16"><a href=""></a>    varSelectInput("xvar", "X variable", df_num, selected = "Bill Length (mm)"),</span>
+<span id="cb3-17"><a href=""></a>    varSelectInput("yvar", "Y variable", df_num, selected = "Bill Depth (mm)"),</span>
+<span id="cb3-18"><a href=""></a>    checkboxGroupInput(</span>
+<span id="cb3-19"><a href=""></a>      "species", "Filter by species",</span>
+<span id="cb3-20"><a href=""></a>      choices = unique(df$Species), </span>
+<span id="cb3-21"><a href=""></a>      selected = unique(df$Species)</span>
+<span id="cb3-22"><a href=""></a>    ),</span>
+<span id="cb3-23"><a href=""></a>    hr(), # Add a horizontal rule</span>
+<span id="cb3-24"><a href=""></a>    checkboxInput("by_species", "Show species", TRUE),</span>
+<span id="cb3-25"><a href=""></a>    checkboxInput("smooth", "Add smoother"),</span>
+<span id="cb3-26"><a href=""></a>  ),</span>
+<span id="cb3-27"><a href=""></a>  plotOutput("scatter")</span>
+<span id="cb3-28"><a href=""></a>)</span>
+<span id="cb3-29"><a href=""></a></span>
+<span id="cb3-30"><a href=""></a>server &lt;- function(input, output, session) {</span>
+<span id="cb3-31"><a href=""></a>  subsetted &lt;- reactive({</span>
+<span id="cb3-32"><a href=""></a>    req(input$species)</span>
+<span id="cb3-33"><a href=""></a>    df |&gt; filter(Species %in% input$species)</span>
+<span id="cb3-34"><a href=""></a>  })</span>
+<span id="cb3-35"><a href=""></a></span>
+<span id="cb3-36"><a href=""></a>  output$scatter &lt;- renderPlot({</span>
+<span id="cb3-37"><a href=""></a>    p &lt;- ggplot(subsetted(), aes(!!input$xvar, !!input$yvar)) + list(</span>
+<span id="cb3-38"><a href=""></a>      theme(legend.position = "bottom"),</span>
+<span id="cb3-39"><a href=""></a>      if (input$by_species) aes(color = Species),</span>
+<span id="cb3-40"><a href=""></a>      geom_point(),</span>
+<span id="cb3-41"><a href=""></a>      if (input$smooth) geom_smooth()</span>
+<span id="cb3-42"><a href=""></a>    )</span>
+<span id="cb3-43"><a href=""></a></span>
+<span id="cb3-44"><a href=""></a>    p</span>
+<span id="cb3-45"><a href=""></a>  }, res = 100)</span>
+<span id="cb3-46"><a href=""></a>}</span>
+<span id="cb3-47"><a href=""></a></span>
+<span id="cb3-48"><a href=""></a>shinyApp(ui, server)</span>
+<span id="cb3-49"><a href=""></a></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </section>
 <section id="challenges" class="slide level2">
 <h2>Challenges</h2>
@@ -3153,7 +3145,7 @@ Tim Triche, Jr.
       }
     );
     </script>
-    <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","loop":false,"closeEffect":"zoom","descPosition":"bottom","selector":".lightbox"});
+    <script>var lightboxQuarto = GLightbox({"openEffect":"zoom","selector":".lightbox","loop":false,"closeEffect":"zoom","descPosition":"bottom"});
     (function() {
       let previousOnload = window.onload;
       window.onload = () => {

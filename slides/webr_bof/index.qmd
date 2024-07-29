@@ -37,8 +37,6 @@ Below, a [germline variant analysis in pediatric leukemia](https://trichelab.git
 ```{r}
 #| label: GermlineVariantResampling
 #| echo: true
-#| code-fold: true
-#| code-summary: "expand for full code"
 
 combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
 combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)

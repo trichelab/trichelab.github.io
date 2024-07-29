@@ -112,6 +112,8 @@ ggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
 
 ## webR + BioC {.scrollable}
 
+Try running this one twice. 
+
 ```{webr-r}
 suppressWarnings(
   suppressMessages(

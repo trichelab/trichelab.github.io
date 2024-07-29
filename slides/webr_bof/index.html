@@ -691,7 +691,7 @@
   };
 
   // Store cell data
-  globalThis.qwebrCellDetails = [{"id":1,"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(mixR) \nlibrary(ggplot2)\nmixres <- select(results$Burden, ncomp=2:4)\nncomp <- mixres$ncomp[mixres$best == \"*\"]\nfit <- mixfit(results$Burden, ncomp=ncomp)\np1 <- plot(fit, \n           title=paste(\"Germline P/LP variant burden across\", \n                        nrow(combined), \"leukemia patients\"), \n           xlab=\"Germline burden\",\n           theme=\"minimal\") + \n           scale_x_continuous(labels = scales::label_percent(), \n                              limits = c(0, 0.15))\np1","options":{"fig-cap":"","editor-word-wrap":"true","comment":"","editor-max-height":"","context":"interactive","message":"true","fig-height":5,"out-width":"700px","read-only":"false","editor-quick-suggestions":"false","label":"unnamed-chunk-1","classes":"","results":"markup","autorun":"false","dpi":72,"warning":"true","output":"true","fig-width":7,"out-height":"","editor-font-scale":"0.5"}},{"id":2,"code":"library(mixR)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")","options":{"fig-cap":"","editor-word-wrap":"true","comment":"","editor-max-height":"","context":"interactive","message":"true","fig-height":5,"out-width":"700px","read-only":"false","editor-quick-suggestions":"false","label":"unnamed-chunk-2","classes":"","results":"markup","autorun":"false","dpi":72,"warning":"true","output":"true","fig-width":7,"out-height":"","editor-font-scale":"0.5"}},{"id":3,"code":"library(survival)\nlibrary(survminer)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nmixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))","options":{"fig-cap":"","editor-word-wrap":"true","comment":"","editor-max-height":"","context":"interactive","message":"true","fig-height":5,"out-width":"700px","read-only":"false","editor-quick-suggestions":"false","label":"unnamed-chunk-3","classes":"","results":"markup","autorun":"false","dpi":72,"warning":"true","output":"true","fig-width":7,"out-height":"","editor-font-scale":"0.5"}},{"id":4,"code":"webr::install(\"GEOquery\", repos=c(\"https://repo.r-wasm.org/\",\"https://webr.bioconductor.org/3.18\"))\nlibrary(GEOquery)\ngetGEOSuppFiles(\"GSM2545336\", fetch=FALSE)","options":{"fig-cap":"","editor-word-wrap":"true","comment":"","editor-max-height":"","context":"interactive","message":"true","fig-height":5,"out-width":"700px","read-only":"false","editor-quick-suggestions":"false","label":"unnamed-chunk-4","classes":"","results":"markup","autorun":"false","dpi":72,"warning":"true","output":"true","fig-width":7,"out-height":"","editor-font-scale":"0.5"}}];
+  globalThis.qwebrCellDetails = [{"options":{"editor-max-height":"","editor-word-wrap":"true","warning":"true","message":"true","fig-width":7,"fig-cap":"","editor-quick-suggestions":"false","classes":"","dpi":72,"out-height":"","editor-font-scale":"0.5","results":"markup","autorun":"false","context":"interactive","output":"true","comment":"","label":"unnamed-chunk-1","out-width":"700px","fig-height":5,"read-only":"false"},"code":"combined <- read.csv(url(\"https://trichelab.github.io/data/combined.csv\"),row=1)\ncombined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)\ncombined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)\ncombined$Group <- paste(combined$AgeGroup, gsub(\"\\\\-\", \"\", combined$Lineage))\ncombined$Group <- relevel(relevel(factor(combined$Group), 4), 4)\nbyGroup <- split(combined$G_PLP, combined$Group)\nrs <- function(y, n, m, slop=20) {\n  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)\n  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)\n}\n\nset.seed(1234)\nlibrary(reshape2)\nres <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) \nresults <- melt(res, variable.name=\"Group\", value.name=\"Burden\")\n\nlibrary(mixR) \nlibrary(ggplot2)\nmixres <- select(results$Burden, ncomp=2:4)\nncomp <- mixres$ncomp[mixres$best == \"*\"]\nfit <- mixfit(results$Burden, ncomp=ncomp)\np1 <- plot(fit, \n           title=paste(\"Germline P/LP variant burden across\", \n                        nrow(combined), \"leukemia patients\"), \n           xlab=\"Germline burden\",\n           theme=\"minimal\") + \n           scale_x_continuous(labels = scales::label_percent(), \n                              limits = c(0, 0.15))\np1","id":1},{"options":{"editor-max-height":"","editor-word-wrap":"true","warning":"true","message":"true","fig-width":7,"fig-cap":"","editor-quick-suggestions":"false","classes":"","dpi":72,"out-height":"","editor-font-scale":"0.5","results":"markup","autorun":"false","context":"interactive","output":"true","comment":"","label":"unnamed-chunk-2","out-width":"700px","fig-height":5,"read-only":"false"},"code":"library(mixR)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nMLL_EVI1_fit <- mixfit(MLL$MECOM, ncomp=2)\nplot(MLL_EVI1_fit, xlab=\"log(EVI1 transcripts)\",\n     title=\"EVI1 expression in MLL-rearranged leukemia\")","id":2},{"options":{"editor-max-height":"","editor-word-wrap":"true","warning":"true","message":"true","fig-width":7,"fig-cap":"","editor-quick-suggestions":"false","classes":"","dpi":72,"out-height":"","editor-font-scale":"0.5","results":"markup","autorun":"false","context":"interactive","output":"true","comment":"","label":"unnamed-chunk-3","out-width":"700px","fig-height":5,"read-only":"false"},"code":"library(survival)\nlibrary(survminer)\nMLL <- readRDS(url(\"https://trichelab.github.io/data/MLL.rds\"))\nmixFit <- survfit(Surv(OS, OSI) ~ EVI1high, data=MLL)\nggsurvplot(mixFit, conf.int=TRUE, pval=TRUE, xlab=\"Overall survival (days)\",\n      tables.theme = theme_cleantable(), palette=c(\"darkgreen\",\"darkred\"))","id":3},{"options":{"editor-max-height":"","editor-word-wrap":"true","warning":"true","message":"true","fig-width":7,"fig-cap":"","editor-quick-suggestions":"false","classes":"","dpi":72,"out-height":"","editor-font-scale":"0.5","results":"markup","autorun":"false","context":"interactive","output":"true","comment":"","label":"unnamed-chunk-4","out-width":"700px","fig-height":5,"read-only":"false"},"code":"suppressWarnings(\n  suppressMessages(\n    webr::install(\"GEOquery\", \n                  repos=c(\"https://repo.r-wasm.org/\",\n                          \"https://webr.bioconductor.org/3.20\"))\\\n  )\n)\nlibrary(GEOquery)\ngetGEOSuppFiles(\"GSM2545336\", fetch=FALSE)","id":4}];
 
   </script>
   <script type="module">
@@ -2398,7 +2398,7 @@ Tim Triche, Jr.
 </div>
 </div>
 </section>
-<section id="webr-bioc" class="slide level2">
+<section id="webr-bioc" class="slide level2 scrollable">
 <h2>webR + BioC</h2>
 <div id="qwebr-insertion-location-4"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
@@ -2427,42 +2427,42 @@ Tim Triche, Jr.
 <h2>observable.js</h2>
 <p>Observable does not like me very much.</p>
 <div id="observablejstest" class="cell">
-<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="161" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 160;"><span id="cb2-161"><a href=""></a>data <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"penguins.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({ <span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span> })</span>
-<span id="cb2-162"><a href=""></a></span>
-<span id="cb2-163"><a href=""></a>viewof bill_length_min <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
-<span id="cb2-164"><a href=""></a>  [<span class="dv">32</span><span class="op">,</span> <span class="dv">50</span>]<span class="op">,</span> </span>
-<span id="cb2-165"><a href=""></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">35</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Bill length (min):"</span>}</span>
-<span id="cb2-166"><a href=""></a>)</span>
-<span id="cb2-167"><a href=""></a></span>
-<span id="cb2-168"><a href=""></a>viewof islands <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
-<span id="cb2-169"><a href=""></a>  [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span><span class="op">,</span> <span class="st">"Dream"</span>]<span class="op">,</span> </span>
-<span id="cb2-170"><a href=""></a>  { <span class="dt">value</span><span class="op">:</span> [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span>]<span class="op">,</span> </span>
-<span id="cb2-171"><a href=""></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Islands:"</span></span>
-<span id="cb2-172"><a href=""></a>  }</span>
-<span id="cb2-173"><a href=""></a>)</span>
-<span id="cb2-174"><a href=""></a></span>
-<span id="cb2-175"><a href=""></a>filtered <span class="op">=</span> data<span class="op">.</span><span class="fu">filter</span>(<span class="kw">function</span>(penguin) {</span>
-<span id="cb2-176"><a href=""></a>  <span class="cf">return</span> bill_length_min <span class="op">&lt;</span> penguin<span class="op">.</span><span class="at">bill_length_mm</span> <span class="op">&amp;&amp;</span></span>
-<span id="cb2-177"><a href=""></a>         islands<span class="op">.</span><span class="fu">includes</span>(penguin<span class="op">.</span><span class="at">island</span>)<span class="op">;</span></span>
-<span id="cb2-178"><a href=""></a>})</span>
-<span id="cb2-179"><a href=""></a></span>
-<span id="cb2-180"><a href=""></a>Plot<span class="op">.</span><span class="fu">rectY</span>(filtered<span class="op">,</span> </span>
-<span id="cb2-181"><a href=""></a>  Plot<span class="op">.</span><span class="fu">binX</span>(</span>
-<span id="cb2-182"><a href=""></a>    {<span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span>}<span class="op">,</span> </span>
-<span id="cb2-183"><a href=""></a>    {<span class="dt">x</span><span class="op">:</span> <span class="st">"body_mass_g"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span> <span class="dt">thresholds</span><span class="op">:</span> <span class="dv">20</span>}</span>
-<span id="cb2-184"><a href=""></a>  ))</span>
-<span id="cb2-185"><a href=""></a>  <span class="op">.</span><span class="fu">plot</span>({</span>
-<span id="cb2-186"><a href=""></a>    <span class="dt">facet</span><span class="op">:</span> {</span>
-<span id="cb2-187"><a href=""></a>      <span class="dt">data</span><span class="op">:</span> filtered<span class="op">,</span></span>
-<span id="cb2-188"><a href=""></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"sex"</span><span class="op">,</span></span>
-<span id="cb2-189"><a href=""></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span></span>
-<span id="cb2-190"><a href=""></a>      <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">80</span></span>
-<span id="cb2-191"><a href=""></a>    }<span class="op">,</span></span>
-<span id="cb2-192"><a href=""></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
-<span id="cb2-193"><a href=""></a>      Plot<span class="op">.</span><span class="fu">frame</span>()<span class="op">,</span></span>
-<span id="cb2-194"><a href=""></a>    ]</span>
-<span id="cb2-195"><a href=""></a>  }</span>
-<span id="cb2-196"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="167" data-source-offset="-1"><pre class="sourceCode numberSource js number-lines code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 166;"><span id="cb2-167"><a href=""></a>data <span class="op">=</span> <span class="fu">FileAttachment</span>(<span class="st">"penguins.csv"</span>)<span class="op">.</span><span class="fu">csv</span>({ <span class="dt">typed</span><span class="op">:</span> <span class="kw">true</span> })</span>
+<span id="cb2-168"><a href=""></a></span>
+<span id="cb2-169"><a href=""></a>viewof bill_length_min <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">range</span>(</span>
+<span id="cb2-170"><a href=""></a>  [<span class="dv">32</span><span class="op">,</span> <span class="dv">50</span>]<span class="op">,</span> </span>
+<span id="cb2-171"><a href=""></a>  {<span class="dt">value</span><span class="op">:</span> <span class="dv">35</span><span class="op">,</span> <span class="dt">step</span><span class="op">:</span> <span class="dv">1</span><span class="op">,</span> <span class="dt">label</span><span class="op">:</span> <span class="st">"Bill length (min):"</span>}</span>
+<span id="cb2-172"><a href=""></a>)</span>
+<span id="cb2-173"><a href=""></a></span>
+<span id="cb2-174"><a href=""></a>viewof islands <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb2-175"><a href=""></a>  [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span><span class="op">,</span> <span class="st">"Dream"</span>]<span class="op">,</span> </span>
+<span id="cb2-176"><a href=""></a>  { <span class="dt">value</span><span class="op">:</span> [<span class="st">"Torgersen"</span><span class="op">,</span> <span class="st">"Biscoe"</span>]<span class="op">,</span> </span>
+<span id="cb2-177"><a href=""></a>    <span class="dt">label</span><span class="op">:</span> <span class="st">"Islands:"</span></span>
+<span id="cb2-178"><a href=""></a>  }</span>
+<span id="cb2-179"><a href=""></a>)</span>
+<span id="cb2-180"><a href=""></a></span>
+<span id="cb2-181"><a href=""></a>filtered <span class="op">=</span> data<span class="op">.</span><span class="fu">filter</span>(<span class="kw">function</span>(penguin) {</span>
+<span id="cb2-182"><a href=""></a>  <span class="cf">return</span> bill_length_min <span class="op">&lt;</span> penguin<span class="op">.</span><span class="at">bill_length_mm</span> <span class="op">&amp;&amp;</span></span>
+<span id="cb2-183"><a href=""></a>         islands<span class="op">.</span><span class="fu">includes</span>(penguin<span class="op">.</span><span class="at">island</span>)<span class="op">;</span></span>
+<span id="cb2-184"><a href=""></a>})</span>
+<span id="cb2-185"><a href=""></a></span>
+<span id="cb2-186"><a href=""></a>Plot<span class="op">.</span><span class="fu">rectY</span>(filtered<span class="op">,</span> </span>
+<span id="cb2-187"><a href=""></a>  Plot<span class="op">.</span><span class="fu">binX</span>(</span>
+<span id="cb2-188"><a href=""></a>    {<span class="dt">y</span><span class="op">:</span> <span class="st">"count"</span>}<span class="op">,</span> </span>
+<span id="cb2-189"><a href=""></a>    {<span class="dt">x</span><span class="op">:</span> <span class="st">"body_mass_g"</span><span class="op">,</span> <span class="dt">fill</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span> <span class="dt">thresholds</span><span class="op">:</span> <span class="dv">20</span>}</span>
+<span id="cb2-190"><a href=""></a>  ))</span>
+<span id="cb2-191"><a href=""></a>  <span class="op">.</span><span class="fu">plot</span>({</span>
+<span id="cb2-192"><a href=""></a>    <span class="dt">facet</span><span class="op">:</span> {</span>
+<span id="cb2-193"><a href=""></a>      <span class="dt">data</span><span class="op">:</span> filtered<span class="op">,</span></span>
+<span id="cb2-194"><a href=""></a>      <span class="dt">x</span><span class="op">:</span> <span class="st">"sex"</span><span class="op">,</span></span>
+<span id="cb2-195"><a href=""></a>      <span class="dt">y</span><span class="op">:</span> <span class="st">"species"</span><span class="op">,</span></span>
+<span id="cb2-196"><a href=""></a>      <span class="dt">marginRight</span><span class="op">:</span> <span class="dv">80</span></span>
+<span id="cb2-197"><a href=""></a>    }<span class="op">,</span></span>
+<span id="cb2-198"><a href=""></a>    <span class="dt">marks</span><span class="op">:</span> [</span>
+<span id="cb2-199"><a href=""></a>      Plot<span class="op">.</span><span class="fu">frame</span>()<span class="op">,</span></span>
+<span id="cb2-200"><a href=""></a>    ]</span>
+<span id="cb2-201"><a href=""></a>  }</span>
+<span id="cb2-202"><a href=""></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-display">
 <div id="observablejstest-1">
 <div id="ojs-cell-1-1" data-nodetype="declaration">
@@ -3125,7 +3125,7 @@ Tim Triche, Jr.
       }
     );
     </script>
-    <script>var lightboxQuarto = GLightbox({"selector":".lightbox","closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom"});
+    <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","openEffect":"zoom","selector":".lightbox","loop":false,"descPosition":"bottom"});
     (function() {
       let previousOnload = window.onload;
       window.onload = () => {

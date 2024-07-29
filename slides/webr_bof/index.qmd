@@ -7,7 +7,7 @@ format:
     view: 'scroll'
     scrollProgress: true
     slide-number: true
-    footer: "bit.ly/webr_bof"
+    footer: "[Click for source code](https://github.com/trichelab/trichelab.github.io/blob/gh-pages/slides/webr_bof/index.qmd)"
     title-slide-attributes: 
       data-background-image: "QRcode.png"
       data-background-size: "20%"
@@ -216,26 +216,24 @@ bioFabric_htmlwidget( bioFabric( mis_igraph ) )
 Observable does not like me very much.
 
 ```{ojs}
+//| label: ojs test
 filtered = data.filter(function(penguin) {
   return bill_length_min < penguin.bill_length_mm &&
          islands.includes(penguin.island);
 })
-```
 
-```{ojs}
 viewof bill_length_min = Inputs.range(
   [32, 50], 
   {value: 35, step: 1, label: "Bill length (min):"}
 )
+
 viewof islands = Inputs.checkbox(
   ["Torgersen", "Biscoe", "Dream"], 
   { value: ["Torgersen", "Biscoe"], 
     label: "Islands:"
   }
 )
-```
 
-```{ojs}
 Plot.rectY(filtered, 
   Plot.binX(
     {y: "count"}, 

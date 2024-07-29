@@ -25,7 +25,7 @@ webr:
 ---
 
 
-## 
+## {.scrollable}
 
 I use [quarto](https://quarto.org/) with 
 [webR](https://webr.r-wasm.org/latest/),

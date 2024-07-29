@@ -1,5 +1,5 @@
 ---
-title: "BioC2024: webR BoF"
+title: "BioC2024: webR"
 author: "Tim Triche, Jr."
 institute: "Van Andel Institute"
 format: 
@@ -10,8 +10,8 @@ format:
       data-background-image: "QRcode.png"
       data-background-size: "20%"
       data-background-position: top
-revealjs-plugins:
-  - drop
+#revealjs-plugins:
+#  - drop
 execute: 
   warning: false
 filters:

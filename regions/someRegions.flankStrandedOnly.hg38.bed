@@ -1,0 +1,6 @@
+# mysql --user=genome --host=genome-mysql.cse.ucsc.edu -A -e \
+#   "select chrom, size from hg38.chromInfo" > hg38.genome && \
+# bedtools flank -s -l 1500 -r 0 -g hg38.genome -i someRegions.hg38.bed
+chr8	11773358	11774858	FDFT1	1000	+
+chr11	2162981	2164481	H19	1000	-
+chr16	10864722	10866222	CIITA	1000	+

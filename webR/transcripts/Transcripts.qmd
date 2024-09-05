@@ -1,0 +1,230 @@
+---
+title: "Variant allele frequency across transcripts: sims"
+repo-url: https://github.com/trichelab/trichelab.github.io/
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 3
+    toc-title: Sections
+    code-fold: true
+    code-links:
+      - text: Quarto (source code)
+        icon: github
+        href: https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/transcripts/Transcripts.qmd
+engine: knitr
+knitr: 
+  opts_chunk: 
+    collapse: true
+execute:
+  warning: false
+filters:
+  - webr
+webr:
+  packages: ['ggplot2','reshape2','ggbeeswarm']
+---
+
+
+## Background: genes, transcripts, and variants
+
+Before we dive into specifics, let's define a few terms. 
+
+
+### Genes
+
+A _gene_ is the basic unit of heredity in Mendelian genetics, and a sequence of 
+DNA bases in molecular biology. These two meanings are linked, but they are not 
+the same, and for the present purposes, we will use the latter definition. 
+
+
+### Transcripts
+
+In molecular biology, a _transcript_ is the sequence of RNA bases that is
+synthesized (transcribed) from a DNA sequence by an RNA polymerase. The 
+_primary transcript_ that emerges from the polymerase is, in many if not most
+cases, subjected to capping, polyadenylation, and perhaps most importantly, 
+splicing. Particularly for genes with multiple exons (EXpressed regiONs), the
+process of removing introns (INTRagenic regiONs) can lead to many different 
+coding sequences, thus a single _gene_ can give rise to various _transcripts_, 
+which in turn can yield an even greater variety of proteins. The practical 
+consequence of this phenomenon is that predicting the impact of a change to DNA
+upon the function of a protein usually demands a reference _transcript_, the 
+codons of which are translated _in silico_ to serve as a basic for predictions.
+
+
+### Variants
+
+Above we mentioned that a change in DNA might have functional consequences for 
+the protein expressed from a given RNA transcript. (In fact, DNA changes may 
+have many other possible consequences, some of which don't involve a protein 
+at all!) Assuming that we have a reference _transcript_ sequence, we can model
+a DNA _variant_ (a base substitution, an insertion or deletion, or more complex
+structural variants such as inversions) by injecting it into the transcript 
+sequence and comparing the results against those for the reference sequence. 
+Note that certain variants may create a new splicing signal, in which case the 
+variant-carrying transcript may be wildly different fromt he reference, or a 
+ 
+
+
+## Variant calling with short read pairs
+
+### DNA: genomic variant allele frequency
+
+### RNA: expressed allele frequencies
+
+### Allelic bias
+
+### Equivalence classes
+
+### Transcript bias 
+
+
+We have collected and harmonized several large WGS/WES studies to investigate
+evidence for disparities in genetic variants between acute leukemia types. 
+Here, we shall focus on germline pathogenic/likely pathogenic (P/LP) variants
+with seemingly relevant consequences for blood and immune development. 
+Counts of these (somewhat rare) germline P/LP variants are integers, so we use
+<a href="https://bookdown.org/roback/bookdown-BeyondMLR/ch-poissonreg.html"
+>Poisson regression</a> for a first pass to model variant counts across groups.
+
+```{webr-r}
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+with(combined, table(Group, Sex))
+
+fit <- glm(G_PLP ~ Lineage+AgeGroup + Sex+Source, data=combined, family=poisson)
+exp(confint(fit))[2:3,] # relative to B-ALL 
+
+fit2 <- glm(G_PLP ~ Group + Source, data=combined, family=poisson)
+exp(confint(fit2))[2:4,] # relative to pediatric B-ALL
+
+if (FALSE) { # much nicer plots; alas, not currently working in webR
+  library(nloptr)
+  library(effects)
+  plot(predictorEffects(fit), ylab="Burden", axes=list(x=list(rotate=35)))
+  plot(predictorEffects(fit2), ylab="Burden", axes=list(x=list(rotate=35)))
+}
+```
+
+It seems that, after correcting for who called the variants, there are a wide
+range of estimates for the relative risk of germline P/LP variants by group.
+B-ALL seems to have the lowest burden, but beyond that, it's tough to make any 
+strong conclusions about what's going on. Let's try another way.
+
+
+## Resampling-based inference of germline burden
+
+We note that AML seems to predict a higher germline variant load than ALL. 
+But suppose the Poisson model just isn't a good fit for the data, or different
+authors apply different criteria, or something else is wrong with the way we 
+have modeled the occurrence of germline variants. We can apply an orthogonal 
+brute-force approach, which is to resample over and over without replacement.
+Note: we are tabulating the fraction of subjects with 1 or more G_PLP variants,
+rather than estimating the probability of seeing any G_PLP variants in a group
+of cases, which is subtly different from Poisson regression.  In the end, we 
+arrive at similar conclusions (specifically, More Research Is Needed :tm:). 
+
+```{webr-r}
+combined <- read.csv(url("https://trichelab.github.io/data/combined.csv"),row=1)
+combined$Source <- relevel(relevel(relevel(factor(combined$Source), 4), 4), 4)
+combined$Lineage <- relevel(relevel(factor(combined$Lineage), 3), 3)
+combined$Group <- paste(combined$AgeGroup, gsub("\\-", "", combined$Lineage))
+combined$Group <- relevel(relevel(factor(combined$Group), 4), 4)
+
+byGroup <- split(combined$G_PLP, combined$Group)
+rs <- function(y, n, m, slop=20) {
+  s <- n + (round(slop/2)) - sample(seq_len(slop), 1)
+  replicate(m, sum(y[sample.int(n=length(y), size=s)] > 0) / s)
+}
+
+set.seed(1234)
+library(reshape2)
+res <- data.frame(lapply(byGroup, rs, n=300, m=3333, slop=20)) 
+results <- melt(res, variable.name="Group", value.name="Burden")
+
+library(mixR) 
+# select(results$Burden, ncomp=2:4)
+# ncomp <- mixres$ncomp[mixres$best == "*"])
+ncomp <- 4 # as previously shown above 
+fit <- mixfit(results$Burden, ncomp=ncomp)
+p1 <- plot(fit, 
+      title=paste("Germline P/LP variant burden across", 
+                  nrow(combined), "leukemia patients"), 
+      xlab="Germline burden",
+      theme="minimal") + 
+      scale_x_continuous(labels = scales::label_percent(), limits = c(0, 0.15))
+
+library(ggplot2)
+library(ggbeeswarm)
+p2 <- ggplot(results, aes(x=Group, y=Burden, color=Group)) + 
+        scale_y_continuous(labels = scales::percent, limits = c(0, 0.15),
+                           breaks = seq(0, .15, .025)) + 
+        ylab("Germline burden") +
+        geom_hline(yintercept=0.05, lty=3) + 
+        geom_quasirandom() + 
+        theme_classic() + 
+        theme(legend.position="none", 
+              axis.text.x = element_text(angle = 35, vjust = 1, hjust=1))
+
+library(patchwork)
+p1 + p2 
+```
+
+When you ran the code in the Poisson regression chunks above (and you did run 
+the code, right? That's the whole point of this exercise), you may have noticed
+a commented-out piece of code to make effect size plots. The same approach we 
+took to resampling can be applied to all sorts of questions, and in fact the 
+<a href="https://cran.r-project.org/web/packages/sampling/">sampling</a> package
+on CRAN is dedicated to implementing fancy designs for biased sampling.
+
+### Exercise
+
+Can you find examples where our predictions are inaccurate?
+Are there specific cases with high variant burdens not explained by any fit?
+
+```{webr-r}
+
+# warmup plots (you will need to have run the previous chunks)
+par(mfrow=c(1,2))    # side by side plots, ugly but useful 
+
+fit$call             # what was included in the model?
+plot(fit, which=2)   # how well is each case explained by it? 
+
+fit2$call            # what was included in the model?
+plot(fit2, which=2)  # how well is each case explained by it? 
+
+par(mfrow=c(1,1))    # back to defaults
+
+```
+
+Modeling human biology is complicated (you heard it here first). Nevertheless,
+it is somewhat unlikely that AML and ALL would show such significant differences
+in clinically annotated germline variant frequency across five different cohorts
+(each comprising multiple clinical trials, across decades of studies) by chance.
+It seems that relevant germline variants are found in at least 5% of AML cases,
+and the > 5% burden in AML consistently emerges across age groups and studies. 
+Moreover, pediatric AML is the group of patients where this threshold is most 
+consistently crossed by random samples of patients from existing cohorts. 
+
+We have <a href="https://www.nature.com/articles/s43018-023-00605-z">previously
+proposed</a> that all patients who present with acute leukemia should be offered
+germline genetic testing, as should their family members, in light of the role 
+for related donors in stem cell transplantation. The above findings serve to 
+strengthen this statement: given the cost (median of about $1.1M US) to treat 
+a child with AML, successfully or otherwise, the cost of germline genetic
+testing (about $400 for whole-genome sequencing in 2024) is a drop in the ocean.
+Registries like <a href="https://childrensoncologygroup.org/cog-registry-project-everychild">Project EveryChild</a> ease the challenge of historical comparison,
+so one might ask, what's standing in the way?
+
+## Session information 
+
+```{r}
+sessionInfo()
+```
+
+```{webr-r}
+sessionInfo()
+```

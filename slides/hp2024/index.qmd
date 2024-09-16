@@ -1,0 +1,10 @@
+---
+format: live-revealjs
+engine: knitr
+title: "."
+---
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+
+## Quarto
+
+Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.

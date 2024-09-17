@@ -1,3 +1,5 @@
----
 project:
   title: "Historical Perspectives 2024"
+format:
+  live-revealjs:
+    include-before: [ '<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {enableAssistiveMml: false}});</script>']

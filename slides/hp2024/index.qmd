@@ -2,9 +2,10 @@
 format: 
   live-revealjs:
     theme: default
-    html-math-method: mathjax
     scrollable: true
     slide-number: true
+    html-math-method: mathjax
+    include-before: [ '<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {enableAssistiveMml: false}});</script>']
     footer: "[Source code](https://github.com/trichelab/trichelab.github.io/blob/gh-pages/slides/hp2024/index.qmd)"
 engine: knitr
 title: "Historical Perspectives 2024"
@@ -23,9 +24,14 @@ execute:
 ---
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
 
-## Quarto
 
-Quarto enables you to weave together content and executable code into a finished document. To learn more about Quarto see <https://quarto.org>.
+## quarto-live
+
+These slides are laid out using [quarto-live](https://r-wasm.github.io/quarto-live/) with [revealjs](https://quarto.org/docs/presentations/revealjs/).
+
+Give it a try sometime. You might like it enough for your own presentations.
+
+Most code chunks are editable and executable in your (or your user's!) browser.
 
 ---
 
@@ -59,37 +65,49 @@ hist(rpois(1000, lambda=9))
 
 ## Binomial convergence to Poisson
 
-$
-\text{If}     & X \sim Bin(n,p) \\
-\text{and}    & \lim_{n \to \infty, \  p \to 0} np = \lambda \\
-\text{where}  & e^{-\lambda} = \lim_{n \to \infty}\left(1-\frac{\lambda}{n}\right)^n\\
-\text{then}   & X \sim Pois(\lambda) \\
-\text{and}    & Pr(X=k|\lambda) = \lim_{n \to \infty} 
-                  \binom{n}{k} \left( \frac{\lambda}{n} \right)^{k}  
-                                   \left( 1 - \frac{\lambda}{n} \right)^{n-k}\\
-\cdots        & = \left( \frac{\lambda^k}{k!} \right) 
-                  \lim_{n \to \infty} 
-                  \left( 1 - \frac{\lambda}{n}\right)^{n} 
-                  \lim_{n \to \infty} \left( 1 - \frac{\lambda}{n}\right)^{-k} 
-                  \left[
-                    \lim_{n \to \infty} 
-                    \frac{n!}{(n-k)!} \left( \frac{1}{n^k} \right)
-                    \to 1 
-                  \right] \\
-\cdots        & = \left( \frac{\lambda^k}{k!} \right) 
-                  \lim_{n \to \infty} 
-                  \left( 1 - \frac{\lambda}{n}\right)^{n} 
-                  \left[
-                    \lim_{n \to \infty} \left( 1 - \frac{\lambda}{n}\right)^{-k} 
-                    \to 1 
-                  \right] \\
-\cdots        & = \left( \frac{\lambda^k}{k!} \right) 
-                  \left[
-                     \lim_{n \to \infty} \left( 1 - \frac{\lambda}{n}\right)^{n} 
+If $ X \sim Bin(n,p) $,
+and $ \lim_{n \to \infty, \  p \to 0} np = \lambda $, 
+where $ e^{-\lambda} = \lim_{n \to \infty}\left(1-\frac{\lambda}{n}\right)^n $,
+then $ X \sim Pois(\lambda) $ and 
+
+$$
+\begin{align}
+Pr(X=k|\lambda) &= 
+  \class{fragment}{\lim_{n \to \infty} 
+                   \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  
+                                \left(1 - \frac{\lambda}{n}\right)^{n-k}}\\[3px]
+  \class{fragment}{{}} 
+                &= 
+  \class{fragment}{\left( \frac{\lambda^k}{k!} \right) 
+                   \lim_{n \to \infty} 
+                   \left( 1 - \frac{\lambda}{n}\right)^{n} 
+                   \lim_{n \to \infty} \left( 1 - \frac{\lambda}{n}\right)^{-k} 
+                   \left[
+                     \lim_{n \to \infty} 
+                     \frac{n!}{(n-k)!} \left( \frac{1}{n^k} \right)
+                     \to 1 
+                   \right]} \\[3px]
+  \class{fragment}{{}} 
+                &= 
+  \class{fragment}{\left( \frac{\lambda^k}{k!} \right) 
+                   \lim_{n \to \infty} 
+                   \left( 1 - \frac{\lambda}{n}\right)^{n} 
+                   \left[
+                     \lim_{n \to \infty}\left(1 - \frac{\lambda}{n}\right)^{-k}
+                     \to 1 
+                  \right]} \\[3px]
+  \class{fragment}{{}} 
+                &= 
+  \class{fragment}{\left( \frac{\lambda^k}{k!} \right) 
+                   \left[
+                     \lim_{n \to \infty} \left(1 - \frac{\lambda}{n}\right)^{n}
                      \equiv e^{-\lambda} 
-                  \right] \\
-\therefore    & Pr(X=k|\lambda)= \frac{\lambda^{k}e^{-\lambda}}{k!}.
-$
+                   \right]}\\[3px]
+  \class{fragment}{\therefore}
+                &
+  \class{fragment}{Pr(X=k|\lambda)= \frac{\lambda^{k}e^{-\lambda}}{k!}.}
+\end{align}
+$$
 
 ---
 

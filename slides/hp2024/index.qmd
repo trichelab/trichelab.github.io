@@ -5,7 +5,7 @@ format:
     html-math-method: mathjax
     scrollable: true
     slide-number: true
-    footer: "[Source code](https://github.com/trichelab/trichelab.github.io/slides/hp2024/index.qmd)"
+    footer: "[Source code](https://github.com/trichelab/trichelab.github.io/blob/gh-pages/slides/hp2024/index.qmd)"
 engine: knitr
 title: "Historical Perspectives 2024"
 author: "Tim Triche, Jr."

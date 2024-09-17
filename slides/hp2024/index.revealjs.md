@@ -19,7 +19,14 @@ pyodide:
 execute: 
   warning: false
 ---
-{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+
+
+::: {.cell}
+
+:::
+
+
+
 
 ## Quarto
 
@@ -31,12 +38,20 @@ Quarto enables you to weave together content and executable code into a finished
 
 This code is live.  Try editing it and/or clicking 'Start Over' to verify. 
 
+
+
+::: {.cell}
+
 ```{webr}
 rbernoulli <- function(n, p=0.5) ifelse(stats::runif(n) > (1 - p), 1, 0)
 par(mfrow=c(2,2))
 plot(density(rbernoulli(1000, p=(1/6))))
 plot(density(rbinom(n=1000, size=1, p=(1/6))))
 ```
+
+:::
+
+
 
 ---
 
@@ -45,6 +60,10 @@ plot(density(rbinom(n=1000, size=1, p=(1/6))))
 This code is live too. Next slide we'll use it for simulations.
 
 
+
+
+::: {.cell}
+
 ```{webr}
 par(mfrow=c(2,2))
 plot(rnorm(1000, mean=9, sd=3))
@@ -52,6 +71,10 @@ plot(density(rnorm(1000, mean=9, sd=3)))
 hist(rnorm(1000, mean=9, sd=3))
 hist(rpois(1000, lambda=9))
 ```
+
+:::
+
+
 
 ---
 
@@ -115,6 +138,10 @@ and thus $Y \to N(\lambda, \lambda)$ as $\lambda \to \infty$.
 `rnorm` generates random Normal variates.
 How many (`n=`) trials do you need to show this?
 
+
+
+::: {.cell}
+
 ```{webr}
 p <- 1/6
 X <- rbinom(n=1000, size=1, p=p)
@@ -123,4 +150,8 @@ Z <- rnorm(n=1000, mean=(1000*p), sd=sqrt(1000*p))
 
 # plots!
 ```
+
+:::
+
+
 ---

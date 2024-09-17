@@ -29,19 +29,21 @@ Quarto enables you to weave together content and executable code into a finished
 
 ## Bernoulli <-> binomial relationships
 
-```{webr}
-rbernoulli <- function(n, p=0.5) stats::runif(n) > (1 - p)
+This code is live.  Try editing it and/or clicking 'Start Over' to verify. 
 
+```{webr}
+rbernoulli <- function(n, p=0.5) ifelse(stats::runif(n) > (1 - p), 1, 0)
 par(mfrow=c(2,2))
 plot(density(rbernoulli(1000, p=(1/6))))
 plot(density(rbinom(n=1000, size=1, p=(1/6))))
-hist(rbernoulli(1000, p=(1/6)))
-hist(rbinom(n=1000, size=1, p=(1/6)))
 ```
 
 ---
 
 ## Poisson <-> Normal relationships
+
+This code is live too. Next slide we'll use it for simulations.
+
 
 ```{webr}
 par(mfrow=c(2,2))
@@ -53,34 +55,72 @@ hist(rpois(1000, lambda=9))
 
 ---
 
-```{webr}
-#| exercise: ex1
-#| caption: Exercise 1
-1 + 2 + 3 + ______
-```
+## Binomial convergence to Poisson
+
+$$
+\text{If}     & X \sim Bin(n,p) \\
+\text{and}    & \lim_{n \to \infty, \  p \to 0} np = \lambda \\
+\text{where}  & e^{-\lambda} = \lim_{n \to \infty}\left(1-\frac{\lambda}{n}\right)^n\\
+\text{then}   & X \sim Pois(\lambda) \\
+\text{and}    & Pr(X=k|\lambda) = \lim_{n \to \infty} 
+                  \binom{n}{k} \left( \frac{\lambda}{n} \right)^{k}  
+                                   \left( 1 - \frac{\lambda}{n} \right)^{n-k}\\
+\cdots        & = \left( \frac{\lambda^k}{k!} \right) 
+                  \lim_{n \to \infty} 
+                  \left( 1 - \frac{\lambda}{n}\right)^{n} 
+                  \lim_{n \to \infty} \left( 1 - \frac{\lambda}{n}\right)^{-k} 
+                  \left[
+                    \lim_{n \to \infty} 
+                    \frac{n!}{(n-k)!} \left( \frac{1}{n^k} \right)
+                    \to 1 
+                  \right] \\
+\cdots        & = \left( \frac{\lambda^k}{k!} \right) 
+                  \lim_{n \to \infty} 
+                  \left( 1 - \frac{\lambda}{n}\right)^{n} 
+                  \left[
+                    \lim_{n \to \infty} \left( 1 - \frac{\lambda}{n}\right)^{-k} 
+                    \to 1 
+                  \right] \\
+\cdots        & = \left( \frac{\lambda^k}{k!} \right) 
+                  \left[
+                     \lim_{n \to \infty} \left( 1 - \frac{\lambda}{n}\right)^{n} 
+                     \equiv e^{-\lambda} 
+                  \right] \\
+\therefore    & Pr(X=k|\lambda)= \frac{\lambda^{k}e^{-\lambda}}{k!}.
+$$
+
+---
+
+## Poisson convergence to Normal
+
+Let $X_1, X_2, ..., X_{\lambda}$ be independent Poisson random variables. 
+
+If $Y = \sum^{\lambda}_{i=1}X_i$, then $Y \sim Pois(\lambda)$.
+
+Given that Y is a sum of i.i.d. random variables, we can then state (as \lambda grows) that
+
+$$
+Z = \frac{Y-\lambda}{\sqrt{\lambda}} \to N(0,1)
+$$
+
+Which is a standard Normal distribution around the estimate of $\lambda$ 
+and thus $Y \to N(\lambda, \lambda)$ as $\lambda \to \infty$.
+
+---
+
+## Your turn
+
+`rbinom` generates random binomial variates.
+`rpois` generates random Poisson variates. 
+`rnorm` generates random Normal variates.
+How many (`n=`) trials do you need to show this?
 
 ```{webr}
-#| exercise: ex1
-#| check: true
-if (.result == 10) {
-  list(message = "Great work!", correct = TRUE)
-} else {
-  list(message = "That's incorrect.", correct = FALSE)
-}
+p <- 1/6
+X <- rbinom(n=1000, size=1, p=p)
+Y <- rpois(n=1000, lambda=(1000*p))
+Z <- rnorm(n=1000, mean=(1000*p), sd=sqrt(1000*p))
+
+# plots!
 ```
-
-::: { .hint exercise="ex1" }
-
-You should make the expression sum to 10.
-
-:::
-
-::: { .solution exercise="ex1" }
-
-**Solution:**
-
-```r
-1 + 2 + 3 + 4
-```
-
-:::
+---

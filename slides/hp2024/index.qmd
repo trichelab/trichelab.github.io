@@ -18,7 +18,7 @@ webr:
 pyodide:
   packages:
     - scipy
-    - seaborn
+    - plotnine
 execute: 
   warning: false
 ---
@@ -63,15 +63,13 @@ hist(rpois(1000, lambda=9))
 
 ---
 
-## Binomial convergence to Poisson
-
-If $ X \sim Bin(n,p) $,
-and $ \lim_{n \to \infty, \  p \to 0} np = \lambda $, 
-where $ e^{-\lambda} = \lim_{n \to \infty}\left(1-\frac{\lambda}{n}\right)^n $,
-then $ X \sim Pois(\lambda) $ and 
+## Binomial convergence to Poisson.smaller
 
 $$
 \begin{align}
+If              &\class{fragment}{X \sim Bin(n, p) and \lim_{n \to \infty, p \to 0} np = \lambda}\\[3px]
+where           &\class{fragment}{e^{-\lambda}=\lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n}\\[3px]
+then, since     &\class{fragment}{X \sim Pois(\lambda),}\\[3px] 
 Pr(X=k|\lambda) &= 
   \class{fragment}{\lim_{n \to \infty} 
                    \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  
@@ -103,9 +101,7 @@ Pr(X=k|\lambda) &=
                      \lim_{n \to \infty} \left(1 - \frac{\lambda}{n}\right)^{n}
                      \equiv e^{-\lambda} 
                    \right]}\\[3px]
-  \class{fragment}{\therefore}
-                &
-  \class{fragment}{Pr(X=k|\lambda)= \frac{\lambda^{k}e^{-\lambda}}{k!}.}
+  \class{fragment}{Pr(X=k|\lambda)} &= \class{fragment}{\frac{\lambda^{k}e^{-\lambda}}{k!}}
 \end{align}
 $$
 

@@ -63,7 +63,7 @@ hist(rpois(1000, lambda=9))
 
 ---
 
-## Binomial convergence to Poisson.smaller
+## Binomial convergence to Poisson {.smaller}
 
 $$
 \begin{align}

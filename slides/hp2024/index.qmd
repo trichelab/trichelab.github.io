@@ -67,9 +67,10 @@ hist(rpois(1000, lambda=9))
 
 $$
 \begin{align}
-If              &\class{fragment}{X \sim Bin(n, p) and \lim_{n \to \infty, p \to 0} np = \lambda}\\[3px]
-where           &\class{fragment}{e^{-\lambda}=\lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n}\\[3px]
-then, since     &\class{fragment}{X \sim Pois(\lambda),}\\[3px] 
+\text{Let}\ & X \sim Bin(n, p),\ 
+              \lim_{n \to \infty, p \to 0} np = \lambda, \text{and}\ 
+              e^{-\lambda}=\lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n\\[3px]
+\text{then}\    & \class{fragment}{X \sim Pois(\lambda)}\\[3px] 
 Pr(X=k|\lambda) &= 
   \class{fragment}{\lim_{n \to \infty} 
                    \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  

@@ -94,8 +94,7 @@ $$
 
 ## Poisson <-> Normal relationships
 
-This code is live too. Next slide we'll use it for simulations.
-
+In a moment, we'll use this for some simulations.
 
 ```{webr}
 par(mfrow=c(2,2))

@@ -37,7 +37,7 @@ Most code chunks are editable and executable in your (or your user's!) browser.
 
 ## Bernoulli <-> binomial relationships
 
-This code is live. Try editing it and clicking 'Run' or 'Start Over'.
+Code is live. Try editing it & clicking 'Run' or 'Start Over'.
 
 ```{webr}
 rbernoulli <- function(n, p=0.5) ifelse(stats::runif(n) > (1 - p), 1, 0)

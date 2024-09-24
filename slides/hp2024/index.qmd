@@ -91,7 +91,7 @@ Pr(X=k|\lambda) &=
                    \right]}\\[3px]
   \therefore\ Pr(X=k|\lambda) 
                 &= 
-  \class{fragment}{\frac{\lambda^{k}}{k!}e^{-\lambda}.}
+  \class{fragment}{\frac{\lambda^{k}}{k!}e^{-\lambda}}
 \end{align}
 $$
 

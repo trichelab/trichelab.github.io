@@ -110,18 +110,18 @@ $$
 
 ## Poisson convergence to Normal
 
-Let $X_1, X_2, ..., X_{\lambda}$ be independent Poisson random variables. 
+Let $X_1, ..., X_{\lambda}$ be independent, identically distributed (iid) Poisson variables. 
 
 If $Y = \sum^{\lambda}_{i=1}X_i$, then $Y \sim Pois(\lambda)$.
 
-Given that Y is a sum of i.i.d. random variables, we can then state (as \lambda grows) that
+Given that Y is a sum of iid random variables, we can then state (as $\lambda$ grows) that
 
 $$
 Z = \frac{Y-\lambda}{\sqrt{\lambda}} \to N(0,1)
 $$
 
-Which is a standard Normal distribution around the estimate of $\lambda$ 
-and thus $Y \to N(\lambda, \lambda)$ as $\lambda \to \infty$.
+And $Z$ has a standard Normal distribution around the estimate of $\lambda$ 
+thus $Y \sim Pois(\lambda) \to N(\lambda, \lambda)$ as $\lambda \to \infty$.
 
 ---
 
@@ -138,6 +138,5 @@ X <- rbinom(n=1000, size=1, p=p)
 Y <- rpois(n=1000, lambda=(1000*p))
 Z <- rnorm(n=1000, mean=(1000*p), sd=sqrt(1000*p))
 
-# plots!
+# make some plots!
 ```
----

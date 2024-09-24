@@ -111,7 +111,7 @@ Let $X_1, ..., X_{\lambda}$ be independent, identically distributed (iid) Poisso
 
 If $Y = \sum^{\lambda}_{i=1}X_i$, then $Y \sim Pois(\lambda)$.
 
-Given Y as a sum of iid random variables, we can then state (as $\lambda$ grows) that
+Given Y as a sum of iid random variables, then as $\lambda$ grows,
 
 $$
 Z = \frac{Y-\lambda}{\sqrt{\lambda}} \to N(0,1)

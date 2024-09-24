@@ -30,7 +30,8 @@ execute:
 
 These slides are laid out using [quarto-live](https://r-wasm.github.io/quarto-live/) with [revealjs](https://quarto.org/docs/presentations/revealjs/).
 
-Give it a try sometime. You might like it enough for your own presentations.
+Give it a try sometime. You might like it enough for your own presentations. There is a link to the source
+ .qmd document at the bottom of each slide.
 
 Most code chunks are editable and executable in your (or your user's!) browser.
 

@@ -61,8 +61,9 @@ Pr(X=k|\lambda) &=
   \lim_{n \to \infty} 
   \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  
                \left(1 - \frac{\lambda}{n}\right)^{n-k}, 
-  \binom{n}{k} = \frac{1}{k!} \frac{n!}{(n-k)!}, \text{ and } 
-                 \frac{\lambda}{n}\right)^k = \lambda^k\frac{1}{n^k}.\\[3px]
+  \binom{n}{k} = \frac{1}{k!} \frac{n!}{(n-k)!}, 
+  \text{ and } 
+  \frac{\lambda}{n}^k = \lambda^{k}\frac{1}{n^k}.\\[3px]
                 &= 
   \class{fragment}{\left( \frac{\lambda^k}{k!} \right) 
                    \lim_{n \to \infty} 

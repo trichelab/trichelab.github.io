@@ -56,7 +56,8 @@ $$
 \begin{align}
 \text{Let}\ & X \sim Bin(n, p),\ 
               \class{fragment}{\lim_{n \to \infty, p \to 0} np = \lambda,}
-              \class{fragment}{\lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n = e^{-\lambda}.}\\[3px]
+              \class{fragment}{\text{ and }
+                               \lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n = e^{-\lambda}.}\\[3px]
 Pr(X=k|\lambda) &= 
   \class{fragment}{\lim_{n \to \infty}
                    \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  

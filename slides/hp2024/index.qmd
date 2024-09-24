@@ -1,7 +1,7 @@
 ---
 format: 
   live-revealjs:
-    margin: 0
+    margin: 0.025
     theme: default
     scrollable: true
     slide-number: true

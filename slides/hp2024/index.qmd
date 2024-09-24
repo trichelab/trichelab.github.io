@@ -58,14 +58,13 @@ $$
               \lim_{n \to \infty, p \to 0} np = \lambda, \text{and}\ 
               e^{-\lambda}=\lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n\\[3px]
 Pr(X=k|\lambda) &= 
-  \class{fragment}{\lim_{n \to \infty} 
-                   \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  
-                                \left(1 - \frac{\lambda}{n}\right)^{n-k}},
-                                \text{ since } 
-                                \binom{n}{k} = \left(\frac{1}{k!})\right)\left(\frac{n!}{(n-k)!}\right)
-                                \text{ and } 
-                                \left(\frac{\lambda}{n}\right)^k = \lambda^k\left(\frac{1}{n^k}\right).
-                                \\[3px]
+  \lim_{n \to \infty} 
+  \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  
+               \left(1 - \frac{\lambda}{n}\right)^{n-k},
+  \text{ since } 
+  \binom{n}{k} = \left(\frac{1}{k!})\right)\left(\frac{n!}{(n-k)!}\right)
+  \text{ and } 
+  \left(\frac{\lambda}{n}\right)^k = \lambda^k\left(\frac{1}{n^k}\right).\\[3px]
                 &= 
   \class{fragment}{\left( \frac{\lambda^k}{k!} \right) 
                    \lim_{n \to \infty} 

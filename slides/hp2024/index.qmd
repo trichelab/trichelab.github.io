@@ -87,10 +87,9 @@ Pr(X=k|\lambda) &=
                      \lim_{n \to \infty} \left(1 - \frac{\lambda}{n}\right)^{n}
                      \equiv e^{-\lambda} 
                    \right]}\\[3px]
-  \therefore
-  \ Pr(X=k|\lambda) 
+  \therefore\ Pr(X=k|\lambda) 
                 &= 
-  \class{fragment}{\lambda^{k} e^{-\lambda} / k!}
+  \class{fragment}{\frac{\lambda^{k}e^{-\lambda}}{k!}}
 \end{align}
 $$
 

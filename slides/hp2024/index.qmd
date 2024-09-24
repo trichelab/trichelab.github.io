@@ -1,9 +1,9 @@
 ---
 format: 
   live-revealjs:
-    margin: 0.025
+    margin: 0.05
     theme: default
-#    scrollable: true
+    smaller: true
     slide-number: true
     html-math-method: mathjax
     include-before: [ '<script type="text/x-mathjax-config">MathJax.Hub.Config({tex2jax: {enableAssistiveMml: false}});</script>']
@@ -50,7 +50,7 @@ plot(density(rbinom(n=1000, size=1, p=(1/6))))
 
 ---
 
-## Binomial convergence to Poisson {.smaller} {.nostretch}
+## Binomial convergence to Poisson
 
 $$
 \begin{align}

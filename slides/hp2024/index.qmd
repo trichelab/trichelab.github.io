@@ -55,15 +55,15 @@ plot(density(rbinom(n=1000, size=1, p=(1/6))))
 $$
 \begin{align}
 \text{Let}\ & X \sim Bin(n, p),\ 
-              \lim_{n \to \infty, p \to 0} np = \lambda, \text{and}\ 
-              e^{-\lambda}=\lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n\\[3px]
+              \class{fragment}{\lim_{n \to \infty, p \to 0} np = \lambda,}
+              \class{fragment}{\lim_{n\to\infty}\left(1-\frac{\lambda}{n}\right)^n = e^{-\lambda}.}\\[3px]
 Pr(X=k|\lambda) &= 
-  \lim_{n \to \infty} 
-  \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  
-               \left(1 - \frac{\lambda}{n}\right)^{n-k}, 
-  \binom{n}{k} = \frac{1}{k!} \frac{n!}{(n-k)!}, 
-  \text{ and } 
-  \frac{\lambda}{n}^k = \lambda^{k}\frac{1}{n^k}.\\[3px]
+  \class{fragment}{\lim_{n \to \infty}
+                   \binom{n}{k} \left(\frac{\lambda}{n} \right)^{k}  
+                   \left(1 - \frac{\lambda}{n}\right)^{n-k},}
+  \class{fragment}{\binom{n}{k} = \frac{1}{k!} \frac{n!}{(n-k)!},}
+  \class{fragment}{\text{ and } 
+                   \frac{\lambda}{n}^k = \lambda^{k}\frac{1}{n^k}.}\\[3px]
                 &= 
   \class{fragment}{\left( \frac{\lambda^k}{k!} \right) 
                    \lim_{n \to \infty} 

@@ -1,0 +1,127 @@
+---
+title: Stupid pyodide tricks
+subtitle: Survival analysis 
+format: live-html
+engine: knitr
+toc: true
+---
+
+{{< include _extensions/r-wasm/live/_knitr.qmd >}}
+
+## Let's annoy ourselves with pyodide
+
+Normally I don't do this sort of thing, but just to be petty:
+
+#### Source
+
+::: {.panel-tabset group="language"}
+
+# R
+
+````markdown
+```{{webr}}
+print("No! We are doing this in python today! Switch tabs!")
+```
+````
+
+# Python
+
+````markdown
+```{{pyodide}}
+
+import micropip as mp
+await(mp.install("statsmodels"))
+import statsmodels.api as sm
+
+# Bob Kyle's MGUS data (free light chain levels in Olmsted county
+data = sm.datasets.get_rdataset("flchain", "survival").data
+df = data.loc[data.sex == "F", :]
+sf = sm.SurvfuncRight(df["futime"], df["death"])
+
+# plot the curve for females
+sf.plot()
+
+# median survival
+sf.quantile(0.5)
+
+# plot female vs. male survival
+await(mp.install("matplotlib"))
+import matplotlib.pyplot as plt
+gb = data.groupby("sex")
+ax = plt.axes()
+sexes = []
+
+for g in gb:
+  sexes.append(g[0])
+  sf = sm.SurvfuncRight(g[1]["futime"], g[1]["death"])
+  sf.plot(ax)
+li = ax.get_lines()
+li[1].set_visible(False)
+li[3].set_visible(False)
+plt.figlegend((li[0], li[2]), sexes, loc="center right")
+plt.ylim(0.6, 1)
+ax.set_ylabel("Proportion alive")
+ax.set_xlabel("Days since enrollment")
+
+# run an actual logrank test
+stat, pv = sm.duration.survdiff(data.futime, data.death, data.sex)
+
+```
+````
+
+:::
+
+#### Output
+
+::: {.panel-tabset group="language"}
+
+# R
+
+```{webr}
+print("No! We are doing this in python today! Switch tabs!")
+```
+
+# Python
+
+```{pyodide}
+
+import micropip as mp
+await(mp.install("statsmodels"))
+import statsmodels.api as sm
+
+# Bob Kyle's MGUS data (free light chain levels in Olmsted county
+data = sm.datasets.get_rdataset("flchain", "survival").data
+df = data.loc[data.sex == "F", :]
+sf = sm.SurvfuncRight(df["futime"], df["death"])
+
+# plot the curve for females
+sf.plot()
+
+# median survival
+sf.quantile(0.5)
+
+# plot female vs. male survival
+await(mp.install("matplotlib"))
+import matplotlib.pyplot as plt
+gb = data.groupby("sex")
+ax = plt.axes()
+sexes = []
+
+for g in gb:
+  sexes.append(g[0])
+  sf = sm.SurvfuncRight(g[1]["futime"], g[1]["death"])
+  sf.plot(ax)
+li = ax.get_lines()
+li[1].set_visible(False)
+li[3].set_visible(False)
+plt.figlegend((li[0], li[2]), sexes, loc="center right")
+plt.ylim(0.6, 1)
+ax.set_ylabel("Proportion alive")
+ax.set_xlabel("Days since enrollment")
+
+# run an actual logrank test
+stat, pv = sm.duration.survdiff(data.futime, data.death, data.sex)
+```
+:::
+
+Needless to say, the above is easier and prettier done in R with survminer.

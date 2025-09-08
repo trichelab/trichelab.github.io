@@ -1,0 +1,9 @@
+Experiment,Cultures,Culture.vol.cc,Sample.vol.cc,Broth.type,Division.time.min
+"Experiment.1",9,10,0.05,aerated,19
+"Experiment.10",8,10,0.05,aerated,19
+"Experiment.11",10,10,0.05,aerated,19
+"Experiment.15",10,10,0.05,aerated,19
+"Experiment.16",20,0.2,0.08,synthetic,35
+"Experiment.17",12,0.2,0.08,synthetic,35
+"Experiment.21a",19,0.2,0.05,nutrient,19
+"Experiment.21b",5,10,0.05,aerated,19

@@ -18,84 +18,128 @@ execute:
 filters:
   - webr
 webr:
-  packages: ['mixtools','survival','survminer','patchwork','ggplot2']
+  packages: ['mixtools','survival','survminer','patchwork','ggplot2','table1']
 ---
 
-## Background: age, cell of origin, and fusion genes in leukemia
+# Age, cell of origin, and fusions in leukemia
+
+## MLL rearrangements
 
 Translocations involving human chromosome 11 are a frequent occurrence in infant
-leukemia. When the breakpoint is on band 23 of the long arm of chromosome 11, or
-more concisely, when we see an 11q23 abnormality, we usually suspect that the 
-Mixed-Lineage-Leukemia or MLL protein (encoded by the _KMT2A_ gene) has been 
+leukemia. When a breakpoint is on band 23 of the long arm (11q23 abnormality), 
+we often find the Mixed-Lineage-Leukemia or MLL protein (encoded by _KMT2A_) 
 broken in half and stuck to some other gene. Unfortunately, "some other gene" 
 can be one of hundreds of known partner genes, and nobody is sure how much the 
-identity of the partner gene matters. What is certain is that 11q23 aberrations
-are associated with very aggressive leukemic transformation, causing over half
-of the cases seen in infants. Given the difficulty of drawing up rules for all
-the different MLL fusions that can arise in a patient, we might wonder if there
-are other markers that could tell us whether a patient will do well on any of
+identity of the partner gene matters. What is sure is that 11q23 breaks cause 
+aggressive leukemic transformation, and are responsible for well over half of 
+the cases seen in infants. This might be due to a fetal cell of origin, or the
+fusion partner, or where the leukemia cells get stuck, but it's hard to say.
+
+Given the many different MLL fusions that can arise in a patient, we may wonder
+if there are any "rules" that can indicate if a patient will benefit from any of
 several possible therapies. MLL-rearranged leukemia occurs across all ages, but
-younger patients have very few additional mutations, so we would expect them to
-harbor the fewest confounding mutations (and, generally speaking, that's true). 
+younger patients have very few recurrent co-mutations besides MLL itself. So it
+seems that co-mutation status isn't very helpful, at least not in infant cases.
+
+## Reading the data from COG/TARGET AML
 
 As part of the COG/TARGET AML project, over 500 infant (younger than 3 years) 
 patients with acute myeloid leukemia (AML) have been characterized by DNA and 
 RNA sequencing, flow cytometry, and DNA methylation microarrays, some at both 
 diagnosis and relapse. 164 of these infant patients harbor MLL translocations, 
 in addition to 142 children and 56 adolescent and young adult (AYA) patients,
-for a total of 362 well-characterized, MLL-rearranged pediatric AML cases. 
+for a total of 362 well-characterized, MLL-rearranged pediatric AML cases.
+
+Let's see whether we can dig anything new out of this data with basic tools.
 
 ```{r}
 
 # available in the bifurcatoR package or from COG/TARGET clinical data elements
 MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
+factors <- names(MLL)[c(2, 3, 8)]
+for (f in factors) MLL[[f]] <- factor(MLL[[f]])
+MLL$AgeGroup <- relevel(relevel(factor(MLL$AgeGroup), 2), 3)
+summary(MLL[, factors]) 
 
 ```
 
+## Table 1: 25 years of trials
+
+We might as well summarize the cohort while we're here:
+
+```{r}
+
+library(table1) 
+pvalue <- function(x, ...) {
+  y <- unlist(x)
+  g <- factor(rep(1:length(x), times=sapply(x, length)))
+  if (is.numeric(y)) p <- t.test(y ~ g)$p.value
+  if (!is.numeric(y)) p <- chisq.test(table(y, g))$p.value
+  c("", sub("<", "&lt;", format.pval(p, digits=3, eps=0.001)))
+}
+
+MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
+MLL$AgeGroup <- relevel(relevel(factor(MLL$AgeGroup), 2), 3)
+common <- names(which(table(MLL$fusion) > 5))
+MLL$Fusion <- ifelse(MLL$fusion %in% common, 
+                     MLL$fusion, "Other MLL fusions")
+MLL$Fusion <- relevel(relevel(relevel(factor(MLL$Fusion), 6), 4), 6)
+table1(~ Sex + Fusion | AgeGroup, data=MLL, extra.col=list(p=pvalue))
+
+```
+
+## CD34 and EVI1
+
+Previous work has shown that high levels of the cell surface marker CD34 and
+the stem cell fate gene _MECOM_ (which encodes the EVI1 protein) portend dismal 
+outcomes (at least in AML and B-cell ALL patients with MLL rearrangements).
+
 (More on this topic: [Modeling phenotypes with mixtures](https://trichelab.github.io/webR/mixtures/))
 
-Previous work has shown that the cell surface marker CD34 and the stem cell
-fate determining gene _MECOM_, which encodes the EVI1 protein, associate with 
-poor prognosis, at least in MLL-rearranged AML and in B-cell ALL patients. 
 Prior to TARGET, there wasn't really a well-annotated, readily-available cohort
 of MLL-rearranged AML patients who had this sort of extensive characterization
 across multiple age groups. But time marches on, so now there is.
 
+
+## Fitting a mixture model 
+
+Let's fit a mixture model to the expression of these two genes in MLLr AML. 
+
 ```{r}
 
 library(mixtools) 
-# library(mclust)
-# bothFit <- Mclust(MLL[, c("MECOM", "CD34")])
+set.seed(12345)
 bothFit <- mvnormalmixEM(MLL[, c("MECOM", "CD34")], k=3, arbvar=FALSE)
-# could be better, but at least it's fast-ish; takes about 4 seconds 
 plot.mixEM(bothFit, whichplots=2, xlab2="MECOM", ylab2="CD34")
-# ok
-
 MLL$classification <- apply(bothFit$posterior, 1, which.max)
-MLL$age <- ifelse(MLL$AgeGroup == "Infant", "Infant", "Child/AYA")
+MLL$age <- ifelse(MLL$AgeGroup == "Infant", "Infant", "Older")
+MLL$CD34EVI1 <- ifelse(MLL$classification == 1, "lo", "hi") 
+with(MLL, table(age, CD34EVI1))
 
-subset.mixEM <- function(x, i=seq_len(nrow(x))) { 
-  x$x <- x$x[i, ]
-  x$posterior <- x$posterior[i, ]
-  return(x)
-}
-if (FALSE) { 
-  # this throws a plot error, so skip it for now
-  par(mfrow=c(1,2))
-  plot(subset(bothFit, MLL$infant == "Infant"), whichplot=2, xlab2="MECOM", 
-     ylab2="CD34", density=TRUE, alpha=c(0.0005, 0.005, 0.05), main2="Infants")
-  plot(subset(bothFit, MLL$infant != "Infant"), whichplot=2, xlab2="MECOM", 
-     ylab2="CD34", density=TRUE, alpha=c(0.0005, 0.005, 0.05), main2="Kids/AYA")
-  par(mfrow=c(1,1))
-}
 ```
+
+Now you try it: 
+
+```{webr-r}
+
+library(mixtools) 
+MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
+set.seed(12345)
+bothFit <- mvnormalmixEM(MLL[, c("MECOM", "CD34")], k=3, arbvar=FALSE)
+plot.mixEM(bothFit, whichplots=2, xlab2="MECOM", ylab2="CD34")
+MLL$classification <- apply(bothFit$posterior, 1, which.max)
+MLL$age <- ifelse(MLL$AgeGroup == "Infant", "Infant", "Older")
+MLL$CD34EVI1 <- ifelse(MLL$classification == 1, "lo", "hi") 
+with(MLL, table(age, CD34EVI1))
+
+```
+
+## Testing out the model 
 
 Let's see how these labels predict outcome (or don't). 
 
 ```{r}
 # bothFit$mu # cluster 1 is low/low
-MLL$CD34EVI1 <- ifelse(MLL$classification == 1, "Low", "High") 
-
 library(survival)
 library(survminer)
 allSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)
@@ -103,6 +147,11 @@ ggsurvplot(allSurv, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
            tables.theme = theme_cleantable(), 
            palette=c("red","green","darkred","darkgreen"))
 
+```
+
+Perhaps it will be easier to see the differences if we stratify by age group:
+
+```{r}
 # by age group
 ggsurvplot_facet(allSurv, 
                  data=MLL,
@@ -115,10 +164,27 @@ ggsurvplot_facet(allSurv,
 
 ```
 
+Your turn (be sure to run the previous chunks so MLL and bothFit are loaded)
+
+```{webr-r}
+
+library(survival)
+library(survminer)
+allSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)
+ggsurvplot_facet(allSurv, 
+                 data=MLL,
+                 conf.int=TRUE, 
+                 pval=TRUE, 
+                 legend.labs=c("CD34/EVI1 high", "CD34 & EVI1 low"),
+                 xlab="Overall survival (days)",
+                 palette=c("red","green"),
+                 facet.by="age")
+```
+
 For the sake of downstream motif analysis, let's tabulate which cases are which:
 
 ```{r}
 infantMLL <- subset(MLL, age == "Infant")
+with(infantMLL, table(CD34EVI1))
 # write.csv(infantMLL, file="~/Dropbox/Alex_Projects/infantMLL.csv") 
-
 ```

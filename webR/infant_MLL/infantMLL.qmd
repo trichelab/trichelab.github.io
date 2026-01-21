@@ -108,7 +108,7 @@ Let's fit a mixture model to the expression of these two genes in MLLr AML.
 ```{r}
 
 library(mixtools) 
-set.seed(12345)
+set.seed(1234)
 bothFit <- mvnormalmixEM(MLL[, c("MECOM", "CD34")], k=3, arbvar=FALSE)
 plot.mixEM(bothFit, whichplots=2, xlab2="MECOM", ylab2="CD34")
 MLL$classification <- apply(bothFit$posterior, 1, which.max)
@@ -124,7 +124,7 @@ Now you try it:
 
 library(mixtools) 
 MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
-set.seed(12345)
+set.seed(1234)
 bothFit <- mvnormalmixEM(MLL[, c("MECOM", "CD34")], k=3, arbvar=FALSE)
 plot.mixEM(bothFit, whichplots=2, xlab2="MECOM", ylab2="CD34")
 MLL$classification <- apply(bothFit$posterior, 1, which.max)

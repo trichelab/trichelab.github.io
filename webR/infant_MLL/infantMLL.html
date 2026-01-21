@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.4.551">
+<meta name="generator" content="quarto-1.5.55">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"id":1,"options":{"context":"interactive","read-only":"false","autorun":"false","comment":"","message":"true","fig-cap":"","warning":"true","output":"true","results":"markup","classes":"","dpi":72,"fig-width":7,"label":"unnamed-chunk-1","fig-height":5,"out-width":"700px","out-height":""},"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLL.csv\"), row=1)\nset.seed(12345)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))"},{"id":2,"options":{"context":"interactive","read-only":"false","autorun":"false","comment":"","message":"true","fig-cap":"","warning":"true","output":"true","results":"markup","classes":"","dpi":72,"fig-width":7,"label":"unnamed-chunk-2","fig-height":5,"out-width":"700px","out-height":""},"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")"}];
+globalThis.qwebrCellDetails = [{"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLL.csv\"), row=1)\nset.seed(1234)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))","id":1,"options":{"comment":"","label":"unnamed-chunk-1","output":"true","read-only":"false","fig-cap":"","message":"true","warning":"true","out-height":"","results":"markup","classes":"","out-width":"700px","dpi":72,"context":"interactive","fig-width":7,"fig-height":5,"autorun":"false"}},{"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")","id":2,"options":{"comment":"","label":"unnamed-chunk-2","output":"true","read-only":"false","fig-cap":"","message":"true","warning":"true","out-height":"","results":"markup","classes":"","out-width":"700px","dpi":72,"context":"interactive","fig-width":7,"fig-height":5,"autorun":"false"}}];
 
 </script>
 <script type="module">
@@ -1226,9 +1226,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">table1</span>(<span class="sc">~</span> Sex <span class="sc">+</span> Fusion <span class="sc">|</span> AgeGroup, <span class="at">data=</span>MLL, <span class="at">extra.col=</span><span class="fu">list</span>(<span class="at">p=</span>pvalue))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div>
 <div class="Rtable1">
-<table class="Rtable1 table table-sm table-striped small" data-quarto-postprocess="true">
+<table class="Rtable1 caption-top table table-sm table-striped small" data-quarto-postprocess="true">
 <colgroup>
 <col style="width: 16%">
 <col style="width: 16%">
@@ -1354,7 +1353,6 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </div>
 </div>
 </div>
-</div>
 </section>
 <section id="cd34-and-evi1" class="level2">
 <h2 class="anchored" data-anchor-id="cd34-and-evi1">CD34 and EVI1</h2>
@@ -1369,11 +1367,11 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixtools) </span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">12345</span>)</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1234</span>)</span>
 <span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>bothFit <span class="ot">&lt;-</span> <span class="fu">mvnormalmixEM</span>(MLL[, <span class="fu">c</span>(<span class="st">"MECOM"</span>, <span class="st">"CD34"</span>)], <span class="at">k=</span><span class="dv">3</span>, <span class="at">arbvar=</span><span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
-<pre><code>number of iterations= 48 </code></pre>
+<pre><code>number of iterations= 68 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1396,8 +1394,8 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div class="cell-output cell-output-stdout">
 <pre><code>        CD34EVI1
 age       hi  lo
-  Infant  60 104
-  Older  102  96</code></pre>
+  Infant  39 125
+  Older  110  88</code></pre>
 </div>
 </div>
 <p>Now you try it:</p>
@@ -1461,7 +1459,7 @@ age       hi  lo
 <div class="cell-output cell-output-stdout">
 <pre><code>CD34EVI1
  hi  lo 
- 60 104 </code></pre>
+ 39 125 </code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1508,18 +1506,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const clipboard = new window.ClipboardJS('.code-copy-button', {
-    text: function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-    }
-  });
-  clipboard.on('success', function(e) {
+  const onCopySuccess = function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1551,7 +1538,29 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
   });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1559,7 +1568,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {

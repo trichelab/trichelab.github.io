@@ -160,10 +160,11 @@ things I'd like to add:
 Convert this into a quarto document so I can dump it onto trichelab.github.io
 
 ```{r}
-# Lines 78-81
+# Lines 78-79
 library(quartify)
 rtoqmd("archRiSEEdemo.R", "archRiSEEdemo.qmd") 
-library(quarto) 
-quarto_render("archRiSEEdemo.qmd") 
 ```
 
+✔ Quarto markdown file created: archRiSEEdemo.qmd
+Rendering Quarto document to HTML...
+✔ HTML file created: archRiSEEdemo.html

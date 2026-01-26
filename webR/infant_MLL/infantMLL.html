@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"id":1,"options":{"label":"unnamed-chunk-1","fig-width":7,"autorun":"false","read-only":"false","out-width":"700px","out-height":"","dpi":72,"results":"markup","context":"interactive","warning":"true","output":"true","message":"true","fig-cap":"","comment":"","fig-height":5,"classes":""},"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLLr.csv\"), row=1)\nset.seed(1234)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))"},{"id":2,"options":{"label":"unnamed-chunk-2","fig-width":7,"autorun":"false","read-only":"false","out-width":"700px","out-height":"","dpi":72,"results":"markup","context":"interactive","warning":"true","output":"true","message":"true","fig-cap":"","comment":"","fig-height":5,"classes":""},"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")"}];
+globalThis.qwebrCellDetails = [{"id":1,"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLLr.csv\"), row=1)\nset.seed(1234)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))","options":{"message":"true","comment":"","results":"markup","fig-width":7,"out-width":"700px","fig-cap":"","fig-height":5,"context":"interactive","out-height":"","label":"unnamed-chunk-1","read-only":"false","warning":"true","dpi":72,"autorun":"false","output":"true","classes":""}},{"id":2,"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")","options":{"message":"true","comment":"","results":"markup","fig-width":7,"out-width":"700px","fig-cap":"","fig-height":5,"context":"interactive","out-height":"","label":"unnamed-chunk-2","read-only":"false","warning":"true","dpi":72,"autorun":"false","output":"true","classes":""}}];
 
 </script>
 <script type="module">
@@ -1472,7 +1472,16 @@ age       hi  lo
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(MLL<span class="sc">$</span>CLEC2A, <span class="at">main=</span><span class="st">"CLEC2A expression"</span>, <span class="at">xlab=</span><span class="st">"log(1 + transcripts)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(mixtools)</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>CLEC2Afit <span class="ot">&lt;-</span> <span class="fu">normalmixEM</span>(MLL<span class="sc">$</span>CLEC2A)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>number of iterations= 26 </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(CLEC2Afit, <span class="at">which=</span><span class="dv">2</span>, <span class="at">col2=</span><span class="fu">c</span>(<span class="st">"darkgreen"</span>,<span class="st">"red"</span>), </span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>     <span class="at">xlab2=</span><span class="st">"log(1 + transcripts)"</span>, <span class="at">main2=</span><span class="st">"CLEC2A expression"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1486,9 +1495,9 @@ age       hi  lo
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>CLEC2Astatus <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MLL<span class="sc">$</span>CLEC2A <span class="sc">&gt;</span> <span class="dv">3</span>, <span class="st">"hi"</span>, <span class="st">"lo"</span>)</span>
-<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="ot">&lt;-</span> <span class="fu">with</span>(MLL, <span class="fu">table</span>(CLEC2Astatus, CD34EVI1))</span>
-<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>CLEC2Astatus <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MLL<span class="sc">$</span>CLEC2A <span class="sc">&gt;</span> <span class="dv">3</span>, <span class="st">"hi"</span>, <span class="st">"lo"</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="ot">&lt;-</span> <span class="fu">with</span>(MLL, <span class="fu">table</span>(CLEC2Astatus, CD34EVI1))</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1499,8 +1508,8 @@ X-squared = 35.06, df = 1, p-value = 3.197e-09</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now test by age, i.e. infants versus everyone else</span></span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(<span class="fu">with</span>(MLL, <span class="fu">table</span>(CLEC2Astatus, CD34EVI1, age)), <span class="dv">3</span>, chisq.test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now test by age, i.e. infants versus everyone else</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(<span class="fu">with</span>(MLL, <span class="fu">table</span>(CLEC2Astatus, CD34EVI1, age)), <span class="dv">3</span>, chisq.test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>$Infant
@@ -1523,8 +1532,8 @@ X-squared = 8.7947, df = 1, p-value = 0.003021</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ofInterest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'CLEC2A'</span>, <span class="st">'CD34'</span>, <span class="st">'MECOM'</span>, <span class="st">'RORA'</span>, <span class="st">'CD33'</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(MLL[, ofInterest]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>ofInterest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'CLEC2A'</span>, <span class="st">'CD34'</span>, <span class="st">'MECOM'</span>, <span class="st">'RORA'</span>, <span class="st">'CD33'</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(MLL[, ofInterest]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div>
@@ -1538,23 +1547,32 @@ X-squared = 8.7947, df = 1, p-value = 0.003021</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
-<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">&lt;-</span> <span class="fu">cor</span>(MLL[, ofInterest])</span>
-<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>to_plot <span class="ot">&lt;-</span> <span class="fu">melt</span>(cormat, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
-<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(to_plot)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene2"</span>)</span>
-<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(to_plot, <span class="fu">aes</span>(Gene1, Gene2, <span class="at">fill=</span>value)) <span class="sc">+</span></span>
-<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_tile</span>(<span class="at">color=</span><span class="st">"white"</span>) <span class="sc">+</span></span>
-<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_fill_gradient2</span>(<span class="at">low=</span><span class="st">"blue"</span>, <span class="at">high=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>, </span>
-<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">midpoint=</span><span class="dv">0</span>, <span class="at">limit=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">space=</span><span class="st">"Lab"</span>, <span class="at">name=</span><span class="st">"Correlation"</span>) <span class="sc">+</span></span>
-<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
-<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">12</span>, <span class="at">hjust=</span><span class="dv">1</span>),</span>
-<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.title.x=</span><span class="fu">element_blank</span>()) <span class="sc">+</span></span>
-<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.y=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>),</span>
-<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.title.y=</span><span class="fu">element_blank</span>()) <span class="sc">+</span></span>
-<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a> <span class="fu">coord_fixed</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">&lt;-</span> <span class="fu">cor</span>(MLL[, ofInterest])</span>
+<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>to_plot <span class="ot">&lt;-</span> <span class="fu">melt</span>(cormat, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(to_plot)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene2"</span>)</span>
+<span id="cb22-6"><a href="#cb22-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-7"><a href="#cb22-7" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(to_plot, <span class="fu">aes</span>(Gene1, Gene2, <span class="at">fill=</span>value)) <span class="sc">+</span></span>
+<span id="cb22-8"><a href="#cb22-8" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_tile</span>(<span class="at">color=</span><span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb22-9"><a href="#cb22-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_fill_gradient2</span>(<span class="at">low=</span><span class="st">"blue"</span>, <span class="at">high=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>, </span>
+<span id="cb22-10"><a href="#cb22-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">midpoint=</span><span class="dv">0</span>, <span class="at">limit=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">space=</span><span class="st">"Lab"</span>, <span class="at">name=</span><span class="st">"Correlation"</span>) <span class="sc">+</span></span>
+<span id="cb22-11"><a href="#cb22-11" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb22-12"><a href="#cb22-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">12</span>, <span class="at">hjust=</span><span class="dv">1</span>),</span>
+<span id="cb22-13"><a href="#cb22-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.title.x=</span><span class="fu">element_blank</span>()) <span class="sc">+</span></span>
+<span id="cb22-14"><a href="#cb22-14" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.y=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb22-15"><a href="#cb22-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.title.y=</span><span class="fu">element_blank</span>()) <span class="sc">+</span></span>
+<span id="cb22-16"><a href="#cb22-16" aria-hidden="true" tabindex="-1"></a> <span class="fu">coord_fixed</span>()</span>
+<span id="cb22-17"><a href="#cb22-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb22-18"><a href="#cb22-18" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(p <span class="sc">+</span> <span class="fu">ggtitle</span>(<span class="st">"CLEC2A gene-gene correlations"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infantMLL_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
 </div>
 <p>So, while CD34/EVI1 status doesn’t always predict CLEC2A status, it’s not bad.</p>
 </section>

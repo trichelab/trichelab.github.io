@@ -199,10 +199,7 @@ Looks like it. Eyeballing this, we can cut at around log(1 + transcripts) > 3.
 More to the point, though: how much of this reflects CD34 and/or MECOM status?
 
 ```{r}
-MLL$CLEC2Astatus <- c("lo", "hi")[ apply(CLEC2Afit$comp.prob, 1, which.max) ]
-# or just
-# MLL$CLEC2Astatus <- ifelse(MLL$CLEC2A > 3, "hi", "lo")
-# if eyeballing it
+MLL$CLEC2Astatus <- ifelse(MLL$CLEC2A > 3, "hi", "lo")
 tbl <- with(MLL, table(CLEC2Astatus, CD34EVI1))
 chisq.test(tbl)
 
@@ -239,6 +236,7 @@ p <- ggplot(to_plot, aes(Gene1, Gene2, fill=value)) +
        axis.title.y=element_blank()) +
  coord_fixed()
 
+print(p + ggtitle("CLEC2A gene-gene correlations"))
 ```
 
 So, while CD34/EVI1 status doesn't always predict CLEC2A status, it's not bad.

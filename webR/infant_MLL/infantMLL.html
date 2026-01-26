@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"id":1,"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLLr.csv\"), row=1)\nset.seed(1234)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))","options":{"message":"true","comment":"","results":"markup","fig-width":7,"out-width":"700px","fig-cap":"","fig-height":5,"context":"interactive","out-height":"","label":"unnamed-chunk-1","read-only":"false","warning":"true","dpi":72,"autorun":"false","output":"true","classes":""}},{"id":2,"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")","options":{"message":"true","comment":"","results":"markup","fig-width":7,"out-width":"700px","fig-cap":"","fig-height":5,"context":"interactive","out-height":"","label":"unnamed-chunk-2","read-only":"false","warning":"true","dpi":72,"autorun":"false","output":"true","classes":""}}];
+globalThis.qwebrCellDetails = [{"options":{"message":"true","warning":"true","output":"true","fig-cap":"","comment":"","out-width":"700px","results":"markup","context":"interactive","label":"unnamed-chunk-1","fig-height":5,"autorun":"false","read-only":"false","dpi":72,"fig-width":7,"classes":"","out-height":""},"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLLr.csv\"), row=1)\nset.seed(1234)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))","id":1},{"options":{"message":"true","warning":"true","output":"true","fig-cap":"","comment":"","out-width":"700px","results":"markup","context":"interactive","label":"unnamed-chunk-2","fig-height":5,"autorun":"false","read-only":"false","dpi":72,"fig-width":7,"classes":"","out-height":""},"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")","id":2}];
 
 </script>
 <script type="module">
@@ -971,6 +971,7 @@ globalThis.qwebrExecuteCode = async function (
   <li><a href="#fitting-a-mixture-model" id="toc-fitting-a-mixture-model" class="nav-link" data-scroll-target="#fitting-a-mixture-model">Fitting a mixture model</a></li>
   <li><a href="#testing-out-the-model" id="toc-testing-out-the-model" class="nav-link" data-scroll-target="#testing-out-the-model">Testing out the model</a></li>
   <li><a href="#clec2a" id="toc-clec2a" class="nav-link" data-scroll-target="#clec2a"><em>CLEC2A</em></a></li>
+  <li><a href="#clec2a-and-outcomes" id="toc-clec2a-and-outcomes" class="nav-link" data-scroll-target="#clec2a-and-outcomes"><em>CLEC2A</em> and outcomes</a></li>
   </ul></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/infantMLL/infantMLL.qmd"><i class="bi bi-github"></i>Quarto (source code)</a></li></ul></div></nav>
@@ -1575,6 +1576,51 @@ X-squared = 8.7947, df = 1, p-value = 0.003021</code></pre>
 </div>
 </div>
 <p>So, while CD34/EVI1 status doesn’t always predict CLEC2A status, it’s not bad.</p>
+</section>
+<section id="clec2a-and-outcomes" class="level2">
+<h2 class="anchored" data-anchor-id="clec2a-and-outcomes"><em>CLEC2A</em> and outcomes</h2>
+<p>One last question, though: is <em>CLEC2A</em> a better predictor of outcome?</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survival)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(survminer)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>CLEC2ASurv <span class="ot">&lt;-</span> <span class="fu">survfit</span>(<span class="fu">Surv</span>(OS, OSI) <span class="sc">~</span> age <span class="sc">+</span> CLEC2Astatus, <span class="at">data=</span>MLL)</span>
+<span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot</span>(CLEC2ASurv, <span class="at">conf.int=</span><span class="cn">TRUE</span>, <span class="at">pval=</span><span class="cn">TRUE</span>, <span class="at">xlab=</span><span class="st">"Overall survival (days)"</span>,</span>
+<span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>           <span class="at">tables.theme =</span> <span class="fu">theme_cleantable</span>(), </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>           <span class="at">palette=</span><span class="fu">c</span>(<span class="st">"red"</span>,<span class="st">"green"</span>,<span class="st">"darkred"</span>,<span class="st">"darkgreen"</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infantMLL_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Well, that’s dramatic in a different way from before. Faceting again:</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="co"># by age group</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsurvplot_facet</span>(CLEC2ASurv, </span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>                 <span class="at">data=</span>MLL,</span>
+<span id="cb24-4"><a href="#cb24-4" aria-hidden="true" tabindex="-1"></a>                 <span class="at">conf.int=</span><span class="cn">TRUE</span>, </span>
+<span id="cb24-5"><a href="#cb24-5" aria-hidden="true" tabindex="-1"></a>                 <span class="at">pval=</span><span class="cn">TRUE</span>, </span>
+<span id="cb24-6"><a href="#cb24-6" aria-hidden="true" tabindex="-1"></a>                 <span class="at">legend.labs=</span><span class="fu">c</span>(<span class="st">"CLEC2A high"</span>, <span class="st">"CLEC2A low"</span>),</span>
+<span id="cb24-7"><a href="#cb24-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">xlab=</span><span class="st">"Overall survival (days)"</span>,</span>
+<span id="cb24-8"><a href="#cb24-8" aria-hidden="true" tabindex="-1"></a>                 <span class="at">palette=</span><span class="fu">c</span>(<span class="st">"red"</span>,<span class="st">"green"</span>),</span>
+<span id="cb24-9"><a href="#cb24-9" aria-hidden="true" tabindex="-1"></a>                 <span class="at">facet.by=</span><span class="st">"age"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infantMLL_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>However you wish to slice it, the <em>CLEC2A</em> negative infant cases are doing better than everyone else, for reasons not entirely clear. It looks like CD34 and/or EVI1 are better survival markers, but the overlap with CLEC2A status is enough that we would expect their outcomes to improve with anti-CLEC2A therapy.</p>
 </section>
 </section>
 

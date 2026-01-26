@@ -240,3 +240,38 @@ print(p + ggtitle("CLEC2A gene-gene correlations"))
 ```
 
 So, while CD34/EVI1 status doesn't always predict CLEC2A status, it's not bad.
+
+
+## _CLEC2A_ and outcomes
+
+One last question, though: is _CLEC2A_ a better predictor of outcome?
+
+```{r}
+library(survival)
+library(survminer)
+CLEC2ASurv <- survfit(Surv(OS, OSI) ~ age + CLEC2Astatus, data=MLL)
+ggsurvplot(CLEC2ASurv, conf.int=TRUE, pval=TRUE, xlab="Overall survival (days)",
+           tables.theme = theme_cleantable(), 
+           palette=c("red","green","darkred","darkgreen"))
+```
+
+Well, that's dramatic in a different way from before.  Faceting again: 
+
+```{r}
+# by age group
+ggsurvplot_facet(CLEC2ASurv, 
+                 data=MLL,
+                 conf.int=TRUE, 
+                 pval=TRUE, 
+                 legend.labs=c("CLEC2A high", "CLEC2A low"),
+                 xlab="Overall survival (days)",
+                 palette=c("red","green"),
+                 facet.by="age")
+
+```
+
+However you wish to slice it, the _CLEC2A_ negative infant cases are doing 
+better than everyone else, for reasons not entirely clear.  It looks like 
+CD34 and/or EVI1 are better survival markers, but the overlap with CLEC2A 
+status is enough that we would expect their outcomes to improve with anti-CLEC2A
+therapy.

@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.5.55">
+<meta name="generator" content="quarto-1.4.551">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
@@ -33,7 +33,7 @@ div.sourceCode { overflow: auto; }
 }
 @media print {
 pre > code.sourceCode { white-space: pre-wrap; }
-pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
 }
 pre.numberSource code
   { counter-reset: source-line 0; }
@@ -212,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 // Document level settings ----
 
 // Determine if we need to install R packages
-globalThis.qwebrInstallRPackagesList = ['mixtools', 'survival', 'survminer', 'patchwork', 'ggplot2', 'table1'];
+globalThis.qwebrInstallRPackagesList = ['mixtools', 'survival', 'survminer', 'reshape2', 'ggplot2', 'table1'];
 
 // Specify possible locations to search for the repository
 globalThis.qwebrPackageRepoURLS = ['https://repo.r-wasm.org/'];
@@ -234,7 +234,7 @@ globalThis.qwebrCustomizedWebROptions = {
 };
 
 // Store cell data
-globalThis.qwebrCellDetails = [{"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLL.csv\"), row=1)\nset.seed(1234)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))","id":1,"options":{"comment":"","label":"unnamed-chunk-1","output":"true","read-only":"false","fig-cap":"","message":"true","warning":"true","out-height":"","results":"markup","classes":"","out-width":"700px","dpi":72,"context":"interactive","fig-width":7,"fig-height":5,"autorun":"false"}},{"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")","id":2,"options":{"comment":"","label":"unnamed-chunk-2","output":"true","read-only":"false","fig-cap":"","message":"true","warning":"true","out-height":"","results":"markup","classes":"","out-width":"700px","dpi":72,"context":"interactive","fig-width":7,"fig-height":5,"autorun":"false"}}];
+globalThis.qwebrCellDetails = [{"id":1,"options":{"label":"unnamed-chunk-1","fig-width":7,"autorun":"false","read-only":"false","out-width":"700px","out-height":"","dpi":72,"results":"markup","context":"interactive","warning":"true","output":"true","message":"true","fig-cap":"","comment":"","fig-height":5,"classes":""},"code":"\nlibrary(mixtools) \nMLL <- read.csv(url(\"https://trichelab.github.io/data/MLLr.csv\"), row=1)\nset.seed(1234)\nbothFit <- mvnormalmixEM(MLL[, c(\"MECOM\", \"CD34\")], k=3, arbvar=FALSE)\nplot.mixEM(bothFit, whichplots=2, xlab2=\"MECOM\", ylab2=\"CD34\")\nMLL$classification <- apply(bothFit$posterior, 1, which.max)\nMLL$age <- ifelse(MLL$AgeGroup == \"Infant\", \"Infant\", \"Older\")\nMLL$CD34EVI1 <- ifelse(MLL$classification == 1, \"lo\", \"hi\") \nwith(MLL, table(age, CD34EVI1))"},{"id":2,"options":{"label":"unnamed-chunk-2","fig-width":7,"autorun":"false","read-only":"false","out-width":"700px","out-height":"","dpi":72,"results":"markup","context":"interactive","warning":"true","output":"true","message":"true","fig-cap":"","comment":"","fig-height":5,"classes":""},"code":"\nlibrary(survival)\nlibrary(survminer)\nallSurv <- survfit(Surv(OS, OSI) ~ age + CD34EVI1, data=MLL)\nggsurvplot_facet(allSurv, \n                 data=MLL,\n                 conf.int=TRUE, \n                 pval=TRUE, \n                 legend.labs=c(\"CD34/EVI1 high\", \"CD34 & EVI1 low\"),\n                 xlab=\"Overall survival (days)\",\n                 palette=c(\"red\",\"green\"),\n                 facet.by=\"age\")"}];
 
 </script>
 <script type="module">
@@ -967,9 +967,10 @@ globalThis.qwebrExecuteCode = async function (
   <li><a href="#mll-rearrangements" id="toc-mll-rearrangements" class="nav-link" data-scroll-target="#mll-rearrangements">MLL rearrangements</a></li>
   <li><a href="#reading-the-data-from-cogtarget-aml" id="toc-reading-the-data-from-cogtarget-aml" class="nav-link" data-scroll-target="#reading-the-data-from-cogtarget-aml">Reading the data from COG/TARGET AML</a></li>
   <li><a href="#table-1-25-years-of-trials" id="toc-table-1-25-years-of-trials" class="nav-link" data-scroll-target="#table-1-25-years-of-trials">Table 1: 25 years of trials</a></li>
-  <li><a href="#cd34-and-evi1" id="toc-cd34-and-evi1" class="nav-link" data-scroll-target="#cd34-and-evi1">CD34 and EVI1</a></li>
+  <li><a href="#cd34-and-evi1" id="toc-cd34-and-evi1" class="nav-link" data-scroll-target="#cd34-and-evi1"><em>CD34</em> and <em>EVI1</em></a></li>
   <li><a href="#fitting-a-mixture-model" id="toc-fitting-a-mixture-model" class="nav-link" data-scroll-target="#fitting-a-mixture-model">Fitting a mixture model</a></li>
   <li><a href="#testing-out-the-model" id="toc-testing-out-the-model" class="nav-link" data-scroll-target="#testing-out-the-model">Testing out the model</a></li>
+  <li><a href="#clec2a" id="toc-clec2a" class="nav-link" data-scroll-target="#clec2a"><em>CLEC2A</em></a></li>
   </ul></li>
   </ul>
 <div class="quarto-code-links"><h2>Code Links</h2><ul><li><a href="https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/infantMLL/infantMLL.qmd"><i class="bi bi-github"></i>Quarto (source code)</a></li></ul></div></nav>
@@ -1173,8 +1174,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <h1>Age, cell of origin, and fusions in leukemia</h1>
 <section id="mll-rearrangements" class="level2">
 <h2 class="anchored" data-anchor-id="mll-rearrangements">MLL rearrangements</h2>
-<p>Translocations involving human chromosome 11 are a frequent occurrence in infant leukemia. When a breakpoint is on band 23 of the long arm (11q23 abnormality), we often find the Mixed-Lineage-Leukemia or MLL protein (encoded by <em>KMT2A</em>) broken in half and stuck to some other gene. Unfortunately, “some other gene” can be one of hundreds of known partner genes, and nobody is sure how much the identity of the partner gene matters. What is sure is that 11q23 breaks cause aggressive leukemic transformation, and are responsible for well over half of the cases seen in infants. This might be due to a fetal cell of origin, or the fusion partner, or where the leukemia cells get stuck, but it’s hard to say.</p>
-<p>Given the many different MLL fusions that can arise in a patient, we may wonder if there are any “rules” that can indicate if a patient will benefit from any of several possible therapies. MLL-rearranged leukemia occurs across all ages, but younger patients have very few recurrent co-mutations besides MLL itself. So it seems that co-mutation status isn’t very helpful, at least not in infant cases.</p>
+<p>Translocations involving human chromosome 11 are a frequent occurrence in infant leukemia. When a breakpoint is on band 23 of the long arm (11q23 abnormality), we often find the Mixed-Lineage-Leukemia or MLL protein (encoded by <em>KMT2A</em>) broken in half and stuck to some other gene. Unfortunately, “some other gene” can be one of hundreds of known partner genes, and nobody is sure how much the identity of the partner gene matters. With so many different MLL fusions arising in patients, we might wonder there are any rules (beyond “MLL-XYZ is bad news”) that could guide a patient toward one therapy or another. MLL rearrangements occur across all ages; young patients have few recurrent mutations beyond MLL. So co-mutation doesn’t help, at least not in infants. Does anything else help?</p>
 </section>
 <section id="reading-the-data-from-cogtarget-aml" class="level2">
 <h2 class="anchored" data-anchor-id="reading-the-data-from-cogtarget-aml">Reading the data from COG/TARGET AML</h2>
@@ -1183,12 +1183,11 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># available in the bifurcatoR package or from COG/TARGET clinical data elements</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>MLL <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(<span class="st">"https://trichelab.github.io/data/MLL.csv"</span>), <span class="at">row=</span><span class="dv">1</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>factors <span class="ot">&lt;-</span> <span class="fu">names</span>(MLL)[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">8</span>)]</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (f <span class="cf">in</span> factors) MLL[[f]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(MLL[[f]])</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>AgeGroup <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(MLL<span class="sc">$</span>AgeGroup), <span class="dv">2</span>), <span class="dv">3</span>)</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(MLL[, factors]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>MLL <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(<span class="st">"https://trichelab.github.io/data/MLLr.csv"</span>), <span class="at">row=</span><span class="dv">1</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>factors <span class="ot">&lt;-</span> <span class="fu">names</span>(MLL)[<span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">8</span>)]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (f <span class="cf">in</span> factors) MLL[[f]] <span class="ot">&lt;-</span> <span class="fu">factor</span>(MLL[[f]])</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>AgeGroup <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(MLL<span class="sc">$</span>AgeGroup), <span class="dv">2</span>), <span class="dv">3</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(MLL[, factors]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>     Sex        FAB          Protocol  
@@ -1204,7 +1203,7 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </section>
 <section id="table-1-25-years-of-trials" class="level2">
 <h2 class="anchored" data-anchor-id="table-1-25-years-of-trials">Table 1: 25 years of trials</h2>
-<p>We might as well summarize the cohort while we’re here:</p>
+<p>We might as well summarize the cohorts while we’re here:</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1217,17 +1216,16 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 <span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">""</span>, <span class="fu">sub</span>(<span class="st">"&lt;"</span>, <span class="st">"&amp;lt;"</span>, <span class="fu">format.pval</span>(p, <span class="at">digits=</span><span class="dv">3</span>, <span class="at">eps=</span><span class="fl">0.001</span>)))</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>MLL <span class="ot">&lt;-</span> <span class="fu">read.csv</span>(<span class="fu">url</span>(<span class="st">"https://trichelab.github.io/data/MLL.csv"</span>), <span class="at">row=</span><span class="dv">1</span>)</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>AgeGroup <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(MLL<span class="sc">$</span>AgeGroup), <span class="dv">2</span>), <span class="dv">3</span>)</span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>common <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which</span>(<span class="fu">table</span>(MLL<span class="sc">$</span>fusion) <span class="sc">&gt;</span> <span class="dv">5</span>))</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>Fusion <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MLL<span class="sc">$</span>fusion <span class="sc">%in%</span> common, </span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>                     MLL<span class="sc">$</span>fusion, <span class="st">"Other MLL fusions"</span>)</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>Fusion <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(MLL<span class="sc">$</span>Fusion), <span class="dv">6</span>), <span class="dv">4</span>), <span class="dv">6</span>)</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="fu">table1</span>(<span class="sc">~</span> Sex <span class="sc">+</span> Fusion <span class="sc">|</span> AgeGroup, <span class="at">data=</span>MLL, <span class="at">extra.col=</span><span class="fu">list</span>(<span class="at">p=</span>pvalue))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>common <span class="ot">&lt;-</span> <span class="fu">names</span>(<span class="fu">which</span>(<span class="fu">table</span>(MLL<span class="sc">$</span>fusion) <span class="sc">&gt;</span> <span class="dv">5</span>))</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>Fusion <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MLL<span class="sc">$</span>fusion <span class="sc">%in%</span> common, </span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>                     MLL<span class="sc">$</span>fusion, <span class="st">"Other MLL fusions"</span>)</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>Fusion <span class="ot">&lt;-</span> <span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">relevel</span>(<span class="fu">factor</span>(MLL<span class="sc">$</span>Fusion), <span class="dv">6</span>), <span class="dv">4</span>), <span class="dv">6</span>)</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="fu">table1</span>(<span class="sc">~</span> Sex <span class="sc">+</span> Fusion <span class="sc">|</span> AgeGroup, <span class="at">data=</span>MLL, <span class="at">extra.col=</span><span class="fu">list</span>(<span class="at">p=</span>pvalue))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
+<div>
 <div class="Rtable1">
-<table class="Rtable1 caption-top table table-sm table-striped small" data-quarto-postprocess="true">
+<table class="Rtable1 table table-sm table-striped small" data-quarto-postprocess="true">
 <colgroup>
 <col style="width: 16%">
 <col style="width: 16%">
@@ -1353,9 +1351,10 @@ globalThis.qwebrCreateMonacoEditorInstance = function (cellData) {
 </div>
 </div>
 </div>
+</div>
 </section>
 <section id="cd34-and-evi1" class="level2">
-<h2 class="anchored" data-anchor-id="cd34-and-evi1">CD34 and EVI1</h2>
+<h2 class="anchored" data-anchor-id="cd34-and-evi1"><em>CD34</em> and <em>EVI1</em></h2>
 <p>Previous work has shown that high levels of the cell surface marker CD34 and the stem cell fate gene <em>MECOM</em> (which encodes the EVI1 protein) portend dismal outcomes (at least in AML and B-cell ALL patients with MLL rearrangements).</p>
 <p>(More on this topic: <a href="https://trichelab.github.io/webR/mixtures/">Modeling phenotypes with mixtures</a>)</p>
 <p>Prior to TARGET, there wasn’t really a well-annotated, readily-available cohort of MLL-rearranged AML patients who had this sort of extensive characterization across multiple age groups. But time marches on, so now there is.</p>
@@ -1446,7 +1445,7 @@ age       hi  lo
 </div>
 </div>
 </div>
-<p>Your turn (be sure to run the previous chunks so MLL and bothFit are loaded)</p>
+<p>Your turn (be sure to run the previous chunks so <code>MLL</code> and <code>bothFit</code> are loaded)</p>
 <div id="qwebr-insertion-location-2"></div>
 <noscript>Please enable JavaScript to experience the dynamic code cell content on this page.</noscript>
 <p>For the sake of downstream motif analysis, let’s tabulate which cases are which:</p>
@@ -1466,6 +1465,98 @@ age       hi  lo
 <div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="co"># write.csv(infantMLL, file="~/Dropbox/Alex_Projects/infantMLL.csv") </span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="clec2a" class="level2">
+<h2 class="anchored" data-anchor-id="clec2a"><em>CLEC2A</em></h2>
+<p>It turns out that the high-risk cases (CD34-high and/or MECOM-high) may have a very specific immunotherapy target that could help to reverse the poor outcomes that these patients experience when treated with standard chemotherapy. Let’s look at the evidence for this. As usual, we see if a mixture model makes sense.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">hist</span>(MLL<span class="sc">$</span>CLEC2A, <span class="at">main=</span><span class="st">"CLEC2A expression"</span>, <span class="at">xlab=</span><span class="st">"log(1 + transcripts)"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infantMLL_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Looks like it. Eyeballing this, we can cut at around log(1 + transcripts) &gt; 3. More to the point, though: how much of this reflects CD34 and/or MECOM status?</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>MLL<span class="sc">$</span>CLEC2Astatus <span class="ot">&lt;-</span> <span class="fu">ifelse</span>(MLL<span class="sc">$</span>CLEC2A <span class="sc">&gt;</span> <span class="dv">3</span>, <span class="st">"hi"</span>, <span class="st">"lo"</span>)</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>tbl <span class="ot">&lt;-</span> <span class="fu">with</span>(MLL, <span class="fu">table</span>(CLEC2Astatus, CD34EVI1))</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a><span class="fu">chisq.test</span>(tbl)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  tbl
+X-squared = 35.06, df = 1, p-value = 3.197e-09</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># now test by age, i.e. infants versus everyone else</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">apply</span>(<span class="fu">with</span>(MLL, <span class="fu">table</span>(CLEC2Astatus, CD34EVI1, age)), <span class="dv">3</span>, chisq.test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>$Infant
+
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  array(newX[, i], d.call, dn.call)
+X-squared = 15.546, df = 1, p-value = 8.052e-05
+
+
+$Older
+
+    Pearson's Chi-squared test with Yates' continuity correction
+
+data:  array(newX[, i], d.call, dn.call)
+X-squared = 8.7947, df = 1, p-value = 0.003021</code></pre>
+</div>
+</div>
+<p>It’s not perfect, but it’s unlikely due to chance. We can perhaps get some idea of how to do better by checking the correlation of <em>CLEC2A</em> with various other genes (for example, <em>RORA</em>) that are often co-expressed with <em>CLEC2A</em>.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>ofInterest <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">'CLEC2A'</span>, <span class="st">'CD34'</span>, <span class="st">'MECOM'</span>, <span class="st">'RORA'</span>, <span class="st">'CD33'</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">pairs</span>(MLL[, ofInterest]) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="infantMLL_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>What about overall correlation of these genes’ expression?</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(reshape2)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>cormat <span class="ot">&lt;-</span> <span class="fu">cor</span>(MLL[, ofInterest])</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>to_plot <span class="ot">&lt;-</span> <span class="fu">melt</span>(cormat, <span class="at">na.rm=</span><span class="cn">TRUE</span>)</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a><span class="fu">names</span>(to_plot)[<span class="dv">1</span><span class="sc">:</span><span class="dv">2</span>] <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"Gene1"</span>, <span class="st">"Gene2"</span>)</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> <span class="fu">ggplot</span>(to_plot, <span class="fu">aes</span>(Gene1, Gene2, <span class="at">fill=</span>value)) <span class="sc">+</span></span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a> <span class="fu">geom_tile</span>(<span class="at">color=</span><span class="st">"white"</span>) <span class="sc">+</span></span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a> <span class="fu">scale_fill_gradient2</span>(<span class="at">low=</span><span class="st">"blue"</span>, <span class="at">high=</span><span class="st">"red"</span>, <span class="at">mid=</span><span class="st">"white"</span>, </span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>   <span class="at">midpoint=</span><span class="dv">0</span>, <span class="at">limit=</span><span class="fu">c</span>(<span class="sc">-</span><span class="dv">1</span>,<span class="dv">1</span>), <span class="at">space=</span><span class="st">"Lab"</span>, <span class="at">name=</span><span class="st">"Correlation"</span>) <span class="sc">+</span></span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.x=</span><span class="fu">element_text</span>(<span class="at">angle=</span><span class="dv">90</span>, <span class="at">vjust=</span><span class="dv">1</span>, <span class="at">size=</span><span class="dv">12</span>, <span class="at">hjust=</span><span class="dv">1</span>),</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.title.x=</span><span class="fu">element_blank</span>()) <span class="sc">+</span></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme</span>(<span class="at">axis.text.y=</span><span class="fu">element_text</span>(<span class="at">size=</span><span class="dv">12</span>),</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>       <span class="at">axis.title.y=</span><span class="fu">element_blank</span>()) <span class="sc">+</span></span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a> <span class="fu">coord_fixed</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<p>So, while CD34/EVI1 status doesn’t always predict CLEC2A status, it’s not bad.</p>
 </section>
 </section>
 
@@ -1506,7 +1597,18 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
     return false;
   }
-  const onCopySuccess = function(e) {
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
     // button target
     const button = e.trigger;
     // don't keep focus
@@ -1538,29 +1640,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }, 1000);
     // clear code selection
     e.clearSelection();
-  }
-  const getTextToCopy = function(trigger) {
-      const codeEl = trigger.previousElementSibling.cloneNode(true);
-      for (const childEl of codeEl.children) {
-        if (isCodeAnnotation(childEl)) {
-          childEl.remove();
-        }
-      }
-      return codeEl.innerText;
-  }
-  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
-    text: getTextToCopy
   });
-  clipboard.on('success', onCopySuccess);
-  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
-    // For code content inside modals, clipBoardJS needs to be initialized with a container option
-    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
-    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
-      text: getTextToCopy,
-      container: window.document.getElementById('quarto-embedded-source-code-modal')
-    });
-    clipboardModal.on('success', onCopySuccess);
-  }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
       var filterRegex = new RegExp('/' + window.location.host + '/');
@@ -1568,7 +1648,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
     // Inspect non-navigation links and adorn them if external
- 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool)');
     for (var i=0; i<links.length; i++) {
       const link = links[i];
       if (!isInternal(link.href)) {

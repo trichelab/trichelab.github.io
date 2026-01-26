@@ -18,7 +18,7 @@ execute:
 filters:
   - webr
 webr:
-  packages: ['mixtools','survival','survminer','patchwork','ggplot2','table1']
+  packages: ['mixtools','survival','survminer','reshape2','ggplot2','table1']
 ---
 
 # Age, cell of origin, and fusions in leukemia
@@ -30,16 +30,11 @@ leukemia. When a breakpoint is on band 23 of the long arm (11q23 abnormality),
 we often find the Mixed-Lineage-Leukemia or MLL protein (encoded by _KMT2A_) 
 broken in half and stuck to some other gene. Unfortunately, "some other gene" 
 can be one of hundreds of known partner genes, and nobody is sure how much the 
-identity of the partner gene matters. What is sure is that 11q23 breaks cause 
-aggressive leukemic transformation, and are responsible for well over half of 
-the cases seen in infants. This might be due to a fetal cell of origin, or the
-fusion partner, or where the leukemia cells get stuck, but it's hard to say.
-
-Given the many different MLL fusions that can arise in a patient, we may wonder
-if there are any "rules" that can indicate if a patient will benefit from any of
-several possible therapies. MLL-rearranged leukemia occurs across all ages, but
-younger patients have very few recurrent co-mutations besides MLL itself. So it
-seems that co-mutation status isn't very helpful, at least not in infant cases.
+identity of the partner gene matters. With so many different MLL fusions arising
+in patients, we might wonder there are any rules (beyond "MLL-XYZ is bad news") 
+that could guide a patient toward one therapy or another. MLL rearrangements 
+occur across all ages; young patients have few recurrent mutations beyond MLL.
+So co-mutation doesn't help, at least not in infants. Does anything else help?
 
 ## Reading the data from COG/TARGET AML
 
@@ -54,8 +49,7 @@ Let's see whether we can dig anything new out of this data with basic tools.
 
 ```{r}
 
-# available in the bifurcatoR package or from COG/TARGET clinical data elements
-MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
+MLL <- read.csv(url("https://trichelab.github.io/data/MLLr.csv"), row=1)
 factors <- names(MLL)[c(2, 3, 8)]
 for (f in factors) MLL[[f]] <- factor(MLL[[f]])
 MLL$AgeGroup <- relevel(relevel(factor(MLL$AgeGroup), 2), 3)
@@ -65,7 +59,7 @@ summary(MLL[, factors])
 
 ## Table 1: 25 years of trials
 
-We might as well summarize the cohort while we're here:
+We might as well summarize the cohorts while we're here:
 
 ```{r}
 
@@ -78,8 +72,6 @@ pvalue <- function(x, ...) {
   c("", sub("<", "&lt;", format.pval(p, digits=3, eps=0.001)))
 }
 
-MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
-MLL$AgeGroup <- relevel(relevel(factor(MLL$AgeGroup), 2), 3)
 common <- names(which(table(MLL$fusion) > 5))
 MLL$Fusion <- ifelse(MLL$fusion %in% common, 
                      MLL$fusion, "Other MLL fusions")
@@ -88,7 +80,7 @@ table1(~ Sex + Fusion | AgeGroup, data=MLL, extra.col=list(p=pvalue))
 
 ```
 
-## CD34 and EVI1
+## _CD34_ and _EVI1_
 
 Previous work has shown that high levels of the cell surface marker CD34 and
 the stem cell fate gene _MECOM_ (which encodes the EVI1 protein) portend dismal 
@@ -123,7 +115,7 @@ Now you try it:
 ```{webr-r}
 
 library(mixtools) 
-MLL <- read.csv(url("https://trichelab.github.io/data/MLL.csv"), row=1)
+MLL <- read.csv(url("https://trichelab.github.io/data/MLLr.csv"), row=1)
 set.seed(1234)
 bothFit <- mvnormalmixEM(MLL[, c("MECOM", "CD34")], k=3, arbvar=FALSE)
 plot.mixEM(bothFit, whichplots=2, xlab2="MECOM", ylab2="CD34")
@@ -164,7 +156,7 @@ ggsurvplot_facet(allSurv,
 
 ```
 
-Your turn (be sure to run the previous chunks so MLL and bothFit are loaded)
+Your turn (be sure to run the previous chunks so `MLL` and `bothFit` are loaded)
 
 ```{webr-r}
 
@@ -188,3 +180,65 @@ infantMLL <- subset(MLL, age == "Infant")
 with(infantMLL, table(CD34EVI1))
 # write.csv(infantMLL, file="~/Dropbox/Alex_Projects/infantMLL.csv") 
 ```
+
+## _CLEC2A_
+
+It turns out that the high-risk cases (CD34-high and/or MECOM-high) may have a 
+very specific immunotherapy target that could help to reverse the poor outcomes
+that these patients experience when treated with standard chemotherapy. Let's
+look at the evidence for this. As usual, we see if a mixture model makes sense.
+
+```{r}
+library(mixtools)
+CLEC2Afit <- normalmixEM(MLL$CLEC2A)
+plot(CLEC2Afit, which=2, col2=c("darkgreen","red"), 
+     xlab2="log(1 + transcripts)", main2="CLEC2A expression")
+```
+
+Looks like it. Eyeballing this, we can cut at around log(1 + transcripts) > 3.
+More to the point, though: how much of this reflects CD34 and/or MECOM status?
+
+```{r}
+MLL$CLEC2Astatus <- c("lo", "hi")[ apply(CLEC2Afit$comp.prob, 1, which.max) ]
+# or just
+# MLL$CLEC2Astatus <- ifelse(MLL$CLEC2A > 3, "hi", "lo")
+# if eyeballing it
+tbl <- with(MLL, table(CLEC2Astatus, CD34EVI1))
+chisq.test(tbl)
+
+# now test by age, i.e. infants versus everyone else
+apply(with(MLL, table(CLEC2Astatus, CD34EVI1, age)), 3, chisq.test)
+```
+
+It's not perfect, but it's unlikely due to chance.  We can perhaps get some 
+idea of how to do better by checking the correlation of _CLEC2A_ with various
+other genes (for example, _RORA_) that are often co-expressed with _CLEC2A_.
+
+```{r}
+ofInterest <- c('CLEC2A', 'CD34', 'MECOM', 'RORA', 'CD33')
+pairs(MLL[, ofInterest]) 
+```
+
+What about overall correlation of these genes' expression?
+
+```{r}
+library(ggplot2)
+library(reshape2)
+cormat <- cor(MLL[, ofInterest])
+to_plot <- melt(cormat, na.rm=TRUE)
+names(to_plot)[1:2] <- c("Gene1", "Gene2")
+
+p <- ggplot(to_plot, aes(Gene1, Gene2, fill=value)) +
+ geom_tile(color="white") +
+ scale_fill_gradient2(low="blue", high="red", mid="white", 
+   midpoint=0, limit=c(-1,1), space="Lab", name="Correlation") +
+ theme_classic() + 
+ theme(axis.text.x=element_text(angle=90, vjust=1, size=12, hjust=1),
+       axis.title.x=element_blank()) +
+ theme(axis.text.y=element_text(size=12),
+       axis.title.y=element_blank()) +
+ coord_fixed()
+
+```
+
+So, while CD34/EVI1 status doesn't always predict CLEC2A status, it's not bad.

@@ -18,7 +18,7 @@ execute:
 filters:
   - webr
 webr:
-  packages: ['mixR','survival','survminer','ggbeeswarm','patchwork','ggplot2']
+  packages: ['mixR','survival','survminer','ggbeeswarm','patchwork','ggplot2','table1']
 ---
 
 

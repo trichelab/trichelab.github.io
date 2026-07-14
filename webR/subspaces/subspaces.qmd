@@ -1,0 +1,123 @@
+---
+title: "NMF, subspaces, and all that"
+repo-url: https://github.com/trichelab/trichelab.github.io/
+format: 
+  html:
+    toc: true
+    toc-depth: 3
+    toc-expand: 3
+    toc-title: Sections
+    code-fold: true
+    code-links:
+      - text: Quarto (source code)
+        icon: github
+        href: https://github.com/trichelab/trichelab.github.io/blob/gh-pages/webR/subspaces/subspaces.qmd
+engine: knitr
+execute:
+  warning: false
+filters:
+  - webr
+webr:
+  packages: ['RcppML','ggplot2','htmlwidgets','useful']
+---
+
+# Subspaces, embeddings, and all that
+
+## "Siri, make me a UMAP"
+
+Before making spin art plots of tens (or perhaps hundreds) of thousands of 
+dollars' worth of data, one might consider what precisely is happening under 
+the hood. Usually, this is prompted by the similar events to any trip under
+a hood -- "the machinery isn't doing what I want it to!" Fortunately, the tools
+to diagnose typical UMAP disasters are cheaper than the OBD reader for a car.
+
+
+## How the spin art works (or doesn't) 
+
+Nonlinear dimension reduction schemes like tSNE and UMAP typically operate in 
+_reduced dimensions_. Given a number of linear dimensions, tSNE and UMAP attempt
+to maximize the separation of minimally similar data points and vice versa. The
+raw data is usually _compressed_ by taking _linear combinations_ of _features_,
+since the usefulness of the results depends upon how _similarity_ is measured.
+(Trivia: the X and Y coordinates of a UMAP embedding change when you add a Z...)
+
+For example, with a single-cell RNAseq dataset, the _features_ are transcripts,
+the typical _compression_ is a principal components analysis (PCA) with 30 or so
+dimensions, and often the defaults involve throwing away 80% to 90% of the data
+by relying only on _highly variable_ features (HVG, "highly variable genes").
+
+An old trick from noisy microarray expression experiments is to mask features.
+An older trick from statistics is to mask off entire _combinations_ of features.
+Suppose Factor 10 = 0.5 * GENE1 + 2.6 * GENE2 - 1.3 * GENE345. Now suppose that
+Factor 10 is almost entirely dependent upon technical artifacts that we don't 
+care about and don't want in our colorful main figure. We can simply drop it. 
+The remaining dimensions are referred to as a _subspace_ of the original data.
+
+
+# A concrete example: classifying leukemia by cell of origin 
+
+Instead of a typical single-cell dataset, we are going to train a model on 
+DNA methylation from leukemia patients and sorted healthy progenitor cells.
+Modern evidence-based understanding of hematopoiesis (blood production) has 
+settled around a scheme where hematopoietic stem cells (HSCs) provide a lifetime
+of blood supply, mostly by delegating the work to shorter-lived multipotent 
+progenitors (MPPs). These in turn generate three major classes of primed 
+progenitors: megakaryocyte-erythrocyte progenitors (MEPs), which make platelets
+and red blood cells; granulocyte-monocyte progenitors (GMPs), which make what 
+you would expect from the name; and lymphoid-primed multipotent progenitors, or
+LMPPs, which seem to be where B and T cells come from (but also some other cell
+types, it's all a bit mysterious). A diagram from Grant Challen's _Exp Hem_ 
+paper is below; it will may clarify or further murky-ify the topic. 
+
+[![Hematopoiesis, simplified](lineage.png){fig-align="left"}](https://doi.org/10.1016/j.exphem.2021.09.007)
+
+If these cells refuse to differentiate and instead proliferate, that's leukemia.
+Certain mutations occur repeatedly in leukemia, and patients are often assigned
+to specific treatment based on the mutations observed in their disease. However,
+[the cell from which their leukemia arose may better predict their responses](https://ashpublications.org/blood/article/141/13/1505/495015/Is-BCL-xL-the-Achilles-heel-of-AEL-and-AMKL). Historically, that has been harder to model, but the 
+nice thing about 'epigenomic' assays is that they are great at recovering this.
+The really nice thing about these assays is that they are cheap and fast, too.
+
+
+## Modeling normal and abnormal progenitors
+
+Let's pull in the raw data from 120 leukemia patients and 5 healthy donors. 
+The healthy donors provided bone marrow which was then sorted to yield MEP, 
+GMP, and LMPP fractions (separated on the basis of cell surface antigens). 
+The data is summarized as DNA methylation fractions across genomic coordinates,
+and the column names indicate who is who and what is what. 
+
+```{r}
+
+aml <- read.csv(url("https://trichelab.github.io/data/aml.csv"), row=1)
+meta <- data.frame(do.call(rbind, strsplit(colnames(aml), "_")))
+names(meta) <- c("ID", "status", "lineage")
+with(meta, table(lineage, status))
+
+```
+
+We can immediately observe two things:
+* The control set (MEP, GMP, LMPP) is balanced. 
+* The interesting set (leukemia patients) is severely imbalanced.
+
+Let's see how this impacts our downstream adventures. 
+
+
+## Fitting the data 
+
+Let's skip a few steps (more on this later) and fit an appropriate-dimensional 
+nonnegative matrix factorization (NMF) model of the data. (Why NMF? Because you
+can't have negative amounts of DNA methylation, among other reasons.) 
+
+```{r}
+library(RcppML) 
+aml <- read.csv(url("https://trichelab.github.io/data/aml.csv"), row=1)
+aml <- data.matrix(aml) 
+fit <- nmf(aml, k=5, seed=42, maxit=100)
+
+library(ggplot2)
+# plot the fraction of weights assignable to control vs. case data
+
+```
+
+...

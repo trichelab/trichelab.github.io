@@ -69,7 +69,7 @@ LMPPs, which seem to be where B and T cells come from (but also some other cell
 types, it's all a bit mysterious). A diagram from Grant Challen's _Exp Hem_ 
 paper is below; it will may clarify or further murky-ify the topic. 
 
-[![Hematopoiesis, simplified](lineage.png){fig-align="left"}](https://doi.org/10.1016/j.exphem.2021.09.007)
+[![Hematopoiesis, simplified](lineages.png){fig-align="left"}](https://doi.org/10.1016/j.exphem.2021.09.007)
 
 If these cells refuse to differentiate and instead proliferate, that's leukemia.
 Certain mutations occur repeatedly in leukemia, and patients are often assigned
